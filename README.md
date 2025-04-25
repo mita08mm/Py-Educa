@@ -1,74 +1,93 @@
-# Plataforma de Enseñanza de Python
+# Py-Educa - Plataforma de Enseñanza Python
 
-Plataforma en línea inclusiva para la enseñanza de Python, basada en Recursos Educativos Abiertos (OER) y acompañada de un agente de apoyo basado en IA.
+Plataforma educativa para aprender Python, construida con React (Frontend) y Flask (Backend).
 
-## Descripción
+## 🚀 Características
 
-Este proyecto busca desarrollar una plataforma en línea inclusiva para la enseñanza de Python, basada en Recursos Educativos Abiertos (OER) y acompañada de un agente de apoyo basado en IA que guíe a los estudiantes en su aprendizaje. La plataforma permitirá la movilidad estudiantil entre unidades educativas sin perder el progreso.
+- Frontend moderno con React y TypeScript
+- Backend robusto con Flask
+- Base de datos PostgreSQL
+- Dockerizado para fácil despliegue
 
-## Tecnologías
+## 🛠️ Tecnologías
 
-- Backend: Python Flask
-- Frontend: React
-- Base de datos: PostgreSQL
-- Contenedores: Docker
+### Frontend
+- React
+- TypeScript
+- Vite
+- Tailwind CSS (opcional)
 
-## Estructura del Proyecto
+### Backend
+- Flask
+- PostgreSQL
+- SQLAlchemy
+- Flask-CORS
 
-```
-/my-app
-│
-├── backend/
-│   ├── app.py              # API Flask
-│   ├── requirements.txt    # Dependencias de Python
-│   ├── Dockerfile          # Configuración Docker para el backend
-│   └── .env.example        # Variables de entorno
-│
-├── frontend/
-│   ├── src/                # Código React
-│   ├── Dockerfile          # Configuración Docker para el frontend
-│   ├── .env.example        # Variables de entorno
-│   └── ...                 # Otros archivos de React
-│
-├── docker-compose.yml      # Orquestación de contenedores
-├── .dockerignore           # Archivos que Docker ignorará
-├── .gitignore              
-└── README.md               # Este archivo
-```
+### DevOps
+- Docker
+- Docker Compose
 
-## Requisitos Previos
+## 📋 Requisitos Previos
 
 - Docker
 - Docker Compose
-- Node.js (para desarrollo frontend)
-- Python 3.8+ (para desarrollo backend)
+- Git
 
-## Instalación
+## 🚀 Instalación
 
-1. Clonar el repositorio
-2. Copiar los archivos .env.example a .env y configurar las variables
-3. Ejecutar `docker-compose up -d`
+1. Clona el repositorio:
+```bash
+git clone https://github.com/mita08mm/Py-Educa.git
+cd Py-Educa
+```
 
-## Desarrollo
+2. Configura las variables de entorno:
+```bash
+# Backend
+cp backend/.env.example backend/.env
+# Frontend
+cp frontend/.env.example frontend/.env
+```
+
+3. Inicia los contenedores:
+```bash
+docker-compose up -d
+```
+
+4. Accede a la aplicación:
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000
+
+## 📁 Estructura del Proyecto
+
+```
+Py-Educa/
+├── backend/           # Aplicación Flask
+│   ├── app.py        # Punto de entrada de la aplicación
+│   ├── models.py     # Modelos de la base de datos
+│   └── requirements.txt
+├── frontend/         # Aplicación React
+│   ├── src/
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   └── package.json
+└── docker-compose.yml
+```
+
+## 🔧 Desarrollo
 
 ### Backend
-
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
+source venv/bin/activate
 pip install -r requirements.txt
 python app.py
 ```
 
 ### Frontend
-
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-
-## Licencia
-
-Este proyecto está bajo la licencia MIT. 
