@@ -1,0 +1,66 @@
+Estándares de Desarrollo
+
+1. Codificación
+- Frontend (React): camelCase para variables/funciones, PascalCase para componentes, 2 espacios de indentación.
+
+- Backend (Flask): snake_case para variables/funciones, PascalCase para clases, 4 espacios de indentación (PEP8).
+
+- Líneas: máximo 80-100 caracteres.
+
+- Estructura de carpetas para el backend: Separar en components/, services/, models/, controllers/, etc.
+
+2. Documentación
+- Python: Docstrings siguiendo Google Style o reStructuredText.
+
+- React: Documentar funciones y componentes con JSDoc.
+
+3. Control de Versiones (Git)
+- Flujo Git Flow: main, develop, feature/*, bug/*.
+
+- Commits:
+    [feature] para nuevas funcionalidades.
+    [fix] para correcciones.
+
+4. Pruebas Automatizadas
+- Frontend: Jest + Testing Library.
+
+- Backend: pytest + Flask-Testing.
+
+- Cobertura mínima: 80%.
+
+5. Seguridad
+- Sanitizar entradas en frontend y backend.
+
+- Validar datos antes de ejecutar código.
+
+- Usar HTTPS y manejo seguro de tokens (expiración corta, refresh tokens).
+
+6. Accesibilidad
+- Cumplir WCAG 2.1 AA: contraste, navegación por teclado, roles ARIA.
+
+7. Internacionalización (i18n)
+- Configurar i18n desde el inicio para soportar español, quechua, aymara, guaraní.
+
+8. APIs y Comunicaciones
+- APIs RESTful siguiendo buenas prácticas:
+
+- Verbos HTTP correctos.
+
+- Status codes estándar.
+
+9. Arquitectura
+- Backend: principios SOLID.
+
+- Frontend: componentes desacoplados y reutilizables.
+
+- Separar servicios API por dominio (usuarios, cursos, evaluaciones).
+
+10. Integración Continua (CI/CD)
+- Validar automáticamente:
+
+- Pruebas unitarias (GitHub Actions/GitLab CI).
+
+- Análisis de código estático (ESLint, pylint).
+
+- Revisión de cobertura.
+
