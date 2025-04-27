@@ -1,0 +1,27 @@
+Requisitos Previos
+
+- Docker
+- Docker Compose
+- Git
+
+Instalación
+
+1. Clona el repositorio:
+git clone https://github.com/mita08mm/Py-Educa.git
+cd Py-Educa
+
+2. Configura las variables de entorno:
+
+Backend
+cp backend/.env.example backend/.env
+
+Frontend
+cp frontend/.env.example frontend/.env
+
+
+3. Inicia los contenedores: 
+    docker-compose up -d
+
+4. Accede a la aplicación:
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000
