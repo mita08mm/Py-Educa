@@ -29,6 +29,12 @@ jobs:
     - name: Checkout código
       uses: actions/checkout@v3
 
+    - name: Instalar Docker Compose
+      run: |
+        sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+        docker-compose --version
+
     - name: Configurar Docker
       run: docker-compose -f docker-compose.yml up --build -d
 
@@ -43,4 +49,3 @@ jobs:
 
     - name: Detener los contenedores después de las pruebas
       run: docker-compose down
-
