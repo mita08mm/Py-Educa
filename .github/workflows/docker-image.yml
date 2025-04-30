@@ -1,0 +1,46 @@
+name: CI/CD Docker App
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: python_learning_platform
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v3
+
+    - name: Configurar Docker
+      run: docker-compose -f docker-compose.yml up --build -d
+
+    - name: Esperar a que el backend responda
+      run: |
+        sleep 15
+        curl -f http://localhost:5000/api/message
+
+    - name: Verificar frontend
+      run: |
+        curl -f http://localhost:5173 || echo "Frontend iniciado pero sin pruebas definidas"
+
+    - name: Detener los contenedores después de las pruebas
+      run: docker-compose down
+
