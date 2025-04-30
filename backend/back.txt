@@ -1,0 +1,249 @@
+# Documentación Backend - Flask
+
+# Descripción General de la Arquitectura
+Este backend está desarrollado utilizando Flask, un microframework de Python para desarrollo web. 
+Implementa una arquitectura RESTful para proporcionar APIs que serán consumidas por el frontend de React/TypeScript. 
+La aplicación sigue un enfoque simple y directo, centrado en un patrón de desarrollo basado en recursos:
+
+- Modelos: Definidos en models.py para representar la estructura de datos
+- Aplicación principal: Implementada en app.py que contiene las rutas y la lógica de la API
+- **Configuración**: Gestionada a través de variables de entorno (.env)
+
+Estructura de Directorios
+
+/backend
+├── .env.example          # Ejemplo de variables de entorno
+├── app.py               # Archivo principal de la aplicación Flask
+├── back.txt             # Esta documentación técnica
+├── Dockerfile           # Configuración para contenerización
+├── models.py            # Definición de modelos de datos
+├── README.md            # Instrucciones generales (por Erika)
+└── requirements.txt     # Dependencias del proyecto
+
+Configuración del Entorno de Desarrollo
+
+# Requisitos Previos
+- Python 3.10 o superior
+- pip (gestor de paquetes de Python)
+- Docker (opcional, para desarrollo en contenedores)
+
+# Instalación Local
+
+1. Clonar el repositorio:
+   bash
+   git clone [URL_DEL_REPOSITORIO]
+   cd backend
+   
+
+2. Crear y activar entorno virtual (opcional si se usa Docker):
+   bash
+   python -m venv venv
+   # En Windows:
+   venv\Scripts\activate
+   # En MacOS/Linux:
+   source venv/bin/activate
+
+3. Instalar dependencias:
+   pip install -r requirements.txt
+
+4. Configurar variables de entorno:
+   bash
+   cp .env.example .env
+   # Editar .env con las configuraciones adecuadas
+
+# Ejecución con Docker
+
+1. Construir la imagen Docker:
+   bash
+   docker build -t backend-flask .
+   
+
+2. Ejecutar el contenedor:
+   bash
+   docker run -p 5000:5000 --env-file .env backend-flask
+
+# Ejecución Local
+
+bash
+flask run
+O alternativamente:
+python app.py
+
+El servidor estará disponible en `http://localhost:5000`.
+
+Dependencias Principales
+
+Las dependencias principales del proyecto se encuentran listadas en el archivo requirements.txt. A continuación se detallan las más importantes:
+
+Flask: Framework web principal
+Flask-SQLAlchemy: ORM para interacción con base de datos
+Flask-Migrate: Manejo de migraciones de base de datos
+Flask-Cors: Manejo de CORS (Cross-Origin Resource Sharing)
+python-jose: Generación y validación de tokens JWT para autenticación
+passlib: Utilidades para el manejo de contraseñas
+python-dotenv: Carga de variables de entorno desde archivos .env
+SQLAlchemy: ORM para interacción con bases de datos relacionales
+psycopg2-binary: Driver para PostgreSQL
+Werkzeug: Utilidades web para desarrollo con Flask
+gunicorn: Servidor WSGI para despliegue en producción
+
+Para instalar todas las dependencias:
+bash
+pip install -r requirements.txt
+
+
+API Endpoints
+
+El archivo `app.py` define los endpoints principales de la API:
+
+@app.route("/api/message")
+def get_message():
+    return jsonify({"message": "¡Hola desde el backend en Docker!"})
+
+
+Modelos de Datos
+
+Los modelos de datos se definen en el archivo `models.py`. A continuación se describen los modelos principales:
+
+# User
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128))
+    role = db.Column(db.String(20), nullable=False)  # student, teacher, admin
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    progress = db.relationship('Progress', backref='user', lazy=True)
+
+# Course (Curso)
+
+class Course(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    level = db.Column(db.String(20))  # beginner, intermediate, advanced
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    lessons = db.relationship('Lesson', backref='course', lazy=True)
+
+# Lesson (Leccion)
+
+class Lesson(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text)
+    order = db.Column(db.Integer)
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    progress = db.relationship('Progress', backref='lesson', lazy=True)
+
+# Progress (Progreso)
+
+class Progress(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    lesson_id = db.Column(db.Integer, db.ForeignKey('lesson.id'), nullable=False)
+    completed = db.Column(db.Boolean, default=False)
+    score = db.Column(db.Integer)
+    last_accessed = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow) 
+
+Autenticación y Autorización
+
+El sistema utiliza autenticación basada en tokens JWT (JSON Web Tokens):
+
+1. El usuario se registra o inicia sesión, recibiendo un token de acceso
+2. Este token debe incluirse en la cabecera Authorization de las solicitudes siguientes
+3. Los tokens tienen un tiempo de expiración configurado en las variables de entorno
+4. La verificación del token se realiza mediante un decorador personalizado
+
+
+# Variables de entorno para JWT
+
+En el archivo .env.example se encontrará las siguientes variables relacionadas con JWT:
+
+JWT_SECRET_KEY=tu_clave_secreta_muy_segura
+
+ Configuración de Variables de Entorno
+
+El archivo .env.example proporciona una plantilla para las variables de entorno necesarias:
+
+# Configuración de la aplicación
+FLASK_APP=app.py
+FLASK_ENV=development
+PORT=5000
+
+# Configuración de la base de datos
+DATABASE_URL=postgresql://user:password@db:5432/python_learning_platform
+
+# Configuración de seguridad
+SECRET_KEY=clave_secreta_de_desarrollo
+JWT_SECRET_KEY=clave_jwt_de_desarrollo
+
+# Configuración de CORS
+
+
+Para configurar el entorno, se copia este archivo a .env y se ajusta los valores según sea necesario.
+
+Manejo de Errores
+
+Los errores se devuelven en formato JSON con la siguiente estructura:
+
+json
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Descripción del error",
+    "details": {} // Información adicional (opcional)
+  }
+}
+
+Códigos de estado HTTP utilizados:
+- 200: Éxito
+- 201: Recurso creado exitosamente
+- 400: Error en la solicitud del cliente
+- 401: No autorizado
+- 403: Prohibido
+- 404: Recurso no encontrado
+- 500: Error interno del servidor
+
+Despliegue
+
+# Despliegue con Docker
+
+El proyecto incluye un Dockerfile que permite una fácil contenerización y despliegue:
+
+dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=development
+
+EXPOSE 5000
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"] 
+
+# Pasos para Despliegue en Producción
+
+1. Configurar adecuadamente las variables de entorno para producción
+
+2. Construir la imagen Docker:
+   bash
+   docker build -t backend-flask:production .
+
+3. Ejecutar el contenedor en producción:
+   bash
+   docker run -d -p 5000:5000 --env-file .env.production backend-flask:production
+
+# Consideraciones de Seguridad
+
+- Todas las contraseñas se almacenan hasheadas, nunca en texto plano
+- Validación estricta de todas las entradas de usuario
+- Implementación de CORS adecuado para restringir acceso desde orígenes no autorizados
