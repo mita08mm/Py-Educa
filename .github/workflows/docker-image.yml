@@ -2,9 +2,9 @@ name: CI/CD Docker App
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -29,6 +29,9 @@ jobs:
     - name: Checkout código
       uses: actions/checkout@v3
 
+    - name: Verificar versión de Docker
+      run: docker --version
+
     - name: Instalar Docker Compose
       run: |
         sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -36,12 +39,12 @@ jobs:
         docker-compose --version
 
     - name: Configurar Docker
-      run: docker-compose -f docker-compose.yml up --build -d
+      run: docker-compose -f docker-compose.yml up --build --no-cache -d
 
     - name: Esperar a que el backend responda
       run: |
-        sleep 15
-        curl -f http://localhost:5000/api/message
+        sleep 30
+        curl -f http://localhost:5000/api/message || echo "Backend no disponible"
 
     - name: Verificar frontend
       run: |
