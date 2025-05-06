@@ -42,12 +42,22 @@ Esto levantará la API en http://localhost:5000.
 ## Estructura del proyecto
 
 backend/
-│
-├── app/               # Código principal del backend (rutas, modelos, controladores)
-├── migrations/        # Archivos de migración de la base de datos
-├── .env.example       # Ejemplo de variables de entorno
-├── config.py          # Configuración de Flask y SQLAlchemy
-├── requirements.txt   # Dependencias del proyecto
-└── run.py             # Punto de entrada para iniciar el servidor
+├── app/
+│   ├── __init__.py            # Crea la app y registra blueprints/extensiones
+│   ├── config.py              # Configuración según entorno (dev, prod)
+│   ├── extensions.py          # Inicialización de extensiones (SQLAlchemy, etc.)
+│   ├── controllers/           # Lógica de negocio desacoplada de la capa de ruta
+│   ├── middlewares/           # Procedimientos que se realizan antes de un controller
+│   ├── models/                # Modelos separados por entidad
+│   ├── schemas/               # Esquemas para validación/serialización (opcional, con Marshmallow o Pydantic)
+│   ├── routes/                # Blueprints (rutas organizadas por recurso)
+│   ├── services/              # Lógica del negocio que tiene interacción con la bd
+│   └── utils/                 # Funciones comunes: JWT, helpers, etc.
+├── .env
+├── .env.example
+├── run.py                    # Punto de entrada, usa app factory
+├── Dockerfile
+├── requirements.txt
+└── README.md
 
 
