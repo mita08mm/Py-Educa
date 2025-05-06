@@ -15,7 +15,7 @@ export const Layout = ({ children }: LayoutProps) => {
       <div className="flex flex-1">
         <Sidebar />
         
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 p-6 overflow-auto bg-[#0F172A]">
           {children}
         </main>
       </div>
