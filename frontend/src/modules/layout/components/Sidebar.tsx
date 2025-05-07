@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export const Sidebar = () => {
     const courseSections = [
       'Introducción a Python',
@@ -20,6 +22,11 @@ export const Sidebar = () => {
             ))}
           </ul>
         </nav>
+        <Link
+          to="/courses/create"
+          className="block mt-4 px-3 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">
+          Crear Curso
+        </Link>
       </aside>
     );
   };
