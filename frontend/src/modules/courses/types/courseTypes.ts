@@ -1,28 +1,29 @@
+// types/courseTypes.ts
+export interface Subsection {
+  title: string;
+  content: string;
+  id?: string | number;
+  sectionId?: string | number;
+}
+
+export interface Section {
+  title: string;
+  id?: string | number;
+  moduleId?: string | number;
+  subsections?: Subsection[];
+}
+
+export interface Module {
+  title: string;
+  order: number;
+  id?: string | number;
+  courseId?: string | number;
+  sections?: Section[];
+}
+
 export interface Course {
-    id: string;
-    title: string;
-    description: string;
-    modules?: Module[]; // Added modules property
-  }
-
-  export interface Module {
-    id: string;
-    courseId: string;
-    title: string;
-    order: number;
-    sections?: Section[]; // Add sections property
-  }
-
-  export interface Section {
-    id: string;
-    moduleId: string;
-    title: string;
-    subsections?: Subsection[]; // Add subsections property
-  }
-  
-  export interface Subsection {
-    id: string;
-    sectionId: string;
-    title: string;
-    content: string;
-  }
+  title: string;
+  description?: string;
+  id?: string | number;
+  modules?: Module[];
+}
