@@ -60,29 +60,45 @@ export const CourseCreator = () => {
 
   const handleSaveCourse = () => {
     if (courseTitle.trim()) {
-      saveCourse({ title: courseTitle, description: courseDescription });
+      setIsSubmitting(true);
+      saveCourse({ 
+        title: courseTitle, 
+        description: courseDescription,
+        image: previewImage || undefined
+      });
       setCourseTitle('');
       setCourseDescription('');
+      setIsSubmitting(false);
     }
   };
 
   const handleSaveModule = () => {
     if (moduleTitle.trim()) {
-      saveModule({ title: moduleTitle, order: (course?.modules?.length || 0) + 1 });
+      saveModule({ 
+        title: moduleTitle, 
+        order: (course?.modules?.length || 0) + 1,
+        sections: [] // Inicializar el array de secciones vacío
+      });
       setModuleTitle('');
     }
   };
 
   const handleSaveSection = () => {
     if (sectionTitle.trim()) {
-      saveSection({ title: sectionTitle });
+      saveSection({ 
+        title: sectionTitle,
+        subsections: [] // Inicializar el array de subsecciones vacío
+      });
       setSectionTitle('');
     }
   };
 
   const handleSaveSubsection = () => {
     if (subsectionTitle.trim() && subsectionContent.trim()) {
-      saveSubsection({ title: subsectionTitle, content: subsectionContent });
+      saveSubsection({ 
+        title: subsectionTitle, 
+        content: subsectionContent 
+      });
       setSubsectionTitle('');
       setSubsectionContent('');
     }
@@ -168,33 +184,37 @@ export const CourseCreator = () => {
       
       {/* Lista de módulos existentes */}
       <div className="space-y-3">
-        {course?.modules?.map((mod: Module, index: number) => (
-          <div 
-            key={index} 
-            className="bg-[#1E293B] p-4 rounded-lg border border-gray-700"
-          >
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-[#E2E8F0] font-medium">{mod.title}</h3>
-                <p className="text-gray-400 text-sm">{mod.sections?.length || 0} secciones</p>
-              </div>
-              <div className="flex space-x-2">
-                <button 
-                  className="bg-[#46838C] hover:bg-[#2F646D] text-white px-3 py-1 rounded text-sm transition"
-                  onClick={() => saveModule(mod)}
-                >
-                  Ver Secciones
-                </button>
-                <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition">
-                  Modificar
-                </button>
-                <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition">
-                  Eliminar
-                </button>
+        {course?.modules && course.modules.length > 0 ? (
+          course.modules.map((mod: Module, index: number) => (
+            <div 
+              key={mod.id || index} 
+              className="bg-[#1E293B] p-4 rounded-lg border border-gray-700"
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-[#E2E8F0] font-medium">{mod.title}</h3>
+                  <p className="text-gray-400 text-sm">{mod.sections?.length || 0} secciones</p>
+                </div>
+                <div className="flex space-x-2">
+                  <button 
+                    className="bg-[#46838C] hover:bg-[#2F646D] text-white px-3 py-1 rounded text-sm transition"
+                    onClick={() => saveModule(mod)}
+                  >
+                    Ver Secciones
+                  </button>
+                  <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition">
+                    Modificar
+                  </button>
+                  <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition">
+                    Eliminar
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-gray-400 text-center py-4">No hay módulos agregados aún.</p>
+        )}
       </div>
 
       {/* Formulario para agregar nuevo módulo */}
@@ -243,33 +263,37 @@ export const CourseCreator = () => {
       
       {/* Lista de secciones existentes */}
       <div className="space-y-3">
-        {module?.sections?.map((sec: Section, index: number) => (
-          <div 
-            key={index} 
-            className="bg-[#1E293B] p-4 rounded-lg border border-gray-700"
-          >
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-[#E2E8F0] font-medium">{sec.title}</h3>
-                <p className="text-gray-400 text-sm">{sec.subsections?.length || 0} subsecciones</p>
-              </div>
-              <div className="flex space-x-2">
-                <button 
-                  className="bg-[#46838C] hover:bg-[#2F646D] text-white px-3 py-1 rounded text-sm transition"
-                  onClick={() => saveSection(sec)}
-                >
-                  Ver Subsecciones
-                </button>
-                <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition">
-                  Modificar
-                </button>
-                <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition">
-                  Eliminar
-                </button>
+        {module?.sections && module.sections.length > 0 ? (
+          module.sections.map((sec: Section, index: number) => (
+            <div 
+              key={sec.id || index} 
+              className="bg-[#1E293B] p-4 rounded-lg border border-gray-700"
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-[#E2E8F0] font-medium">{sec.title}</h3>
+                  <p className="text-gray-400 text-sm">{sec.subsections?.length || 0} subsecciones</p>
+                </div>
+                <div className="flex space-x-2">
+                  <button 
+                    className="bg-[#46838C] hover:bg-[#2F646D] text-white px-3 py-1 rounded text-sm transition"
+                    onClick={() => saveSection(sec)}
+                  >
+                    Ver Subsecciones
+                  </button>
+                  <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition">
+                    Modificar
+                  </button>
+                  <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition">
+                    Eliminar
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-gray-400 text-center py-4">No hay secciones agregadas aún.</p>
+        )}
       </div>
 
       {/* Formulario para agregar nueva sección */}
@@ -309,30 +333,38 @@ export const CourseCreator = () => {
       
       {/* Lista de subsecciones existentes */}
       <div className="space-y-3">
-        {section?.subsections?.map((subsec: Subsection, index: number) => (
-          <div 
-            key={index} 
-            className="bg-[#1E293B] p-4 rounded-lg border border-gray-700"
-          >
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-[#E2E8F0] font-medium">{subsec.title}</h3>
-                <p className="text-gray-400 text-sm truncate max-w-md">{subsec.content.substring(0, 50)}...</p>
-              </div>
-              <div className="flex space-x-2">
-                <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition">
-                  Ver Contenido
-                </button>
-                <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition">
-                  Modificar
-                </button>
-                <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition">
-                  Eliminar
-                </button>
+        {section?.subsections && section.subsections.length > 0 ? (
+          section.subsections.map((subsec: Subsection, index: number) => (
+            <div 
+              key={subsec.id || index} 
+              className="bg-[#1E293B] p-4 rounded-lg border border-gray-700"
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-[#E2E8F0] font-medium">{subsec.title}</h3>
+                  <p className="text-gray-400 text-sm truncate max-w-md">
+                    {subsec.content && subsec.content.length > 50 
+                      ? `${subsec.content.substring(0, 50)}...` 
+                      : subsec.content}
+                  </p>
+                </div>
+                <div className="flex space-x-2">
+                  <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition">
+                    Ver Contenido
+                  </button>
+                  <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition">
+                    Modificar
+                  </button>
+                  <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition">
+                    Eliminar
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-gray-400 text-center py-4">No hay subsecciones agregadas aún.</p>
+        )}
       </div>
 
       {/* Formulario para agregar nueva subsección */}
@@ -368,6 +400,7 @@ export const CourseCreator = () => {
     <div className="space-y-4 text-[#E2E8F0]">
       <h2 className="text-2xl font-bold">¡Curso Creado!</h2>
       <p>El curso "{course?.title}" ha sido creado exitosamente.</p>
+      
       {previewImage && (
         <div className="w-full h-48 rounded-lg overflow-hidden">
           <img 
@@ -377,6 +410,29 @@ export const CourseCreator = () => {
           />
         </div>
       )}
+      
+      {/* Resumen del contenido del curso */}
+      <div className="mt-4 bg-[#1E293B] p-4 rounded-lg border border-gray-700">
+        <h3 className="text-lg font-medium mb-2">Resumen del Contenido:</h3>
+        <p>{course?.modules?.length || 0} módulos</p>
+        <div className="mt-2 ml-4">
+          {course?.modules?.map((mod, i) => (
+            <div key={mod.id || i} className="mb-2">
+              <p>• {mod.title} ({mod.sections?.length || 0} secciones)</p>
+              {mod.sections && mod.sections.length > 0 && (
+                <ul className="ml-6 list-disc">
+                  {mod.sections.map((sec, j) => (
+                    <li key={sec.id || j}>
+                      {sec.title} ({sec.subsections?.length || 0} subsecciones)
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+      
       <div className="flex space-x-2">
         <button
           onClick={completeCreation}
