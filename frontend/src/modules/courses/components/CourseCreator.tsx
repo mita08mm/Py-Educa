@@ -451,7 +451,7 @@ export const CourseCreator = () => {
   );
 
   return (
-    <div className="p-6 max-w-2xl mx-auto bg-[#0F172A] rounded-lg shadow-lg">
+    <div className="p-6 mx-auto bg-[#0F172A] rounded-lg shadow-lg">
       {currentStage === 'course' && renderCourseForm()}
       {currentStage === 'module' && renderModulesList()}
       {currentStage === 'section' && renderSectionsList()}
