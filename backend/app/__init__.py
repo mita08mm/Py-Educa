@@ -2,6 +2,8 @@ from flask import Flask
 from .config import Config
 from .extensions import db, migrate, jwt
 from .routes import register_routes
+from app.models.modulo import Modulo
+from app.models.seccion import Seccion
 
 def create_app():
     app = Flask(__name__)
