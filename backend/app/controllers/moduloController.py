@@ -1,17 +1,20 @@
 from flask import request, jsonify
-from app.services.moduloService import crear_modulo
-from app.schemas.moduloSchema import modulo_schema
+from app.services.moduloService import crear_modulo, get_all_modulos
+from app.schemas.moduloSchema import ModuloSchema
+
+modulo_schema = ModuloSchema()
+modulos_schema = ModuloSchema(many=True)
 
 def crear_modulo_handler():
     data = request.get_json()
-    
-    # Validación mínima
-    if not data:
-        return jsonify({'error': 'Datos no proporcionados'}), 400
-    
-    modulo, error = crear_modulo(data)
-    
-    if error:
-        return jsonify({'error': error}), 400  # 400 para errores de validación
-    
-    return modulo_schema.jsonify(modulo), 201
+    errors = modulo_schema.validate(data)
+
+    if errors:
+        return jsonify(errors), 400
+
+    modulo, _ = crear_modulo(data)  # Se espera una tupla
+    return jsonify(modulo_schema.dump(modulo)), 201
+
+def listar_modulos():
+    modulos = get_all_modulos()
+    return jsonify(modulos_schema.dump(modulos)), 200

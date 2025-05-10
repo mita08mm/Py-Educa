@@ -1,11 +1,7 @@
-from app.extensions import ma
-from app.models.modulo import Modulo
+from marshmallow import Schema, fields
 
-class ModuloSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Modulo
-        include_fk = True  # Para incluir cod_curso (clave foránea si la tuviera)
-        load_instance = True
-
-modulo_schema = ModuloSchema()
-modulos_schema = ModuloSchema(many=True)
+class ModuloSchema(Schema):
+    cod_curso = fields.Int(required=True)
+    cod_modulo = fields.Int(dump_only=True)
+    titulo_modulo = fields.Str(required=True)
+    descripcion_modulo = fields.Str()

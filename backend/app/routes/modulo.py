@@ -1,6 +1,7 @@
 from flask import Blueprint
-from app.controllers.moduloController import crear_modulo_handler
+from app.controllers import moduloController
 
-modulos_bp = Blueprint('modulos', __name__)
+modulo_bp = Blueprint('modulo', __name__)
 
-modulos_bp.route('/', methods=['POST'])(crear_modulo_handler)
+modulo_bp.route('/', methods=['GET'])(moduloController.listar_modulos)
+modulo_bp.route('/', methods=['POST'])(moduloController.crear_modulo_handler)
