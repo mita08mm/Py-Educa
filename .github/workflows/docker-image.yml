@@ -1,14 +1,32 @@
 name: CI/CD Docker App
 
+# Este workflow se activa en los siguientes casos:
+# 1. Push a las ramas develop o sprint-*
+# 2. Pull Requests hacia develop
+# 3. Manualmente para cualquier rama (especialmente necesario para main)
 on:
   push:
-    branches: [main]
+    branches: [develop, 'sprint-*']
   pull_request:
-    branches: [main]
+    branches: [develop]
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Entorno de despliegue'
+        required: true
+        default: 'testing'
+        type: choice
+        options:
+        - testing
+        - production
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # No ejecutar automáticamente para la rama main excepto si es un workflow_dispatch manual
+    if: github.ref != 'refs/heads/main' || github.event_name == 'workflow_dispatch'
 
     services:
       postgres:
@@ -29,6 +47,9 @@ jobs:
     - name: Checkout código
       uses: actions/checkout@v3
 
+    - name: Configurar entorno
+      run: echo "Configurando entorno para ${{ github.ref }}"
+
     - name: Verificar versión de Docker
       run: docker --version
 
@@ -44,7 +65,7 @@ jobs:
     - name: Esperar a que el backend responda
       run: |
         sleep 30
-        curl -f http://localhost:5000/api/message || echo "Backend no disponible"
+        curl -f http://localhost:5000/api/test/message || echo "Backend no disponible"
 
     - name: Verificar frontend
       run: |
@@ -52,3 +73,8 @@ jobs:
 
     - name: Detener los contenedores después de las pruebas
       run: docker-compose down
+
+    # Solo se ejecuta cuando es un workflow manual en la rama main o develop
+    - name: Notificar finalización
+      if: github.event_name == 'workflow_dispatch'
+      run: echo "Workflow manual completado para ${{ github.ref }} en entorno ${{ github.event.inputs.environment }}"
