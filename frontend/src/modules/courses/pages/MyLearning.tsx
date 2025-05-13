@@ -1,7 +1,5 @@
-// src/modules/courses/pages/MyLearning.tsx
 import { Link } from "react-router-dom";
-import { useMyCourses } from "../hooks/useMyCourses.tsx"; // tu hook de estado global
-
+import { useMyCourses } from "../hooks/useMyCourses.tsx"; 
 export const MyLearning = () => {
   const { myCourses } = useMyCourses();
 
@@ -18,7 +16,7 @@ export const MyLearning = () => {
           {myCourses.map((c) => (
             <Link
               key={c.id}
-              to={`/my-learning/${c.id}`} // lleva al visor
+              to={`/my-learning/${c.id}`} 
               className="group flex flex-col overflow-hidden rounded-lg shadow hover:shadow-lg transition"
             >
               <div className="relative h-40 w-full">
