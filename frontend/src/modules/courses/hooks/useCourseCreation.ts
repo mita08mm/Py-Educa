@@ -11,6 +11,7 @@ interface Course {
 
 interface Module {
   title: string;
+  description?: string;
   order: number;
   sections?: Section[];
   id?: string | number;
@@ -18,12 +19,14 @@ interface Module {
 
 interface Section {
   title: string;
+  description?: string;
   subsections?: Subsection[];
   id?: string | number;
 }
 
 interface Subsection {
   title: string;
+  description?: string;
   content: string;
   id?: string | number;
 }
@@ -54,11 +57,13 @@ export const useCourseCreation = () => {
   const saveCourse = (newCourse: Course) => {
     const courseWithId = {
       ...newCourse,
-      id: generateId(),
-      modules: []
+      id: newCourse.id || generateId(),
+      modules: newCourse.modules || []
     };
     setCourse(courseWithId);
-    setCurrentStage('module');
+    if (!newCourse.modules) {
+      setCurrentStage('module');
+    }
   };
 
   // Función para guardar un módulo
@@ -119,15 +124,16 @@ export const useCourseCreation = () => {
       updatedCourse.modules = [];
     }
     
-    if (!updatedCourse.modules[currentModuleIndex].sections) {
+    if (updatedCourse.modules[currentModuleIndex] && !updatedCourse.modules[currentModuleIndex].sections) {
       updatedCourse.modules[currentModuleIndex].sections = [];
     }
     
-    updatedCourse.modules[currentModuleIndex].sections.push(sectionWithId);
-    setCourse(updatedCourse);
-    
-    setCurrentSectionIndex(updatedCourse.modules[currentModuleIndex].sections.length - 1);
-    setCurrentStage('subsection');
+    if (updatedCourse.modules[currentModuleIndex] && updatedCourse.modules[currentModuleIndex].sections) {
+      updatedCourse.modules[currentModuleIndex].sections.push(sectionWithId);
+      setCourse(updatedCourse);
+      setCurrentSectionIndex(updatedCourse.modules[currentModuleIndex].sections.length - 1);
+      setCurrentStage('subsection');
+    }
   };
 
   // Función para guardar una subsección
@@ -136,16 +142,38 @@ export const useCourseCreation = () => {
 
     const subsectionWithId = {
       ...newSubsection,
-      id: generateId()
+      id: newSubsection.id || generateId()
     };
 
     const updatedCourse = { ...course };
-    if (!updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections) {
-      updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections = [];
-    }
     
-    updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections.push(subsectionWithId);
-    setCourse(updatedCourse);
+    // Asegurarse de que todas las estructuras existen
+    if (updatedCourse.modules && 
+        updatedCourse.modules[currentModuleIndex] && 
+        updatedCourse.modules[currentModuleIndex].sections && 
+        updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex]) {
+      
+      if (!updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections) {
+        updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections = [];
+      }
+      
+      // Si estamos editando una subsección existente
+      if (newSubsection.id && updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections) {
+        const subsectionIndex = updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections.findIndex(
+          s => s.id === newSubsection.id
+        );
+        
+        if (subsectionIndex !== -1) {
+          updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections[subsectionIndex] = subsectionWithId;
+        } else {
+          updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections.push(subsectionWithId);
+        }
+      } else if (updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections) {
+        updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections.push(subsectionWithId);
+      }
+      
+      setCourse(updatedCourse);
+    }
   };
 
   // Función para volver a la etapa anterior
@@ -177,6 +205,8 @@ export const useCourseCreation = () => {
     course,
     module,
     section,
+    currentModuleIndex,
+    currentSectionIndex,
     saveCourse,
     saveModule,
     saveSection,
