@@ -1,51 +1,23 @@
-<<<<<<< HEAD
-import { Link } from "react-router-dom";
-
-export const Sidebar = () => {
-    const courseSections = [
-      'Introducción a Python',
-      'Variables y Tipos',
-      'Estructuras de Control',
-      'Progreso del curso'
-    ];
-  
-    return (
-      <aside className="bg-[#1E293B] shadow-md p-4">
-        <h2 className="font-bold text-lg mb-4 text-[#E2E8F0]">Contenido del Curso</h2>
-        <nav>
-          <ul className="space-y-2">
-            {courseSections.map((section, index) => (
-              <li key={index}>
-                <a href="#" className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-600 text-[#E2E8F0]">
-                  {section}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <Link
-          to="/courses/create"
-          className="block mt-4 px-3 py-2 rounded bg-[#46838C] text-white hover:bg-blue-600 text-center">
-          Crear Curso
-        </Link>
-      </aside>
-    );
-  };
-=======
 import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, Link } from "react-router-dom";
 import {
   Bars3Icon,
   ChevronDoubleRightIcon,
   HomeIcon,
   BookOpenIcon,
   CpuChipIcon,
+  PlusCircleIcon,
+  BookmarkIcon,
+  DocumentTextIcon,
+  DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
 
 const menu = [
-  { label: "Introducción", path: "/",          icon: HomeIcon    },
-  { label: "Variables",    path: "/variables", icon: BookOpenIcon},
-  { label: "Control",      path: "/control",   icon: CpuChipIcon },
+  { label: "Inicio", path: "/", icon: HomeIcon },
+  { label: "Cursos", path: "/courses/create", icon: BookOpenIcon },
+  { label: "Módulos", path: "/modules/create", icon: BookmarkIcon },
+  { label: "Secciones", path: "/sections/create", icon: DocumentTextIcon },
+  { label: "Subsecciones", path: "/subsections/create", icon: DocumentDuplicateIcon },
 ];
 
 export const Sidebar = () => {
@@ -55,7 +27,7 @@ export const Sidebar = () => {
   return (
     <aside
       className={`
-        bg-surface min-h-screen
+        bg-brand-700 min-h-screen
         ${collapsed ? "w-16 overflow-x-hidden" : "w-64"}
         transition-all duration-300 ease-in-out
         flex flex-col shadow-lg shadow-black/30
@@ -103,8 +75,31 @@ export const Sidebar = () => {
             </NavLink>
           );
         })}
+        
+        {!collapsed && (
+          <div className="border-t border-brand-600 pt-4 mt-4">
+            <div className="text-xs uppercase text-brand-300 px-3 mb-2">Administración</div>
+            <Link
+              to="/courses/create"
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium bg-accent/30 text-white hover:bg-accent/50 transition-colors"
+            >
+              <PlusCircleIcon className="h-5 w-5 shrink-0" />
+              <span className="whitespace-nowrap select-none">Crear Curso</span>
+            </Link>
+          </div>
+        )}
+        
+        {collapsed && (
+          <div className="border-t border-brand-600 pt-4 mt-4">
+            <Link
+              to="/courses/create"
+              className="flex justify-center items-center rounded-md px-3 py-2 text-sm font-medium bg-accent/30 text-white hover:bg-accent/50 transition-colors"
+            >
+              <PlusCircleIcon className="h-5 w-5 shrink-0" />
+            </Link>
+          </div>
+        )}
       </nav>
     </aside>
   );
 };
->>>>>>> feature/module-visualization

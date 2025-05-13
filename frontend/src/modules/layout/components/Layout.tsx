@@ -14,7 +14,7 @@ export const Layout = ({ children }: LayoutProps) => {
       <Navbar />
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-1 p-6 overflow-auto bg-brand-200">
+        <main className="flex-1 overflow-auto bg-brand-200">
           {children}
         </main>
       </div>

@@ -1,138 +1,218 @@
 import { useState } from 'react';
-import { Course, Module, Section, Subsection } from '../types/courseTypes';
 
+// Interfaces necesarias
+interface Course {
+  title: string;
+  description?: string;
+  image?: string;
+  modules?: Module[];
+  id?: string | number;
+}
+
+interface Module {
+  title: string;
+  description?: string;
+  order: number;
+  sections?: Section[];
+  id?: string | number;
+}
+
+interface Section {
+  title: string;
+  description?: string;
+  subsections?: Subsection[];
+  id?: string | number;
+}
+
+interface Subsection {
+  title: string;
+  description?: string;
+  content: string;
+  id?: string | number;
+}
+
+// Tipo para las etapas de creación
 type CreationStage = 'course' | 'module' | 'section' | 'subsection' | 'complete';
 
 export const useCourseCreation = () => {
-  const [currentStage, setStage] = useState<CreationStage>('course');
+  // Estados principales
+  const [currentStage, setCurrentStage] = useState<CreationStage>('course');
   const [course, setCourse] = useState<Course | null>(null);
-  const [module, setModule] = useState<Module | null>(null);
-  const [section, setSection] = useState<Section | null>(null);
-  const [subsection, setSubsection] = useState<Subsection | null>(null);
+  const [currentModuleIndex, setCurrentModuleIndex] = useState<number | null>(null);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState<number | null>(null);
 
-  const saveCourse = (data: Omit<Course, 'id' | 'modules'>) => {
-    const newCourse = { ...data, id: Date.now().toString(), modules: [] };
-    setCourse(newCourse);
-    setStage('module');
+  // Función auxiliar para generar IDs únicos
+  const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+  // Obtener el módulo y sección actuales
+  const module = currentModuleIndex !== null && course?.modules 
+    ? course.modules[currentModuleIndex] 
+    : null;
+
+  const section = currentSectionIndex !== null && module?.sections 
+    ? module.sections[currentSectionIndex] 
+    : null;
+
+  // Función para guardar el curso
+  const saveCourse = (newCourse: Course) => {
+    const courseWithId = {
+      ...newCourse,
+      id: newCourse.id || generateId(),
+      modules: newCourse.modules || []
+    };
+    setCourse(courseWithId);
+    if (!newCourse.modules) {
+      setCurrentStage('module');
+    }
   };
 
-  const saveModule = (data: Omit<Module, 'id' | 'courseId' | 'sections'>) => {
+  // Función para guardar un módulo
+  const saveModule = (selectedModule: Module) => {
     if (!course) return;
-    const newModule: Module = { // Explicitly type newModule
-      ...data,
-      id: Date.now().toString(),
-      courseId: course.id,
-      sections: []
+
+    // Si el módulo ya existe, solo navegar a él
+    if (selectedModule.id) {
+      const moduleIndex = course.modules?.findIndex(m => m.id === selectedModule.id) ?? -1;
+      if (moduleIndex !== -1) {
+        setCurrentModuleIndex(moduleIndex);
+        setCurrentStage('section');
+        return;
+      }
+    }
+
+    // Si es un nuevo módulo, añadirlo al curso
+    const moduleWithId = {
+      ...selectedModule,
+      id: generateId(),
+      sections: selectedModule.sections || []
     };
-    setCourse(prevCourse => {
-      if (!prevCourse) return null;
-      return {
-        ...prevCourse,
-        modules: [...(prevCourse.modules || []), newModule]
-      };
+
+    const updatedModules = [...(course.modules || []), moduleWithId];
+    
+    setCourse({
+      ...course,
+      modules: updatedModules
     });
-    setModule(newModule);
-    setStage('section');
+    
+    setCurrentModuleIndex(updatedModules.length - 1);
+    setCurrentStage('section');
   };
 
-  const saveSection = (data: Omit<Section, 'id' | 'moduleId' | 'subsections'>) => {
-    if (!module) return;
-    const newSection: Section = { // Explicitly type newSection
-      ...data,
-      id: Date.now().toString(),
-      moduleId: module.id,
-      subsections: []
+  // Función para guardar una sección
+  const saveSection = (selectedSection: Section) => {
+    if (!course || currentModuleIndex === null) return;
+
+    // Si la sección ya existe, solo navegar a ella
+    if (selectedSection.id && module) {
+      const sectionIndex = module.sections?.findIndex(s => s.id === selectedSection.id) ?? -1;
+      if (sectionIndex !== -1) {
+        setCurrentSectionIndex(sectionIndex);
+        setCurrentStage('subsection');
+        return;
+      }
+    }
+
+    // Si es una nueva sección, añadirla al módulo actual
+    const sectionWithId = {
+      ...selectedSection,
+      id: generateId(),
+      subsections: selectedSection.subsections || []
     };
-    setCourse(prevCourse => {
-      if (!prevCourse) return null;
-      const updatedModules = prevCourse.modules?.map(m => {
-        if (m.id === module.id) {
-          return {
-            ...m,
-            sections: [...(m.sections || []), newSection]
-          };
+
+    const updatedCourse = { ...course };
+    if (!updatedCourse.modules) {
+      updatedCourse.modules = [];
+    }
+    
+    if (updatedCourse.modules[currentModuleIndex] && !updatedCourse.modules[currentModuleIndex].sections) {
+      updatedCourse.modules[currentModuleIndex].sections = [];
+    }
+    
+    if (updatedCourse.modules[currentModuleIndex] && updatedCourse.modules[currentModuleIndex].sections) {
+      updatedCourse.modules[currentModuleIndex].sections.push(sectionWithId);
+      setCourse(updatedCourse);
+      setCurrentSectionIndex(updatedCourse.modules[currentModuleIndex].sections.length - 1);
+      setCurrentStage('subsection');
+    }
+  };
+
+  // Función para guardar una subsección
+  const saveSubsection = (newSubsection: Subsection) => {
+    if (!course || currentModuleIndex === null || currentSectionIndex === null) return;
+
+    const subsectionWithId = {
+      ...newSubsection,
+      id: newSubsection.id || generateId()
+    };
+
+    const updatedCourse = { ...course };
+    
+    // Asegurarse de que todas las estructuras existen
+    if (updatedCourse.modules && 
+        updatedCourse.modules[currentModuleIndex] && 
+        updatedCourse.modules[currentModuleIndex].sections && 
+        updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex]) {
+      
+      if (!updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections) {
+        updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections = [];
+      }
+      
+      // Si estamos editando una subsección existente
+      if (newSubsection.id && updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections) {
+        const subsectionIndex = updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections.findIndex(
+          s => s.id === newSubsection.id
+        );
+        
+        if (subsectionIndex !== -1) {
+          updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections[subsectionIndex] = subsectionWithId;
+        } else {
+          updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections.push(subsectionWithId);
         }
-        return m;
-      });
-      return {
-        ...prevCourse,
-        modules: updatedModules
-      };
-    });
-    setSection(newSection);
-    setStage('subsection');
+      } else if (updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections) {
+        updatedCourse.modules[currentModuleIndex].sections[currentSectionIndex].subsections.push(subsectionWithId);
+      }
+      
+      setCourse(updatedCourse);
+    }
   };
 
-  const saveSubsection = (data: Omit<Subsection, 'id' | 'sectionId'>) => {
-    if (!section) return;
-    const newSubsection: Subsection = { // Explicitly type newSubsection
-      ...data,
-      id: Date.now().toString(),
-      sectionId: section.id
-    };
-    setCourse(prevCourse => {
-      if (!prevCourse) return null;
-      const updatedModules = prevCourse.modules?.map(m => {
-        const updatedSections = m.sections?.map(s => {
-          if (s.id === section.id) {
-            return {
-              ...s,
-              subsections: [...(s.subsections || []), newSubsection]
-            };
-          }
-          return s;
-        });
-        return {
-          ...m,
-          sections: updatedSections
-        };
-      });
-      return {
-        ...prevCourse,
-        modules: updatedModules
-      };
-    });
-    setSubsection(newSubsection);
-    // After saving a subsection, stay on the subsection stage to allow adding more
-    // or move to a completion/review stage. For now, let's reset subsection state
-    // and allow adding more subsections to the current section.
-    setSubsection(null);
-  };
-
-  const resetCreation = () => {
-    setStage('course');
-    setCourse(null);
-    setModule(null);
-    setSection(null);
-    setSubsection(null);
-  };
-
-  const completeCreation = () => {
-    // Here you would typically send the 'course' object to a backend API
-    console.log('Course creation complete:', course);
-    setStage('complete');
-  };
-
-  // Helper to go back to the previous stage (basic implementation)
+  // Función para volver a la etapa anterior
   const goBack = () => {
-    if (currentStage === 'subsection') setStage('section');
-    else if (currentStage === 'section') setStage('module');
-    else if (currentStage === 'module') setStage('course');
+    if (currentStage === 'section') {
+      setCurrentStage('module');
+      setCurrentModuleIndex(null);
+    } else if (currentStage === 'subsection') {
+      setCurrentStage('section');
+      setCurrentSectionIndex(null);
+    }
   };
 
+  // Función para completar la creación del curso
+  const completeCreation = () => {
+    setCurrentStage('complete');
+  };
+
+  // Función para reiniciar el proceso de creación
+  const resetCreation = () => {
+    setCourse(null);
+    setCurrentModuleIndex(null);
+    setCurrentSectionIndex(null);
+    setCurrentStage('course');
+  };
 
   return {
     currentStage,
     course,
     module,
     section,
-    subsection,
+    currentModuleIndex,
+    currentSectionIndex,
     saveCourse,
     saveModule,
     saveSection,
     saveSubsection,
-    resetCreation,
-    completeCreation,
     goBack,
+    completeCreation,
+    resetCreation
   };
 };
