@@ -1,4 +1,4 @@
-import { CourseCreator } from '../components/CourseForm';
+import { CourseCreator } from '../components/CourseCreator';
 
 export const CreateCoursePage = () => {
   return <CourseCreator />;
