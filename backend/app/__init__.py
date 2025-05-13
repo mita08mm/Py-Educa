@@ -4,11 +4,15 @@ from .extensions import db, migrate, jwt
 from .routes import register_routes
 from app.models.modulo import Modulo
 from app.models.seccion import Seccion
+from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # Habilitar CORS para permitir peticiones desde el frontend
+    CORS(app)
+    
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
