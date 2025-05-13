@@ -123,7 +123,6 @@ export const ModuleManagementPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* Formulario para crear módulo */}
             <div className={cardClasses}>
               <h2 className={titleClasses}>Nuevo Módulo</h2>
@@ -134,8 +133,7 @@ export const ModuleManagementPage = () => {
                 initialData={selectedCurso ? { cod_curso: selectedCurso, titulo_modulo: '', descripcion_modulo: '' } : undefined}
               />
             </div>
-          </div>
-          
+  
           {/* Visualización de módulos */}
           <div>
             <h2 className="text-2xl font-bold mb-4 text-brand-100">

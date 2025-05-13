@@ -5,7 +5,6 @@ import {
   ChevronDoubleRightIcon,
   HomeIcon,
   BookOpenIcon,
-  CpuChipIcon,
   PlusCircleIcon,
   BookmarkIcon,
   DocumentTextIcon,
