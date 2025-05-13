@@ -13,6 +13,12 @@ export const Sidebar = () => {
         <h2 className="font-bold text-lg mb-4 text-[#E2E8F0]">Contenido del Curso</h2>
         <nav>
           <ul className="space-y-2">
+            <Link
+              to="/my-learning"
+              className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-600 text-[#E2E8F0] font-semibold"
+            >
+              Aprendizaje
+            </Link>
             {courseSections.map((section, index) => (
               <li key={index}>
                 <a href="#" className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-600 text-[#E2E8F0]">
