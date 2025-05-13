@@ -6,7 +6,6 @@ import {
   ReactNode,
 } from "react";
 
-/* ——— Tipos básicos ——— */
 export interface Subsection {
   id: string;
   title: string;
@@ -34,7 +33,6 @@ export interface Course {
   modules?: Module[];
 }
 
-/* ——— Context ——— */
 interface MyCoursesContextProps {
   myCourses: Course[];
   addCourse: (course: Course) => void;
@@ -46,10 +44,8 @@ const MyCoursesContext = createContext<MyCoursesContextProps | undefined>(
   undefined
 );
 
-/* ——— Provider ——— */
 export const MyCoursesProvider = ({ children }: { children: ReactNode }) => {
   const [myCourses, setMyCourses] = useState<Course[]>(() => {
-    // Carga inicial desde localStorage (si existe)
     const raw = localStorage.getItem("myCourses");
     return raw ? (JSON.parse(raw) as Course[]) : [];
   });
@@ -60,7 +56,7 @@ export const MyCoursesProvider = ({ children }: { children: ReactNode }) => {
   if (import.meta.env.DEV && !hasValidCourse) {
     const demo: Course = {
       id: "demo‑1",
-      title: "Curso DEMO 🌟",
+      title: "Curso DEMO",
       description: "Solo para ver cómo luce la interfaz.",
       image: "/demo.jpg",
       modules: [
@@ -134,7 +130,6 @@ export const MyCoursesProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem("myCourses", JSON.stringify(myCourses));
     }, [myCourses]);
 
-  /* ——— mutadores ——— */
   const addCourse = (course: Course) =>
     setMyCourses((prev) => [...prev, course]);
 
@@ -155,7 +150,6 @@ export const MyCoursesProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-/* ——— Hook público ——— */
 export const useMyCourses = () => {
   const ctx = useContext(MyCoursesContext);
   if (!ctx) {

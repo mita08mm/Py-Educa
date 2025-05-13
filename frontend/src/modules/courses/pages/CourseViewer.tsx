@@ -1,9 +1,8 @@
-// src/modules/courses/pages/CourseViewer.tsx
 import { useParams, Outlet, useNavigate } from "react-router-dom";
 import { useMyCourses } from "../hooks/useMyCourses";
 import { useEffect } from "react";
 import { SectionContent } from "./SectionContent";
-import { CourseSidebar } from "../components/CourseSidebar"; // 👈 Importa tu nuevo sidebar
+import { CourseSidebar } from "../components/CourseSidebar"; 
 
 export const courseViewerChildren = [
   { path: ":sectionId", element: <SectionContent /> },
@@ -24,10 +23,8 @@ export const CourseViewer = () => {
 
   return (
     <div className="flex h-full">
-      {/* Sidebar estilo Cisco */}
       <CourseSidebar course={course} />
 
-      {/* Contenido de la sección */}
       <section className="flex-1 p-6 overflow-y-auto">
         <Outlet />
       </section>
