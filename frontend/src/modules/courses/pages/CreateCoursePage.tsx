@@ -87,7 +87,7 @@ export const CreateCoursePage = () => {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          
             {/* Formulario para crear curso */}
             <div className={cardClasses}>
               <h2 className={titleClasses}>Nuevo Curso</h2>
@@ -96,7 +96,7 @@ export const CreateCoursePage = () => {
                 loading={loading}
               />
             </div>
-          </div>
+          
           
           {/* Visualización de cursos */}
           <div>

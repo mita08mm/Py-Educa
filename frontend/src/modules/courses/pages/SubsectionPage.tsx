@@ -175,7 +175,6 @@ export const SubsectionManagementPage = () => {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* Formulario para crear subsección */}
             <div className={cardClasses}>
               <h2 className={titleClasses}>Nueva Subsección</h2>
@@ -191,7 +190,6 @@ export const SubsectionManagementPage = () => {
                 } : undefined}
               />
             </div>
-          </div>
           
           {/* Visualización de subsecciones */}
           <div>
