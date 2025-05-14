@@ -2,7 +2,7 @@ export interface Course {
     id: string;
     title: string;
     description: string;
-    modules?: Module[]; 
+    modules?: Module[]; // Added modules property
   }
 
   export interface Module {
@@ -10,14 +10,14 @@ export interface Course {
     courseId: string;
     title: string;
     order: number;
-    sections?: Section[]; 
+    sections?: Section[]; // Add sections property
   }
 
   export interface Section {
     id: string;
     moduleId: string;
     title: string;
-    subsections?: Subsection[]; 
+    subsections?: Subsection[]; // Add subsections property
   }
   
   export interface Subsection {
