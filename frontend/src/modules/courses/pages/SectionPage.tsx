@@ -128,7 +128,6 @@ export const SectionManagementPage = () => {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* Formulario para crear sección */}
             <div className={cardClasses}>
               <h2 className={titleClasses}>Nueva Sección</h2>
@@ -139,7 +138,6 @@ export const SectionManagementPage = () => {
                 initialData={selectedModulo ? { titulo_seccion: '', descripcion_seccion: '', cod_modulo: selectedModulo } : undefined}
               />
             </div>
-          </div>
           
           {/* Visualización de secciones */}
           <div>
