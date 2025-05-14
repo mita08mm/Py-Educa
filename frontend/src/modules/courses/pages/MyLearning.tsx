@@ -86,7 +86,8 @@ export const MyLearning = () => {
               >
                 <div className="relative h-40 w-full">
                   <img
-                    // src={c.image || "/default-thumb.jpg"} 
+                    // src={c.image } 
+                    src={"https://skoolofcode.us/wp-content/uploads/2022/09/artturi-jalli-g5_rxRjvKmg-unsplash-2048x1536.jpg"} 
                     alt={c.titulo_curso}
                     className="h-full w-full object-cover group-hover:scale-105 transition"
                   />
@@ -95,7 +96,7 @@ export const MyLearning = () => {
                   </span>
                 </div>
 
-                <div className="flex-1 bg-white p-4">
+                <div className="flex-1 bg-[#f5f5f5] p-4">
                   <h3 className="font-semibold text-[#1E293B] mb-1">
                     {c.titulo_curso} 
                   </h3>
