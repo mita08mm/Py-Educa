@@ -1,15 +1,18 @@
 name: CI/CD Docker App
 
+# Este workflow se activa solo cuando se hace push desde ramas sprint-* hacia develop
 on:
   push:
-    branches: [main]
+    branches: ['develop']
   pull_request:
-    branches: [main]
+    branches: ['develop']
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'sprint-') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')
+    
     services:
       postgres:
         image: postgres:13
@@ -29,6 +32,9 @@ jobs:
     - name: Checkout código
       uses: actions/checkout@v3
 
+    - name: Configurar entorno
+      run: echo "Configurando entorno para ${{ github.ref }}"
+
     - name: Verificar versión de Docker
       run: docker --version
 
@@ -44,7 +50,7 @@ jobs:
     - name: Esperar a que el backend responda
       run: |
         sleep 30
-        curl -f http://localhost:5000/api/message || echo "Backend no disponible"
+        curl -f http://localhost:5000/api/test/message || echo "Backend no disponible"
 
     - name: Verificar frontend
       run: |
