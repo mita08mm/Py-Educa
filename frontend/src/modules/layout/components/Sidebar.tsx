@@ -10,6 +10,8 @@ import {
   DocumentTextIcon,
   DocumentDuplicateIcon,
   AcademicCapIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
 } from "@heroicons/react/24/outline";
 import { moduloService, seccionService, subseccionService, Modulo, Seccion, Subseccion } from "../../../services/api";
 
@@ -150,11 +152,11 @@ export const Sidebar = () => {
         })}
 
         {/* Mostrar módulos, secciones y subsecciones en el sidebar */}
-        {modules.map((mod) => (
+        {!collapsed && modules.map((mod) => (
           <div key={mod.cod_modulo} className="mb-6">
             <button
               onClick={() => toggleModule(mod.cod_modulo!)}  
-              className="w-full flex justify-between items-center px-3 py-2 bg-[#0F172A] text-left font-medium rounded hover:bg-[#3B82F6]"
+              className="w-full flex justify-between items-center px-3 py-2 bg-[#0F172A] text-left font-medium rounded hover:bg-[#334155]"
             >
               <div className="flex items-center space-x-2">
                 <svg
@@ -163,7 +165,7 @@ export const Sidebar = () => {
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-6 h-6 text-[#E2E8F0]"
+                  className="w-6 h-6 text-[#46838C]"
                 >
                   <path
                     strokeLinecap="round"
@@ -173,31 +175,42 @@ export const Sidebar = () => {
                 </svg>
                 <span className="text-[#E2E8F0]">{mod.titulo_modulo}</span>
               </div>
-              <span>{openModules.includes(mod.cod_modulo!) ? '▲' : '▼'}</span>
+              <span>
+                {openModules.includes(mod.cod_modulo!) ? (
+                  <ChevronUpIcon className="h-5 w-5 text-[#46838C]" />
+                ) : (
+                  <ChevronDownIcon className="h-5 w-5 text-[#46838C]" />
+                )}
+              </span>
             </button>
 
             {openModules.includes(mod.cod_modulo!) && (
               <div className="mt-2 ml-2 space-y-3">
                 {sections
                   .filter((sec) => sec.cod_modulo === mod.cod_modulo)
-                  .map((sec) => (
+                  .map((sec, secIndex) => (
                     <div key={sec.cod_seccion}>
                       <h4
                         className={`text-sm font-semibold ${
                           sec.cod_seccion === sectionId
-                            ? 'text-[#3B82F6] underline'
+                            ? 'text-[#334155] underline'
                             : 'text-[#E2E8F0]'
                         }`}
                       >
-                        {sec.titulo_seccion}
+                        {`${secIndex + 1}. ${sec.titulo_seccion}`}
+                        <span className=" ml-2 text-xs text-[#84CCD7]">
+                          ({secIndex + 1}/{sections.filter(s => s.cod_modulo === mod.cod_modulo).length})
+                        </span>
                       </h4>
 
-                      <div className="ml-4">
+                      <div className="ml-4 mt-2 space-y-3">
                         {subsections
                           .filter((sub) => sub.cod_seccion === sec.cod_seccion)
-                          .map((sub) => (
+                          .map((sub, subIndex)=> (
                             <div key={sub.cod_subseccion}>
-                              <h5 className="text-xs text-[#84CCD7]">{sub.titulo_subseccion}</h5>
+                              <h5 className="text-xs text-[#84CCD7]">
+                              {`${secIndex + 1}.${subIndex + 1} ${sub.titulo_subseccion}`} 
+                              </h5>
                             </div>
                           ))}
                       </div>
