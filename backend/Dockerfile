@@ -15,6 +15,7 @@ COPY . .
 
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=development
+ENV PYTHONPATH=/app
 EXPOSE 5000
 
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "run:app"]
