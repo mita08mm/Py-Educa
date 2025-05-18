@@ -3,3 +3,16 @@ from app.extensions import db
 
 def get_contenido_por_subseccion(cod_subseccion: int):
     return Contenido.query.filter_by(cod_subseccion=cod_subseccion).all()
+
+def agregar_contenido(cod_modulo, cod_seccion, cod_subseccion, descripcion, link, imagen):
+    nuevo_contenido = Contenido(
+        cod_modulo=cod_modulo,
+        cod_seccion=cod_seccion,
+        cod_subseccion=cod_subseccion,
+        descripcion=descripcion,
+        link=link,
+        imagen=imagen
+    )
+    db.session.add(nuevo_contenido)
+    db.session.commit()
+    return nuevo_contenido
