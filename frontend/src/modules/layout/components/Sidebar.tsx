@@ -26,14 +26,13 @@ const menu = [
 
 export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [modules, setModules] = useState<Modulo[]>([]); // Especificamos el tipo para los módulos
-  const [sections, setSections] = useState<Seccion[]>([]); // Especificamos el tipo para las secciones
-  const [subsections, setSubsections] = useState<Subseccion[]>([]); // Especificamos el tipo para las subsecciones
+  const [modules, setModules] = useState<Modulo[]>([]); 
+  const [sections, setSections] = useState<Seccion[]>([]); 
+  const [subsections, setSubsections] = useState<Subseccion[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [openModules, setOpenModules] = useState<number[]>([]); 
   const location = useLocation();
-  const { courseId, sectionId } = useParams<{ courseId: string, sectionId?: string }>(); // Aseguramos que sectionId sea opcional
-
+  const { courseId, sectionId } = useParams<{ courseId: string, sectionId?: string }>(); 
   useEffect(() => {
     if (courseId) {
       const parsedCourseId = Number(courseId); 
@@ -51,46 +50,26 @@ export const Sidebar = () => {
       const modulesData = await moduloService.getAll();
       const filteredModules = modulesData.filter(mod => mod.cod_curso === courseId);
       setModules(filteredModules); 
-      if (filteredModules.length > 0) {
-        // Llamamos a fetchSections después de cargar los módulos
-        fetchSections(filteredModules[0]?.cod_modulo!);
+      const allSections: Seccion[] = [];
+      for (const mod of filteredModules) {
+        const sectionsData = await seccionService.getAll();
+        const filteredSections = sectionsData.filter(sec => sec.cod_modulo === mod.cod_modulo);
+        allSections.push(...filteredSections);
       }
+      setSections(allSections);
+      const allSubsections: Subseccion[] = [];
+      for (const sec of allSections) {
+        const subsectionsData = await subseccionService.getAll();
+        const filteredSubsections = subsectionsData.filter(sub => sub.cod_seccion === sec.cod_seccion);
+        allSubsections.push(...filteredSubsections);
+      }
+      setSubsections(allSubsections);
     } catch (error) {
       console.error("Error al obtener los módulos:", error);
     } finally {
       setLoading(false);
     }
   };
-
-  const fetchSections = async (moduleId: number) => {
-    setLoading(true);
-    try {
-      const sectionsData = await seccionService.getAll();
-      const filteredSections = sectionsData.filter(sec => sec.cod_modulo === moduleId);
-      setSections(filteredSections);
-      if (filteredSections.length > 0) {
-        fetchSubsections(filteredSections[0]?.cod_seccion!);
-      }
-    } catch (error) {
-      console.error("Error al obtener las secciones:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchSubsections = async (sectionId: number) => {
-    setLoading(true);
-    try {
-      const subsectionsData = await subseccionService.getAll();
-      const filteredSubsections = subsectionsData.filter(sub => sub.cod_seccion === sectionId);
-      setSubsections(filteredSubsections);
-    } catch (error) {
-      console.error("Error al obtener las subsecciones:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const toggleModule = (moduleId: number) => {
     setOpenModules((prev) => 
       prev.includes(moduleId) 
@@ -151,7 +130,6 @@ export const Sidebar = () => {
           );
         })}
 
-        {/* Mostrar módulos, secciones y subsecciones en el sidebar */}
         {!collapsed && modules.map((mod) => (
           <div key={mod.cod_modulo} className="mb-6">
             <button
@@ -205,7 +183,7 @@ export const Sidebar = () => {
 
                       <div className="ml-4 mt-2 space-y-3">
                         {subsections
-                          .filter((sub) => sub.cod_seccion === sec.cod_seccion)
+                          .filter((sub) => sub.cod_seccion == sec.cod_seccion)
                           .map((sub, subIndex)=> (
                             <div key={sub.cod_subseccion}>
                               <h5 className="text-xs text-[#84CCD7]">
