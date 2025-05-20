@@ -6,6 +6,7 @@ def register_routes(app):
     from .modulo import modulo_bp
     from .curso import curso_bp
     from .contenido import contenido_bp
+    from .evaluacion import evaluacion_bp
     app.register_blueprint(usuario_bp, url_prefix="/api/usuarios")
     app.register_blueprint(test_bp, url_prefix="/api/test")
     app.register_blueprint(seccion_bp, url_prefix="/secciones")
@@ -13,3 +14,4 @@ def register_routes(app):
     app.register_blueprint(modulo_bp, url_prefix="/modulos")
     app.register_blueprint(curso_bp, url_prefix="/cursos")
     app.register_blueprint(contenido_bp, url_prefix="/contenido")
+    app.register_blueprint(evaluacion_bp, url_prefix="/evaluacion")
