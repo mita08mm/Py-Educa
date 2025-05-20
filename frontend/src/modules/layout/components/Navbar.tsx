@@ -8,6 +8,9 @@ export const Navbar = () => (
     <nav className="space-x-6 hidden sm:block">
       <Link to="/"         className="hover:text-brand-200">Inicio</Link>
       <Link to="/comunidad" className="hover:text-brand-200">Comunidad</Link>
+      <Link to="/courses/create" className="bg-brand-400 hover:bg-brand-300 px-4 py-1 rounded transition-colors">
+        Crear Curso
+      </Link>
     </nav>
 
     <button className="rounded bg-brand-400 px-4 py-1 text-brand-50 hover:bg-brand-300">

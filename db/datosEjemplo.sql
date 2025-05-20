@@ -1,3 +1,4 @@
+-- Active: 1747703885642@@127.0.0.1@5432@python_learning_platform
 -- Insertar roles
 INSERT INTO ROL (ROL) VALUES 
 ('Administrador'),

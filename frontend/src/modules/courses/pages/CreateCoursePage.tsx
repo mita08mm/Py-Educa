@@ -30,7 +30,7 @@ export const CreateCoursePage = () => {
   const crearCurso = async (data: Omit<Curso, 'cod_curso'>) => {
     try {
       setLoading(true);
-      const nuevoCurso = await cursoService.create(data);
+      const nuevoCurso = await cursoService.createCourse(data);
       setCursos([...cursos, nuevoCurso]);
       return Promise.resolve();
     } catch (error) {
@@ -50,55 +50,16 @@ export const CreateCoursePage = () => {
         <div className="container mx-auto">
           <h1 className="text-3xl font-bold mb-6 text-brand-100">Gestión de Cursos</h1>
           
-          {/* Acciones rápidas */}
+          {/* Formulario para crear curso */}
           <div className={cardClasses + " mb-6"}>
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="flex-1">
-                <h2 className="text-xl font-bold text-brand-100">Acciones Rápidas</h2>
-                <p className="text-sm text-brand-100 mt-1">Gestiona los diferentes componentes del curso</p>
-              </div>
-              
-              <div className="flex flex-wrap gap-2">
-                <Link 
-                  to="/modules/create" 
-                  className="bg-brand-400 hover:bg-brand-500 text-white font-bold py-2 px-4 rounded-md transition-colors"
-                >
-                  Gestionar Módulos
-                </Link>
-                <Link 
-                  to="/sections/create" 
-                  className="bg-brand-400 hover:bg-brand-500 text-white font-bold py-2 px-4 rounded-md transition-colors"
-                >
-                  Gestionar Secciones
-                </Link>
-                <Link 
-                  to="/subsections/create" 
-                  className="bg-brand-400 hover:bg-brand-500 text-white font-bold py-2 px-4 rounded-md transition-colors"
-                >
-                  Gestionar Subsecciones
-                </Link>
-                <button
-                  onClick={cargarCursos}
-                  className="bg-brand-400 hover:bg-brand-500 text-white font-bold py-2 px-4 rounded-md transition-colors"
-                >
-                  Actualizar Datos
-                </button>
-              </div>
-            </div>
+            <h2 className={titleClasses}>Nuevo Curso</h2>
+            <CourseForm
+              onSubmit={crearCurso}
+              loading={loading}
+            />
           </div>
           
-          
-            {/* Formulario para crear curso */}
-            <div className={cardClasses}>
-              <h2 className={titleClasses}>Nuevo Curso</h2>
-              <CourseForm
-                onSubmit={crearCurso}
-                loading={loading}
-              />
-            </div>
-          
-          
-          {/* Visualización de cursos */}
+          {/* Lista de cursos */}
           <div>
             <h2 className="text-2xl font-bold mb-4 text-brand-100">Cursos Disponibles</h2>
             
@@ -119,7 +80,7 @@ export const CreateCoursePage = () => {
                     
                     <div className="mt-4 flex space-x-2">
                       <Link 
-                        to={`/modules/create?curso=${curso.cod_curso}`} 
+                        to={`/modules?curso=${curso.cod_curso}`}
                         className="text-brand-400 hover:text-brand-300 text-sm"
                       >
                         Ver Módulos

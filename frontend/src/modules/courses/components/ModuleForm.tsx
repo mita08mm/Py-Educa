@@ -11,7 +11,7 @@ interface ModuleFormProps {
 export const ModuleForm = ({ onSubmit, initialData, loading, cursos }: ModuleFormProps) => {
   const [formData, setFormData] = useState<Omit<Modulo, 'cod_modulo'>>(
     initialData || {
-      cod_curso: 0,
+      cod_curso: cursos[0]?.cod_curso || 0,
       titulo_modulo: '',
       descripcion_modulo: '',
     }
@@ -19,10 +19,6 @@ export const ModuleForm = ({ onSubmit, initialData, loading, cursos }: ModuleFor
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.cod_curso) {
-      alert('Debes seleccionar un curso');
-      return;
-    }
     await onSubmit(formData);
   };
 
@@ -33,23 +29,6 @@ export const ModuleForm = ({ onSubmit, initialData, loading, cursos }: ModuleFor
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className={labelClasses}>Curso</label>
-        <select
-          value={formData.cod_curso || ''}
-          onChange={(e) => setFormData({...formData, cod_curso: Number(e.target.value)})}
-          className={inputClasses}
-          required
-        >
-          <option value="">Selecciona un curso</option>
-          {cursos.map((curso) => (
-            <option key={curso.cod_curso} value={curso.cod_curso}>
-              {curso.titulo_curso}
-            </option>
-          ))}
-        </select>
-      </div>
-      
       <div>
         <label className={labelClasses}>Título del Módulo</label>
         <input
@@ -73,8 +52,8 @@ export const ModuleForm = ({ onSubmit, initialData, loading, cursos }: ModuleFor
       
       <button
         type="submit"
-        disabled={loading || !formData.cod_curso}
-        className={loading || !formData.cod_curso ? buttonDisabledClasses : buttonClasses}
+        disabled={loading}
+        className={loading ? buttonDisabledClasses : buttonClasses}
       >
         {loading ? 'Procesando...' : initialData ? 'Actualizar Módulo' : 'Crear Módulo'}
       </button>
