@@ -7,8 +7,6 @@ import {
   BookOpenIcon,
   PlusCircleIcon,
   BookmarkIcon,
-  DocumentTextIcon,
-  DocumentDuplicateIcon,
   AcademicCapIcon,
   ChevronDownIcon,
   ChevronUpIcon,
@@ -59,42 +57,20 @@ export const Sidebar = () => {
       if (filteredModules.length > 0) {
         fetchSections(filteredModules[0]?.cod_modulo!);
       }
+      setSections(allSections);
+      const allSubsections: Subseccion[] = [];
+      for (const sec of allSections) {
+        const subsectionsData = await subseccionService.getAll();
+        const filteredSubsections = subsectionsData.filter(sub => sub.cod_seccion === sec.cod_seccion);
+        allSubsections.push(...filteredSubsections);
+      }
+      setSubsections(allSubsections);
     } catch (error) {
       console.error("Error al obtener los módulos:", error);
     } finally {
       setLoading(false);
     }
   };
-
-  const fetchSections = async (moduleId: number) => {
-    setLoading(true);
-    try {
-      const sectionsData = await seccionService.getAll();
-      const filteredSections = sectionsData.filter(sec => sec.cod_modulo === moduleId);
-      setSections(filteredSections);
-      if (filteredSections.length > 0) {
-        fetchSubsections(filteredSections[0]?.cod_seccion!);
-      }
-    } catch (error) {
-      console.error("Error al obtener las secciones:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchSubsections = async (sectionId: number) => {
-    setLoading(true);
-    try {
-      const subsectionsData = await subseccionService.getAll();
-      const filteredSubsections = subsectionsData.filter(sub => sub.cod_seccion === sectionId);
-      setSubsections(filteredSubsections);
-    } catch (error) {
-      console.error("Error al obtener las subsecciones:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const toggleModule = (moduleId: number) => {
     setOpenModules((prev) => 
       prev.includes(moduleId) 
