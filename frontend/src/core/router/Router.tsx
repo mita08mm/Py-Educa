@@ -17,15 +17,15 @@ export const router = createBrowserRouter([
         element: <CreateCoursePage />,
     },
     {
-        path: "/modules/create",
+        path: "/modules",
         element: <ModuleManagementPage />,
     },
     {
-        path: "/sections/create",
+        path: "/sections",
         element: <SectionManagementPage />,
     },
     {
-        path: "/subsections/create",
+        path: "/subsections",
         element: <SubsectionManagementPage />,
     },
     { 

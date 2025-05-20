@@ -43,8 +43,18 @@ export const cursoService = {
     return response.data;
   },
   
-  create: async (data: Curso): Promise<Curso> => {
+  getCourse: async (id: number): Promise<Curso> => {
+    const response = await api.get(`/cursos/${id}`);
+    return response.data;
+  },
+
+  createCourse: async (data: Curso): Promise<Curso> => {
     const response = await api.post('/cursos/', data);
+    return response.data;
+  },
+
+  updateCourse: async (id: number, data: Curso): Promise<Curso> => {
+    const response = await api.put(`/cursos/${id}`, data);
     return response.data;
   },
 };

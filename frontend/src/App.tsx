@@ -1,46 +1,105 @@
 import './index.css';
 import { Layout } from './modules/layout';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { AcademicCapIcon, BookOpenIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 
 function App() {
-  const [message, setMessage] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchMessage = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/test/message');
-        setMessage(response.data.message);
-        setError(null);
-      } catch (err) {
-        setError('Error al conectar con el backend');
-        console.error('Error fetching message:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMessage();
-  }, []);
+  const [isTeacher] = useState<boolean>(false); // TODO: Implementar lógica de roles
 
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <h1 className="text-3xl font-bold mb-4">Prueba de conexión</h1>
-        {loading ? (
-          <p className="text-xl">Cargando mensaje del backend...</p>
-        ) : error ? (
-          <p className="text-xl text-red-500">{error}</p>
-        ) : (
-          <div className="bg-accent/20 p-4 rounded-lg">
-            <p className="text-xl">Mensaje del backend:</p>
-            <p className="text-2xl font-bold mt-2">{message}</p>
-          </div>
-        )}
-      </div>
+      <main className="p-6 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-[#E2E8F0] mb-4">
+            {isTeacher ? 'Panel de Docente' : 'Bienvenido a Py-Educa'}
+          </h1>
+          <p className="text-[#94A3B8] text-lg">
+            {isTeacher 
+              ? 'Gestiona tus cursos y contenido educativo'
+              : 'Tu plataforma de aprendizaje de programación'
+            }
+          </p>
+        </div>
+
+        {/* Contenido principal */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {isTeacher ? (
+            // Vista de Docente
+            <>
+              <Link
+                to="/courses/create"
+                className="bg-[#1E293B] p-6 rounded-lg hover:bg-[#334155] transition-colors"
+              >
+                <BookOpenIcon className="h-12 w-12 text-[#46838C] mb-4" />
+                <h2 className="text-xl font-bold text-[#E2E8F0] mb-2">Crear Nuevo Curso</h2>
+                <p className="text-[#94A3B8]">
+                  Diseña y estructura un nuevo curso de programación
+                </p>
+              </Link>
+
+              <Link
+                to="/courses/management"
+                className="bg-[#1E293B] p-6 rounded-lg hover:bg-[#334155] transition-colors"
+              >
+                <BookOpenIcon className="h-12 w-12 text-[#46838C] mb-4" />
+                <h2 className="text-xl font-bold text-[#E2E8F0] mb-2">Gestionar Cursos</h2>
+                <p className="text-[#94A3B8]">
+                  Administra tus cursos existentes y su contenido
+                </p>
+              </Link>
+
+              <Link
+                to="/students"
+                className="bg-[#1E293B] p-6 rounded-lg hover:bg-[#334155] transition-colors"
+              >
+                <UserGroupIcon className="h-12 w-12 text-[#46838C] mb-4" />
+                <h2 className="text-xl font-bold text-[#E2E8F0] mb-2">Estudiantes</h2>
+                <p className="text-[#94A3B8]">
+                  Gestiona y monitorea el progreso de tus estudiantes
+                </p>
+              </Link>
+            </>
+          ) : (
+            // Vista de Estudiante
+            <>
+              <Link
+                to="/my-learning"
+                className="bg-[#1E293B] p-6 rounded-lg hover:bg-[#334155] transition-colors"
+              >
+                <AcademicCapIcon className="h-12 w-12 text-[#46838C] mb-4" />
+                <h2 className="text-xl font-bold text-[#E2E8F0] mb-2">Mi Aprendizaje</h2>
+                <p className="text-[#94A3B8]">
+                  Continúa con tus cursos y sigue tu progreso
+                </p>
+              </Link>
+
+              <Link
+                to="/courses"
+                className="bg-[#1E293B] p-6 rounded-lg hover:bg-[#334155] transition-colors"
+              >
+                <BookOpenIcon className="h-12 w-12 text-[#46838C] mb-4" />
+                <h2 className="text-xl font-bold text-[#E2E8F0] mb-2">Explorar Cursos</h2>
+                <p className="text-[#94A3B8]">
+                  Descubre nuevos cursos de programación
+                </p>
+              </Link>
+
+              <Link
+                to="/profile"
+                className="bg-[#1E293B] p-6 rounded-lg hover:bg-[#334155] transition-colors"
+              >
+                <UserGroupIcon className="h-12 w-12 text-[#46838C] mb-4" />
+                <h2 className="text-xl font-bold text-[#E2E8F0] mb-2">Mi Perfil</h2>
+                <p className="text-[#94A3B8]">
+                  Gestiona tu perfil y preferencias
+                </p>
+              </Link>
+            </>
+          )}
+        </div>
+      </main>
     </Layout>
   );
 }

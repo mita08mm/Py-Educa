@@ -1,61 +1,112 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
-import { moduloService, Modulo, seccionService, Seccion } from '../../../services/api';
+import { Link, useSearchParams } from 'react-router-dom';
+import { seccionService, Seccion, moduloService, Modulo, cursoService, Curso } from '../../../services/api';
 import { Layout } from '../../layout';
 import { SectionForm } from '../components/SectionForm';
 
 export const SectionManagementPage = () => {
   const [searchParams] = useSearchParams();
-  const initialModuloId = searchParams.get('modulo') ? Number(searchParams.get('modulo')) : null;
+  const moduloId = searchParams.get('modulo') ? Number(searchParams.get('modulo')) : null;
+  const cursoId = searchParams.get('curso') ? Number(searchParams.get('curso')) : null;
   
   const [loading, setLoading] = useState<boolean>(false);
-  const [modulos, setModulos] = useState<Modulo[]>([]);
   const [secciones, setSecciones] = useState<Seccion[]>([]);
-  const [selectedModulo, setSelectedModulo] = useState<number | null>(initialModuloId);
+  const [modulos, setModulos] = useState<Modulo[]>([]);
+  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [moduloSeleccionado, setModuloSeleccionado] = useState<Modulo | null>(null);
+  const [cursoSeleccionado, setCursoSeleccionado] = useState<Curso | null>(null);
   
   // Cargar datos al iniciar
   useEffect(() => {
-    cargarModulos();
-    if (selectedModulo) {
+    if (cursoId) {
+      cargarModulos();
+      cargarCursoSeleccionado();
+      cargarCursos();
+    }
+    if (moduloId) {
       cargarSecciones();
+      cargarModuloSeleccionado();
     }
-  }, []);
-  
-  // Cargar módulos
-  const cargarModulos = async () => {
-    try {
-      setLoading(true);
-      const data = await moduloService.getAll();
-      setModulos(data);
-    } catch (error) {
-      console.error('Error al cargar módulos:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [cursoId, moduloId]);
   
   // Cargar secciones
   const cargarSecciones = async () => {
     try {
       setLoading(true);
       const data = await seccionService.getAll();
-      // Filtrar por el módulo seleccionado
-      const filteredSecciones = selectedModulo 
-        ? data.filter(seccion => seccion.cod_modulo === selectedModulo)
-        : data;
-      setSecciones(filteredSecciones);
+      // Filtrar secciones por el módulo seleccionado
+      const seccionesFiltradas = moduloId 
+        ? data.filter(seccion => seccion.cod_modulo === moduloId)
+        : [];
+      setSecciones(seccionesFiltradas);
     } catch (error) {
       console.error('Error al cargar secciones:', error);
     } finally {
       setLoading(false);
     }
   };
+
+  // Cargar módulos
+  const cargarModulos = async () => {
+    try {
+      const data = await moduloService.getAll();
+      // Filtrar módulos por el curso seleccionado
+      const modulosFiltrados = cursoId 
+        ? data.filter(modulo => modulo.cod_curso === cursoId)
+        : [];
+      setModulos(modulosFiltrados);
+    } catch (error) {
+      console.error('Error al cargar módulos:', error);
+    }
+  };
+
+  // Cargar cursos
+  const cargarCursos = async () => {
+    try {
+      const data = await cursoService.getAll();
+      setCursos(data);
+    } catch (error) {
+      console.error('Error al cargar cursos:', error);
+    }
+  };
+
+  // Cargar módulo seleccionado
+  const cargarModuloSeleccionado = async () => {
+    if (!moduloId) return;
+    try {
+      const modulos = await moduloService.getAll();
+      const modulo = modulos.find(m => m.cod_modulo === moduloId);
+      if (modulo) {
+        setModuloSeleccionado(modulo);
+      }
+    } catch (error) {
+      console.error('Error al cargar módulo:', error);
+    }
+  };
+
+  // Cargar curso seleccionado
+  const cargarCursoSeleccionado = async () => {
+    if (!cursoId) return;
+    try {
+      const curso = await cursoService.getCourse(cursoId);
+      setCursoSeleccionado(curso);
+    } catch (error) {
+      console.error('Error al cargar curso:', error);
+    }
+  };
   
   // Función para crear una nueva sección
   const crearSeccion = async (data: Omit<Seccion, 'cod_seccion'>) => {
+    if (!moduloId) {
+      alert('Debes seleccionar un módulo primero');
+      return Promise.reject('No hay módulo seleccionado');
+    }
     try {
       setLoading(true);
-      const nuevaSeccion = await seccionService.create(data);
+      const nuevaSeccion = await seccionService.create({
+        ...data,
+        cod_modulo: moduloId
+      });
       setSecciones([...secciones, nuevaSeccion]);
       return Promise.resolve();
     } catch (error) {
@@ -65,25 +116,91 @@ export const SectionManagementPage = () => {
       setLoading(false);
     }
   };
-  
-  // Cambio de módulo seleccionado
-  const handleModuloChange = (moduloId: number) => {
-    setSelectedModulo(moduloId);
-    cargarSecciones();
-  };
 
   const cardClasses = "bg-surface p-6 rounded-lg shadow-lg border border-brand-600";
   const titleClasses = "text-2xl font-bold mb-4 text-brand-100";
-  const inputClasses = "w-full p-2 border border-brand-500 rounded-md bg-brand-600 text-brand-100 focus:border-brand-300 focus:outline-none";
+  
+  if (!cursoId) {
+    return (
+      <Layout>
+        <div className="p-4">
+          <div className="container mx-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-3xl font-bold text-brand-100">Selecciona un Curso</h1>
+              <Link to="/courses/create" className="text-brand-400 hover:text-brand-300">
+                Volver a Cursos
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {cursos.map((curso: Curso) => (
+                <Link 
+                  key={curso.cod_curso} 
+                  to={`/modules/create?curso=${curso.cod_curso}`}
+                  className={`${cardClasses} hover:border-brand-400 transition-colors`}
+                >
+                  <h3 className="text-xl font-bold text-brand-100">{curso.titulo_curso}</h3>
+                  <p className="mt-2 text-brand-100 text-sm">{curso.descripcion_curso || 'Sin descripción'}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!moduloId) {
+    return (
+      <Layout>
+        <div className="p-4">
+          <div className="container mx-auto">
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h1 className="text-3xl font-bold text-brand-100">Selecciona un Módulo</h1>
+                {cursoSeleccionado && (
+                  <p className="text-brand-100 mt-2">Curso: {cursoSeleccionado.titulo_curso}</p>
+                )}
+              </div>
+              <Link to={`/modules/create?curso=${cursoId}`} className="text-brand-400 hover:text-brand-300">
+                Volver a Módulos
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {modulos.map((modulo) => (
+                <Link 
+                  key={modulo.cod_modulo} 
+                  to={`/sections/create?modulo=${modulo.cod_modulo}&curso=${cursoId}`}
+                  className={`${cardClasses} hover:border-brand-400 transition-colors`}
+                >
+                  <h3 className="text-xl font-bold text-brand-100">{modulo.titulo_modulo}</h3>
+                  <p className="mt-2 text-brand-100 text-sm">{modulo.descripcion_modulo || 'Sin descripción'}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
   
   return (
     <Layout>
       <div className="p-4">
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-brand-100">Gestión de Secciones</h1>
+            <div>
+              <h1 className="text-3xl font-bold text-brand-100">Gestión de Secciones</h1>
+              {cursoSeleccionado && (
+                <p className="text-brand-100 mt-2">Curso: {cursoSeleccionado.titulo_curso}</p>
+              )}
+              {moduloSeleccionado && (
+                <p className="text-brand-100 mt-1">Módulo: {moduloSeleccionado.titulo_modulo}</p>
+              )}
+            </div>
             <div className="space-x-4">
-              <Link to="/modules/create" className="text-brand-400 hover:text-brand-300">
+              <Link to={`/modules/create?curso=${cursoId}`} className="text-brand-400 hover:text-brand-300">
                 Volver a Módulos
               </Link>
               <Link to="/courses/create" className="text-brand-400 hover:text-brand-300">
@@ -92,61 +209,21 @@ export const SectionManagementPage = () => {
             </div>
           </div>
           
-          {/* Filtrado y acciones */}
-          <div className={cardClasses + " mb-6"}>
-            <div className="flex flex-wrap items-end gap-4">
-              <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-medium mb-1 text-brand-100">Filtrar por Módulo</label>
-                <select
-                  value={selectedModulo || ''}
-                  onChange={(e) => handleModuloChange(Number(e.target.value))}
-                  className={inputClasses}
-                >
-                  <option value="">Todos los módulos</option>
-                  {modulos.map((modulo) => (
-                    <option key={modulo.cod_modulo} value={modulo.cod_modulo}>
-                      {modulo.titulo_modulo}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              <div className="flex gap-2">
-                <Link 
-                  to="/subsections/create" 
-                  className="bg-brand-400 hover:bg-brand-500 text-white font-bold py-2 px-4 rounded-md transition-colors"
-                >
-                  Gestionar Subsecciones
-                </Link>
-                <button
-                  onClick={() => cargarSecciones()}
-                  className="bg-brand-400 hover:bg-brand-500 text-white font-bold py-2 px-4 rounded-md transition-colors"
-                >
-                  Actualizar
-                </button>
-              </div>
-            </div>
-          </div>
-          
-            {/* Formulario para crear sección */}
-            <div className={cardClasses}>
+          {/* Formulario para crear sección */}
+          {moduloSeleccionado && (
+            <div className={cardClasses + " mb-6"}>
               <h2 className={titleClasses}>Nueva Sección</h2>
               <SectionForm
                 onSubmit={crearSeccion}
                 loading={loading}
-                modulos={modulos}
-                initialData={selectedModulo ? { titulo_seccion: '', descripcion_seccion: '', cod_modulo: selectedModulo } : undefined}
+                modulos={[moduloSeleccionado]}
               />
             </div>
+          )}
           
-          {/* Visualización de secciones */}
+          {/* Lista de secciones */}
           <div>
-            <h2 className="text-2xl font-bold mb-4 text-brand-100">
-              {selectedModulo 
-                ? `Secciones del módulo: ${modulos.find(m => m.cod_modulo === selectedModulo)?.titulo_modulo || 'Seleccionado'}`
-                : 'Todas las Secciones'
-              }
-            </h2>
+            <h2 className="text-2xl font-bold mb-4 text-brand-100">Secciones Disponibles</h2>
             
             {loading ? (
               <p className="text-center py-4 text-brand-100">Cargando...</p>
@@ -165,7 +242,7 @@ export const SectionManagementPage = () => {
                     
                     <div className="mt-4 flex space-x-2">
                       <Link 
-                        to={`/subsections/create?seccion=${seccion.cod_seccion}&modulo=${seccion.cod_modulo}`} 
+                        to={`/subsections?seccion=${seccion.cod_seccion}&modulo=${moduloId}&curso=${cursoId}`}
                         className="text-brand-400 hover:text-brand-300 text-sm"
                       >
                         Ver Subsecciones
@@ -196,10 +273,7 @@ export const SectionManagementPage = () => {
               </div>
             ) : (
               <p className="text-center py-4 bg-surface rounded-lg text-brand-100 border border-brand-600">
-                {selectedModulo 
-                  ? 'No hay secciones disponibles para este módulo. Crea una sección para comenzar.'
-                  : 'No hay secciones disponibles. Selecciona un módulo o crea una sección para comenzar.'
-                }
+                No hay secciones disponibles. Crea una sección para comenzar.
               </p>
             )}
           </div>
