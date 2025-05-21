@@ -96,6 +96,16 @@ function App() {
                   Gestiona tu perfil y preferencias
                 </p>
               </Link>
+              <Link
+                to="/evaluation-example"
+                className="bg-[#1E293B] p-6 rounded-lg hover:bg-[#334155] transition-colors"
+              >
+                <AcademicCapIcon className="h-12 w-12 text-[#46838C] mb-4" />
+                <h2 className="text-xl font-bold text-[#E2E8F0] mb-2">Ejemplo de evaluacion</h2>
+                <p className="text-[#94A3B8]">
+                  Realiza la evaluacion de una subseccion
+                </p>
+              </Link>
             </>
           )}
         </div>

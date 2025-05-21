@@ -19,6 +19,7 @@ import { moduloService, seccionService, subseccionService, Modulo, Seccion, Subs
 const studentMenu = [
   { label: "Inicio", path: "/", icon: HomeIcon },
   { label: "Mi Aprendizaje", path: "/my-learning", icon: AcademicCapIcon },
+  { label: "Ejemplo de evaluacion", path: "/evaluation-example", icon: AcademicCapIcon },
 ];
 
 // Menú para profesores
