@@ -5,6 +5,7 @@ import { ModuleManagementPage } from "../../modules/courses/pages/ModulePage";
 import { SectionManagementPage } from "../../modules/courses/pages/SectionPage";
 import { SubsectionManagementPage } from "../../modules/courses/pages/SubsectionPage";
 import { MyLearning } from "../../modules/courses/pages/MyLearning";
+import { EvaluationPage } from "../../modules/courses/pages/EvaluationPage";
 // import CourseViewer from "../../modules/courses/pages/CourseViewer"; 
 
 export const router = createBrowserRouter([
@@ -23,6 +24,10 @@ export const router = createBrowserRouter([
     {
         path: "/sections",
         element: <SectionManagementPage />,
+    },
+    {
+        path: '/evaluation/create',
+        element: <EvaluationPage />,
     },
     {
         path: "/subsections",

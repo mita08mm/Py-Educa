@@ -4,6 +4,7 @@ import { moduloService, Modulo, cursoService, Curso } from '../../../services/ap
 import { Layout } from '../../layout';
 import { ModuleForm } from '../components/ModuleForm';
 
+
 export const ModuleManagementPage = () => {
   const [searchParams] = useSearchParams();
   const cursoId = searchParams.get('curso') ? Number(searchParams.get('curso')) : null;
@@ -160,6 +161,7 @@ export const ModuleManagementPage = () => {
                     
                     <p className="mt-2 text-brand-100 text-sm">{modulo.descripcion_modulo || 'Sin descripción'}</p>
                     
+
                     <div className="mt-4 flex space-x-2">
                       <Link 
                         to={`/sections?modulo=${modulo.cod_modulo}&curso=${cursoId}`}
@@ -168,22 +170,23 @@ export const ModuleManagementPage = () => {
                         Ver Secciones
                       </Link>
                       <span className="text-brand-500">|</span>
-                      <button 
+                      <Link
+                        to={`/evaluation/create?modulo=${modulo.cod_modulo}&curso=${cursoId}`}
                         className="text-brand-400 hover:text-brand-300 text-sm"
-                        onClick={() => {
-                          // Aquí iría la lógica para editar
-                          console.log('Editar módulo', modulo.cod_modulo);
-                        }}
+                      >
+                        Añadir Evaluación
+                      </Link>
+                      <span className="text-brand-500">|</span>
+                      <button   
+                        className="text-brand-400 hover:text-brand-300 text-sm"
+                        onClick={() => console.log('Editar módulo', modulo.cod_modulo)}
                       >
                         Editar
                       </button>
                       <span className="text-brand-500">|</span>
                       <button 
                         className="text-red-500 hover:text-red-400 text-sm"
-                        onClick={() => {
-                          // Aquí iría la lógica para eliminar
-                          console.log('Eliminar módulo', modulo.cod_modulo);
-                        }}
+                        onClick={() => console.log('Eliminar módulo', modulo.cod_modulo)}
                       >
                         Eliminar
                       </button>
@@ -201,4 +204,4 @@ export const ModuleManagementPage = () => {
       </div>
     </Layout>
   );
-}; 
+};
