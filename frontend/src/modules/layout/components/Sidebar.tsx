@@ -53,9 +53,12 @@ export const Sidebar = () => {
     try {
       const modulesData = await moduloService.getAll();
       const filteredModules = modulesData.filter(mod => mod.cod_curso === courseId);
-      setModules(filteredModules);
-      if (filteredModules.length > 0) {
-        fetchSections(filteredModules[0]?.cod_modulo!);
+      setModules(filteredModules); 
+      const allSections: Seccion[] = [];
+      for (const mod of filteredModules) {
+        const sectionsData = await seccionService.getAll();
+        const filteredSections = sectionsData.filter(sec => sec.cod_modulo === mod.cod_modulo);
+        allSections.push(...filteredSections);
       }
       setSections(allSections);
       const allSubsections: Subseccion[] = [];
