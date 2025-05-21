@@ -23,3 +23,6 @@ class NotaService:
 
         db.session.commit()
         return nota_existente
+    
+    def obtener_nota(cod_problema, cod_usuario):
+        return Nota.query.get((cod_problema, cod_usuario))

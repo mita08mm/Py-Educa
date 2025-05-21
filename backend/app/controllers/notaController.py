@@ -16,3 +16,17 @@ def calificar_problema_controller():
 
     nota = NotaService.calificar_problema(json_data)
     return jsonify(nota_schema.dump(nota)), 200
+
+def get_nota_controller():
+    cod_problema = request.args.get("cod_problema", type=int)
+    cod_usuario = request.args.get("cod_usuario", type=int)
+
+    if cod_problema is None or cod_usuario is None:
+        return jsonify({"error": "cod_problema y cod_usuario son requeridos"}), 400
+
+    nota = NotaService.obtener_nota(cod_problema, cod_usuario)
+
+    if nota is None:
+        return jsonify({"error": "Nota no encontrada"}), 404
+
+    return jsonify(nota_schema.dump(nota)), 200
