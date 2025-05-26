@@ -1,4 +1,5 @@
 import pytest
+import os
 from app import create_app
 from app.extensions import db
 
@@ -7,7 +8,7 @@ def app():
     app = create_app()
     app.config.update({
         "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",  # DB en memoria para pruebas rápidas
+        "SQLALCHEMY_DATABASE_URI": os.getenv("DATABASE_URL", "sqlite:///:memory:"),  # DB en memoria para pruebas rápidas
         "SQLALCHEMY_TRACK_MODIFICATIONS": False,
         "JWT_SECRET_KEY": "test-secret",  # para despues
     })

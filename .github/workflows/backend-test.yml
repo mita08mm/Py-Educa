@@ -1,0 +1,56 @@
+name: Backend Tests
+
+on:
+  pull_request:
+    branches:
+      - 'sprint-*'
+    types: [opened, synchronize, reopened]
+
+jobs:
+  backend-tests:
+    name: Run Backend Tests with Pytest
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: python_learning_platform
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DATABASE_URL: postgresql://user:password@localhost:5432/python_learning_platform
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Crear tablas (si es necesario)
+        run: |
+          cd backend
+          python -c "from app import create_app; from app.extensions import db; app = create_app(); with app.app_context(): db.create_all()"
+
+      - name: Ejecutar tests
+        run: |
+          cd backend
+          pytest
