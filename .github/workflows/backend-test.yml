@@ -46,9 +46,9 @@ jobs:
           pip install pytest
 
       - name: Inicializar base de datos
-        run: python scripts/init_db.py
-        working-directory: backend
-
+        run: |
+          cd backend
+          python scripts/init_db.py
 
       - name: Ejecutar tests
         run: |
