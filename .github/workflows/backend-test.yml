@@ -45,11 +45,18 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
 
-      - name: Crear tablas (usando flask CLI)
-        run: flask shell -c "from app.extensions import db; db.create_all()"
-        env:
-          FLASK_APP: run.py
+      - name: Crear tablas en la base de datos
+        run: |
+          python -c "
+            import os
+            from app import create_app
+            from app.extensions import db
 
+            app = create_app()
+            with app.app_context():
+                db.create_all()
+            "
+        working-directory: backend
 
       - name: Ejecutar tests
         run: |
