@@ -24,3 +24,18 @@ def eliminar_contenido(cod_contenido: int):
         db.session.commit()
         return True
     return False
+
+def editar_contenido(cod_contenido: int, descripcion: str = None, link: str = None, imagen: bytes = None):
+    contenido = Contenido.query.filter_by(cod_contenido=cod_contenido).first()
+    if not contenido:
+        return None
+    
+    if descripcion is not None:
+        contenido.descripcion = descripcion
+    if link is not None:
+        contenido.link = link
+    if imagen is not None:
+        contenido.imagen = imagen
+    
+    db.session.commit()
+    return contenido
