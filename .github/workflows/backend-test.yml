@@ -45,11 +45,6 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
 
-      - name: Inicializar base de datos
-        run: |
-          cd backend
-          python scripts/init_db.py
-
       - name: Ejecutar tests
         run: |
           cd backend
