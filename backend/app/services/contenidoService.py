@@ -16,3 +16,11 @@ def agregar_contenido(cod_modulo, cod_seccion, cod_subseccion, descripcion, link
     db.session.add(nuevo_contenido)
     db.session.commit()
     return nuevo_contenido
+
+def eliminar_contenido(cod_contenido: int):
+    contenido = Contenido.query.filter_by(cod_contenido=cod_contenido).first()
+    if contenido:
+        db.session.delete(contenido)
+        db.session.commit()
+        return True
+    return False

@@ -10,3 +10,7 @@ def obtener_contenido(cod_subseccion):
 @contenido_bp.route('/<int:cod_subseccion>', methods=['POST'])
 def agregar_contenido(cod_subseccion):
     return contenidoController.agregar_contenido_controller(cod_subseccion)
+
+@contenido_bp.route('/<int:cod_contenido>', methods=['DELETE'])
+def eliminar_contenido(cod_contenido):
+    return contenidoController.eliminar_contenido_controller(cod_contenido)
