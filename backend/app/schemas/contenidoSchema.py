@@ -1,3 +1,5 @@
+import base64
+import imghdr
 from marshmallow import Schema, fields
 
 class ContenidoSchema(Schema):
@@ -11,6 +13,12 @@ class ContenidoSchema(Schema):
 
     def get_imagen_base64(self, obj):
         if obj.imagen:
-            import base64
-            return base64.b64encode(obj.imagen).decode('utf-8')
+            image_type = imghdr.what(None, h=obj.imagen)
+            if image_type:
+                mime_type = f"image/{image_type}"
+            else:
+                mime_type = "application/octet-stream"  # fallback
+
+            base64_str = base64.b64encode(obj.imagen).decode("utf-8")
+            return f"data:{mime_type};base64,{base64_str}"
         return None
