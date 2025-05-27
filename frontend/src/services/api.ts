@@ -36,6 +36,16 @@ export interface Subseccion {
   cod_seccion: number;
 }
 
+export interface Contenido {
+  cod_modulo: number;
+  cod_seccion: number;
+  cod_subseccion: number;
+  cod_contenido: number;
+  descripcion?: string;
+  link?: string;
+  imagen?: string;
+}
+
 // Servicios para Cursos
 export const cursoService = {
   getAll: async (): Promise<Curso[]> => {
@@ -96,6 +106,22 @@ export const subseccionService = {
     const response = await api.post('/subsecciones/', data);
     return response.data;
   },
+};
+
+export const contenidoService = {
+  getBySubseccion: async (cod_subseccion: number): Promise<Contenido[]> => {
+    const response = await api.get(`/contenido/${cod_subseccion}`);
+    return response.data;
+  },
+
+  create: async (cod_subseccion: number, data: FormData): Promise<Contenido> => {
+    const response = await api.post(`/contenido/${cod_subseccion}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  }
 };
 
 export default api; 

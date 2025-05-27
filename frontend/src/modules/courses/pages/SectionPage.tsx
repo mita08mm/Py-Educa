@@ -15,6 +15,7 @@ export const SectionManagementPage = () => {
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [moduloSeleccionado, setModuloSeleccionado] = useState<Modulo | null>(null);
   const [cursoSeleccionado, setCursoSeleccionado] = useState<Curso | null>(null);
+  const [showForm, setShowForm] = useState(false);
   
   // Cargar datos al iniciar
   useEffect(() => {
@@ -108,6 +109,7 @@ export const SectionManagementPage = () => {
         cod_modulo: moduloId
       });
       setSecciones([...secciones, nuevaSeccion]);
+      setShowForm(false);
       return Promise.resolve();
     } catch (error) {
       console.error('Error al crear sección:', error);
@@ -136,7 +138,7 @@ export const SectionManagementPage = () => {
               {cursos.map((curso: Curso) => (
                 <Link 
                   key={curso.cod_curso} 
-                  to={`/modules/create?curso=${curso.cod_curso}`}
+                  to={`/modules?curso=${curso.cod_curso}`}
                   className={`${cardClasses} hover:border-brand-400 transition-colors`}
                 >
                   <h3 className="text-xl font-bold text-brand-100">{curso.titulo_curso}</h3>
@@ -162,7 +164,7 @@ export const SectionManagementPage = () => {
                   <p className="text-brand-100 mt-2">Curso: {cursoSeleccionado.titulo_curso}</p>
                 )}
               </div>
-              <Link to={`/modules/create?curso=${cursoId}`} className="text-brand-400 hover:text-brand-300">
+              <Link to={`/modules?curso=${cursoId}`} className="text-brand-400 hover:text-brand-300">
                 Volver a Módulos
               </Link>
             </div>
@@ -171,7 +173,7 @@ export const SectionManagementPage = () => {
               {modulos.map((modulo) => (
                 <Link 
                   key={modulo.cod_modulo} 
-                  to={`/sections/create?modulo=${modulo.cod_modulo}&curso=${cursoId}`}
+                  to={`/sections?modulo=${modulo.cod_modulo}&curso=${cursoId}`}
                   className={`${cardClasses} hover:border-brand-400 transition-colors`}
                 >
                   <h3 className="text-xl font-bold text-brand-100">{modulo.titulo_modulo}</h3>
@@ -200,7 +202,13 @@ export const SectionManagementPage = () => {
               )}
             </div>
             <div className="space-x-4">
-              <Link to={`/modules/create?curso=${cursoId}`} className="text-brand-400 hover:text-brand-300">
+              <button
+                onClick={() => setShowForm(!showForm)}
+                className="px-4 py-2 bg-[#46838C] text-white rounded-md hover:bg-[#3A6D75] focus:outline-none focus:ring-2 focus:ring-[#46838C]"
+              >
+                {showForm ? 'Ver Secciones' : 'Agregar Sección'}
+              </button>
+              <Link to={`/modules?curso=${cursoId}`} className="text-brand-400 hover:text-brand-300">
                 Volver a Módulos
               </Link>
               <Link to="/courses/create" className="text-brand-400 hover:text-brand-300">
@@ -209,74 +217,72 @@ export const SectionManagementPage = () => {
             </div>
           </div>
           
-          {/* Formulario para crear sección */}
-          {moduloSeleccionado && (
+          {showForm ? (
             <div className={cardClasses + " mb-6"}>
               <h2 className={titleClasses}>Nueva Sección</h2>
               <SectionForm
                 onSubmit={crearSeccion}
                 loading={loading}
-                modulos={[moduloSeleccionado]}
+                modulos={[moduloSeleccionado!]}
               />
             </div>
+          ) : (
+            <div>
+              <h2 className="text-2xl font-bold mb-4 text-brand-100">Secciones Disponibles</h2>
+              
+              {loading ? (
+                <p className="text-center py-4 text-brand-100">Cargando...</p>
+              ) : secciones.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {secciones.map((seccion) => (
+                    <div key={seccion.cod_seccion} className={`${cardClasses} hover:border-brand-400`}>
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-xl font-bold text-brand-100">{seccion.titulo_seccion}</h3>
+                        <span className="text-xs px-2 py-1 rounded-full bg-brand-600 text-brand-100">
+                          Sección {seccion.cod_seccion}
+                        </span>
+                      </div>
+                      
+                      <p className="mt-2 text-brand-100 text-sm">{seccion.descripcion_seccion || 'Sin descripción'}</p>
+                      
+                      <div className="mt-4 flex space-x-2">
+                        <Link
+                          to={`/subsections?seccion=${seccion.cod_seccion}&modulo=${moduloId}&curso=${cursoId}`}
+                          className="text-brand-400 hover:text-brand-300 text-sm"
+                        >
+                          Gestionar Subsecciones
+                        </Link>
+                        <span className="text-brand-500">|</span>
+                        <button 
+                          className="text-brand-400 hover:text-brand-300 text-sm"
+                          onClick={() => {
+                            // Aquí iría la lógica para editar
+                            console.log('Editar sección', seccion.cod_seccion);
+                          }}
+                        >
+                          Editar
+                        </button>
+                        <span className="text-brand-500">|</span>
+                        <button 
+                          className="text-red-500 hover:text-red-400 text-sm"
+                          onClick={() => {
+                            // Aquí iría la lógica para eliminar
+                            console.log('Eliminar sección', seccion.cod_seccion);
+                          }}
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center py-4 bg-surface rounded-lg text-brand-100 border border-brand-600">
+                  No hay secciones disponibles. Crea una sección para comenzar.
+                </p>
+              )}
+            </div>
           )}
-          
-          {/* Lista de secciones */}
-          <div>
-            <h2 className="text-2xl font-bold mb-4 text-brand-100">Secciones Disponibles</h2>
-            
-            {loading ? (
-              <p className="text-center py-4 text-brand-100">Cargando...</p>
-            ) : secciones.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {secciones.map((seccion) => (
-                  <div key={seccion.cod_seccion} className={`${cardClasses} hover:border-brand-400`}>
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-xl font-bold text-brand-100">{seccion.titulo_seccion}</h3>
-                      <span className="text-xs px-2 py-1 rounded-full bg-brand-600 text-brand-100">
-                        Sección {seccion.cod_seccion}
-                      </span>
-                    </div>
-                    
-                    <p className="mt-2 text-brand-100 text-sm">{seccion.descripcion_seccion || 'Sin descripción'}</p>
-                    
-                    <div className="mt-4 flex space-x-2">
-                      <Link 
-                        to={`/subsections?seccion=${seccion.cod_seccion}&modulo=${moduloId}&curso=${cursoId}`}
-                        className="text-brand-400 hover:text-brand-300 text-sm"
-                      >
-                        Ver Subsecciones
-                      </Link>
-                      <span className="text-brand-500">|</span>
-                      <button 
-                        className="text-brand-400 hover:text-brand-300 text-sm"
-                        onClick={() => {
-                          // Aquí iría la lógica para editar
-                          console.log('Editar sección', seccion.cod_seccion);
-                        }}
-                      >
-                        Editar
-                      </button>
-                      <span className="text-brand-500">|</span>
-                      <button 
-                        className="text-red-500 hover:text-red-400 text-sm"
-                        onClick={() => {
-                          // Aquí iría la lógica para eliminar
-                          console.log('Eliminar sección', seccion.cod_seccion);
-                        }}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-center py-4 bg-surface rounded-lg text-brand-100 border border-brand-600">
-                No hay secciones disponibles. Crea una sección para comenzar.
-              </p>
-            )}
-          </div>
         </div>
       </div>
     </Layout>
