@@ -10,8 +10,8 @@ COPY . .
 
 RUN npm install react-icons@latest
 
-RUN npm run build
+# RUN npm run build
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev", "--", "--host"] 
+CMD ["npm", "test"]
