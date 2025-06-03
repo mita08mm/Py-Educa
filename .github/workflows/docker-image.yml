@@ -3,15 +3,15 @@ name: CI/CD Docker App
 # Este workflow se activa solo cuando se hace push desde ramas sprint-* hacia develop
 on:
   push:
-    branches: ['develop']
+    branches: ['develop', 'main']
   pull_request:
-    branches: ['develop']
+    branches: ['develop', 'main']
     types: [opened, synchronize, reopened]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'sprint-') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'sprint-') || (github.event_name == 'push' && github.ref == 'refs/heads/develop') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     
     services:
       postgres:
