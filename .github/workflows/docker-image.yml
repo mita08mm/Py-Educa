@@ -1,6 +1,5 @@
 name: CI/CD Docker App
 
-# Este workflow se activa solo cuando se hace push desde ramas sprint-* hacia develop
 on:
   push:
     branches: ['develop', 'main']
@@ -11,8 +10,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'sprint-') || (github.event_name == 'push' && github.ref == 'refs/heads/develop') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
-    
+    if: >
+      (github.event_name == 'pull_request' && startsWith(github.head_ref, 'sprint-')) ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/develop') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main')
+
     services:
       postgres:
         image: postgres:13
@@ -23,7 +25,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready"
+          --health-cmd="pg_isready -U user"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -35,28 +37,28 @@ jobs:
     - name: Configurar entorno
       run: echo "Configurando entorno para ${{ github.ref }}"
 
-    - name: Verificar versión de Docker
-      run: docker --version
-
-    - name: Instalar Docker Compose
+    - name: Verificar versión de Docker y Compose
       run: |
-        sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
-        docker-compose --version
+        docker --version
+        docker compose version
 
-    - name: Configurar Docker
+    - name: Configurar herramientas Docker
+      uses: docker/setup-buildx-action@v2
+
+    - name: Levantar contenedores con Docker Compose
       run: |
-        docker-compose -f docker-compose.yml up --build --no-cache -d
-        docker-compose ps
-        docker-compose logs backend
+        docker compose -f docker-compose.yml up --build --no-cache -d
+        docker compose ps
+        docker compose logs backend
 
-    - name: Esperar a PostgreSQL
+    - name: Esperar a que PostgreSQL esté listo
       run: |
         for i in {1..10}; do
-          if docker-compose exec db pg_isready -U user; then
+          if docker compose exec db pg_isready -U user; then
             echo "PostgreSQL está listo"
             exit 0
           fi
+          echo "Esperando PostgreSQL ($i/10)..."
           sleep 5
         done
         echo "PostgreSQL no respondió"
@@ -71,16 +73,19 @@ jobs:
             exit 0
           fi
           echo "Intento $i/10 - Backend no disponible aún..."
-          docker-compose logs backend --tail=20  # Muestra últimos logs
+          docker compose logs backend --tail=20
           sleep 10
         done
         echo "ERROR: Backend no respondió después de 100 segundos"
-        docker-compose logs backend  # Muestra todos los logs antes de fallar
+        docker compose logs backend
         exit 1
 
-    - name: Verificar frontend
-      run: |
-        curl -f http://localhost:5173 || echo "Frontend iniciado pero sin pruebas definidas"
+    - name: Verificar frontend (opcional)
+      run: curl -f http://localhost:5173 || echo "Frontend iniciado pero sin pruebas definidas"
+      continue-on-error: true
 
-    - name: Detener los contenedores después de las pruebas
-      run: docker-compose down
+    - name: Detener contenedores
+      run: docker compose down
+
+    - name: Limpiar imágenes dangling
+      run: docker image prune -f
