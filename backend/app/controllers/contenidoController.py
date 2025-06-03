@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from app.services.contenidoService import get_contenido_por_subseccion, agregar_contenido
+from app.services.contenidoService import get_contenido_por_subseccion, agregar_contenido, eliminar_contenido, editar_contenido
 from app.schemas.contenidoSchema import ContenidoSchema
 
 contenido_schema = ContenidoSchema(many=True)
@@ -37,3 +37,52 @@ def agregar_contenido_controller(cod_subseccion):
         return jsonify(contenido_single_schema.dump(contenido)), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+def eliminar_contenido_controller(cod_contenido):
+    try:
+        if not cod_contenido:
+            return jsonify({"error": "cod_contenido es requerido"}), 400
+        
+        eliminado = eliminar_contenido(cod_contenido)
+        if eliminado:
+            return jsonify({"message": "Contenido eliminado exitosamente"}), 200
+        else:
+            return jsonify({"error": "Contenido no encontrado"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+def editar_contenido_controller(cod_contenido):
+    try:
+        if not cod_contenido:
+            return jsonify({"error": "cod_contenido es requerido"}), 400
+
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "JSON requerido en el cuerpo de la solicitud"}), 400
+
+        descripcion = data.get("descripcion")
+        link = data.get("link")
+        imagen_base64 = data.get("imagen")
+
+        imagen_bytes = None
+        if imagen_base64:
+            import base64
+            try:
+                imagen_bytes = base64.b64decode(imagen_base64)
+            except Exception:
+                return jsonify({"error": "imagen debe estar en formato base64 válido"}), 400
+
+        contenido = editar_contenido(
+            cod_contenido=cod_contenido,
+            descripcion=descripcion,
+            link=link,
+            imagen=imagen_bytes
+        )
+
+        if contenido is None:
+            return jsonify({"error": "Contenido no encontrado"}), 404
+
+        return jsonify(contenido_single_schema.dump(contenido)), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
