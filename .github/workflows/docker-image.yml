@@ -48,30 +48,34 @@ jobs:
       run: |
         docker-compose -f docker-compose.yml up --build --no-cache -d
         docker-compose ps
+        docker-compose logs backend
+
+    - name: Esperar a PostgreSQL
+      run: |
+        for i in {1..10}; do
+          if docker-compose exec db pg_isready -U user; then
+            echo "PostgreSQL está listo"
+            exit 0
+          fi
+          sleep 5
+        done
+        echo "PostgreSQL no respondió"
+        exit 1
 
     - name: Esperar a que el backend responda
       run: |
-        echo "Esperando a que los servicios estén listos..."
-
-        # Esperar a PostgreSQL primero
-        docker-compose exec db pg_isready -U user -d python_learning_platform
-        while [ $? -ne 0 ]; do
-          sleep 5
-          docker-compose exec db pg_isready -U user -d python_learning_platform
-        done
-
-        # Esperar al backend
+        echo "Esperando a que el backend esté listo..."
         for i in {1..10}; do
-          if docker-compose exec backend curl -s http://localhost:5000/api/test/message; then
+          if curl -s -f http://localhost:5000/api/test/message; then
             echo "¡Backend respondió correctamente!"
             exit 0
           fi
-          echo "Intento $i/10 - Esperando backend..."
+          echo "Intento $i/10 - Backend no disponible aún..."
+          docker-compose logs backend --tail=20  # Muestra últimos logs
           sleep 10
         done
-        
-        echo "ERROR: Backend no respondió"
-        docker-compose logs backend
+        echo "ERROR: Backend no respondió después de 100 segundos"
+        docker-compose logs backend  # Muestra todos los logs antes de fallar
         exit 1
 
     - name: Verificar frontend
