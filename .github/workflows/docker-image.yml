@@ -47,7 +47,7 @@ jobs:
 
     - name: Levantar contenedores con Docker Compose
       run: |
-        docker compose -f docker-compose.yml up --build --no-cache -d
+        docker compose -f docker-compose.yml up --build -d
         docker compose ps
         docker compose logs backend
 
