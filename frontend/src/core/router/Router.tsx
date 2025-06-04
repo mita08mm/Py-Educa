@@ -5,6 +5,8 @@ import { ModuleManagementPage } from "../../modules/courses/pages/ModulePage";
 import { SectionManagementPage } from "../../modules/courses/pages/SectionPage";
 import { SubsectionManagementPage } from "../../modules/courses/pages/SubsectionPage";
 import { MyLearning } from "../../modules/courses/pages/MyLearning";
+import { EvaluationExample } from "../../modules/courses/pages/EvaluationExample";
+import { EvaluationPage } from "../../modules/courses/pages/EvaluationPage";
 // import CourseViewer from "../../modules/courses/pages/CourseViewer"; 
 
 export const router = createBrowserRouter([
@@ -17,20 +19,28 @@ export const router = createBrowserRouter([
         element: <CreateCoursePage />,
     },
     {
-        path: "/modules/create",
+        path: "/modules",
         element: <ModuleManagementPage />,
     },
     {
-        path: "/sections/create",
+        path: "/sections",
         element: <SectionManagementPage />,
     },
     {
-        path: "/subsections/create",
+        path: '/evaluation/create',
+        element: <EvaluationPage />,
+    },
+    {
+        path: "/subsections",
         element: <SubsectionManagementPage />,
     },
     { 
         path: "my-learning", 
         element: <MyLearning />, 
+    },
+    { 
+        path: "evaluation-example", 
+        element: <EvaluationExample />, 
     },
     { 
         path: "my-learning/:courseId/*", 
