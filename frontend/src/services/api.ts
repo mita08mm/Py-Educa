@@ -125,4 +125,30 @@ export const subseccionService = {
   },
 };
 
+// Servicios para Contenido
+export const contenidoService = {
+  getBySubseccion: async (cod_subseccion: number): Promise<Contenido[]> => {
+    const response = await api.get(`/contenidos/?subseccion=${cod_subseccion}`);
+    return response.data;
+  },
+  create: async (cod_subseccion: number, data: FormData): Promise<Contenido> => {
+    const response = await api.post(`/contenidos/?subseccion=${cod_subseccion}`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+};
+
+// Servicios para Evaluaciones
+export const evaluacionService = {
+  create: async (data: any): Promise<Evaluacion> => {
+    const response = await api.post('/evaluaciones/', data);
+    return response.data;
+  },
+  getAll: async (): Promise<Evaluacion[]> => {
+    const response = await api.get('/evaluaciones/');
+    return response.data;
+  },
+};
+
 export default api;

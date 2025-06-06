@@ -14,4 +14,4 @@ RUN npm install react-icons@latest
 
 EXPOSE 5173
 
-CMD ["npm", "test"]
+CMD ["npm", "run", "dev"]
