@@ -13,6 +13,7 @@ export const ContenidoPage = () => {
   const cod_curso = searchParams.get('curso') ? Number(searchParams.get('curso')) : null;
 
   const [showForm, setShowForm] = useState(false);
+  const showAddButton = searchParams.get('crear') === '1';
 
   if (!cod_subseccion || !cod_seccion || !cod_modulo || !cod_curso) {
     return (
@@ -37,45 +38,47 @@ export const ContenidoPage = () => {
     <Layout>
       <div className="p-4">
         <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-[#E2E8F0]">
-              Contenido de la Subsección
-            </h1>
-            <div className="space-x-4">
-              <button
-                onClick={() => setShowForm(!showForm)}
-                className="px-4 py-2 bg-[#46838C] text-white rounded-md hover:bg-[#3A6D75] focus:outline-none focus:ring-2 focus:ring-[#46838C]"
-              >
-                {showForm ? 'Ver Contenido' : 'Agregar Contenido'}
-              </button>
-              <Link 
-                to={`/subsections?seccion=${cod_seccion}&modulo=${cod_modulo}&curso=${cod_curso}`} 
-                className="text-brand-400 hover:text-brand-300"
-              >
-                Volver a Subsecciones
-              </Link>
-              <Link 
-                to={`/sections?modulo=${cod_modulo}&curso=${cod_curso}`} 
-                className="text-brand-400 hover:text-brand-300"
-              >
-                Volver a Secciones
-              </Link>
-              <Link 
-                to={`/modules?curso=${cod_curso}`} 
-                className="text-brand-400 hover:text-brand-300"
-              >
-                Volver a Módulos
-              </Link>
-              <Link 
-                to="/courses/create" 
-                className="text-brand-400 hover:text-brand-300"
-              >
-                Volver a Cursos
-              </Link>
+          {showAddButton && (
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-2xl font-bold text-[#E2E8F0]">
+                Contenido de la Subsección
+              </h1>
+              <div className="space-x-4">
+                <button
+                  onClick={() => setShowForm(!showForm)}
+                  className="px-4 py-2 bg-[#46838C] text-white rounded-md hover:bg-[#3A6D75] focus:outline-none focus:ring-2 focus:ring-[#46838C]"
+                >
+                  {showForm ? 'Ver Contenido' : 'Agregar Contenido'}
+                </button>
+                <Link 
+                  to={`/subsections?seccion=${cod_seccion}&modulo=${cod_modulo}&curso=${cod_curso}`} 
+                  className="text-brand-400 hover:text-brand-300"
+                >
+                  Volver a Subsecciones
+                </Link>
+                <Link 
+                  to={`/sections?modulo=${cod_modulo}&curso=${cod_curso}`} 
+                  className="text-brand-400 hover:text-brand-300"
+                >
+                  Volver a Secciones
+                </Link>
+                <Link 
+                  to={`/modules?curso=${cod_curso}`} 
+                  className="text-brand-400 hover:text-brand-300"
+                >
+                  Volver a Módulos
+                </Link>
+                <Link 
+                  to="/courses/create" 
+                  className="text-brand-400 hover:text-brand-300"
+                >
+                  Volver a Cursos
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
 
-          {showForm ? (
+          {showForm && showAddButton ? (
             <div className="bg-[#1E293B] border border-[#334155] rounded-lg p-6">
               <h2 className="text-xl font-bold text-[#E2E8F0] mb-4">
                 Agregar Nuevo Contenido

@@ -128,11 +128,11 @@ export const subseccionService = {
 // Servicios para Contenido
 export const contenidoService = {
   getBySubseccion: async (cod_subseccion: number): Promise<Contenido[]> => {
-    const response = await api.get(`/contenidos/?subseccion=${cod_subseccion}`);
+    const response = await api.get(`/contenido/${cod_subseccion}`);
     return response.data;
   },
   create: async (cod_subseccion: number, data: FormData): Promise<Contenido> => {
-    const response = await api.post(`/contenidos/?subseccion=${cod_subseccion}`, data, {
+    const response = await api.post(`/contenido/${cod_subseccion}`, data, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;

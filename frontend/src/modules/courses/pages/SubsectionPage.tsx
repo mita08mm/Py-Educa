@@ -325,7 +325,7 @@ export const SubsectionManagementPage = () => {
                       
                       <div className="mt-4 flex space-x-2">
                         <Link
-                          to={`/contenido?subseccion=${subseccion.cod_subseccion}&seccion=${seccionId}&modulo=${moduloId}&curso=${cursoId}`}
+                          to={`/contenido?subseccion=${subseccion.cod_subseccion}&seccion=${seccionId}&modulo=${moduloId}&curso=${cursoId}&crear=1`}
                           className="text-brand-400 hover:text-brand-300 text-sm"
                         >
                           Gestionar Contenido
