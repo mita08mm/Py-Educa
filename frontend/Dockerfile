@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm install react-icons@latest
+# RUN npm install react-icons@latest
 
 # RUN npm run build
 
