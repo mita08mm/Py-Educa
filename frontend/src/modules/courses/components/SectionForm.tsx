@@ -13,16 +13,12 @@ export const SectionForm = ({ onSubmit, initialData, loading, modulos }: Section
     initialData || {
       titulo_seccion: '',
       descripcion_seccion: '',
-      cod_modulo: 0,
+      cod_modulo: modulos[0]?.cod_modulo || 0,
     }
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.cod_modulo) {
-      alert('Debes seleccionar un módulo');
-      return;
-    }
     await onSubmit(formData);
   };
 
@@ -33,23 +29,6 @@ export const SectionForm = ({ onSubmit, initialData, loading, modulos }: Section
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className={labelClasses}>Módulo</label>
-        <select
-          value={formData.cod_modulo || ''}
-          onChange={(e) => setFormData({...formData, cod_modulo: Number(e.target.value)})}
-          className={inputClasses}
-          required
-        >
-          <option value="">Selecciona un módulo</option>
-          {modulos.map((modulo) => (
-            <option key={modulo.cod_modulo} value={modulo.cod_modulo}>
-              {modulo.titulo_modulo}
-            </option>
-          ))}
-        </select>
-      </div>
-      
       <div>
         <label className={labelClasses}>Título de la Sección</label>
         <input
@@ -73,8 +52,8 @@ export const SectionForm = ({ onSubmit, initialData, loading, modulos }: Section
       
       <button
         type="submit"
-        disabled={loading || !formData.cod_modulo}
-        className={loading || !formData.cod_modulo ? buttonDisabledClasses : buttonClasses}
+        disabled={loading}
+        className={loading ? buttonDisabledClasses : buttonClasses}
       >
         {loading ? 'Procesando...' : initialData ? 'Actualizar Sección' : 'Crear Sección'}
       </button>

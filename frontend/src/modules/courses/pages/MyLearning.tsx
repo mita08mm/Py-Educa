@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Layout } from '../../layout';
 import { useState, useEffect } from "react";
 import { cursoService, Curso} from "../../../services/api";

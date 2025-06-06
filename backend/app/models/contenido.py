@@ -4,14 +4,22 @@ from app.models.subseccion import Subseccion
 class Contenido(db.Model):
     __tablename__ = "contenido"
 
-    cod_modulo = db.Column("cod_modulo", db.Integer, primary_key=True)
-    cod_seccion = db.Column("cod_seccion", db.Integer, primary_key=True)
-    cod_subseccion = db.Column("cod_subseccion", db.Integer, primary_key=True)
-    cod_contenido = db.Column("cod_contenido", db.Integer, primary_key=True, autoincrement=True)
+    cod_contenido = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    imagen = db.Column("imagen", db.LargeBinary)
-    descripcion = db.Column("descripcion", db.Text)
-    link = db.Column("link", db.String(500))
+    cod_modulo = db.Column(db.Integer, nullable=False)
+    cod_seccion = db.Column(db.Integer, nullable=False)
+    cod_subseccion = db.Column(db.Integer, nullable=False)
+
+    imagen = db.Column(db.LargeBinary)
+    descripcion = db.Column(db.Text)
+    link = db.Column(db.String(500))
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            "cod_modulo", "cod_seccion", "cod_subseccion",
+            name="uq_modulo_seccion_subseccion"
+        ),
+    )
 
     subseccion = db.relationship(
         "Subseccion",

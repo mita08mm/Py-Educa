@@ -36,6 +36,28 @@ export interface Subseccion {
   cod_seccion: number;
 }
 
+export interface Contenido {
+  cod_modulo: number;
+  cod_seccion: number;
+  cod_subseccion: number;
+  cod_contenido: number;
+  descripcion?: string;
+  link?: string;
+  imagen?: string;
+}
+
+export interface Evaluacion {
+  cod_evaluacion?: number; // Cambiado a opcional para creación
+  cod_modulo: number;
+  titulo_evaluacion: string;
+  descripcion_evaluacion: string;
+  input: string;
+  output: string;
+  input_ejemplo: string;
+  output_ejemplo: string;
+  codigo: string;
+}
+
 // Servicios para Cursos
 export const cursoService = {
   getAll: async (): Promise<Curso[]> => {
@@ -43,8 +65,18 @@ export const cursoService = {
     return response.data;
   },
   
-  create: async (data: Curso): Promise<Curso> => {
+  getCourse: async (id: number): Promise<Curso> => {
+    const response = await api.get(`/cursos/${id}`);
+    return response.data;
+  },
+
+  createCourse: async (data: Curso): Promise<Curso> => {
     const response = await api.post('/cursos/', data);
+    return response.data;
+  },
+
+  updateCourse: async (id: number, data: Curso): Promise<Curso> => {
+    const response = await api.put(`/cursos/${id}`, data);
     return response.data;
   },
 };
@@ -53,6 +85,11 @@ export const cursoService = {
 export const moduloService = {
   getAll: async (): Promise<Modulo[]> => {
     const response = await api.get('/modulos/');
+    return response.data;
+  },
+  
+  getOne: async (id: number): Promise<Modulo> => {
+    const response = await api.get(`/modulos/${id}`);
     return response.data;
   },
   
@@ -88,4 +125,30 @@ export const subseccionService = {
   },
 };
 
-export default api; 
+// Servicios para Contenido
+export const contenidoService = {
+  getBySubseccion: async (cod_subseccion: number): Promise<Contenido[]> => {
+    const response = await api.get(`/contenido/${cod_subseccion}`);
+    return response.data;
+  },
+  create: async (cod_subseccion: number, data: FormData): Promise<Contenido> => {
+    const response = await api.post(`/contenido/${cod_subseccion}`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+};
+
+// Servicios para Evaluaciones
+export const evaluacionService = {
+  create: async (data: any): Promise<Evaluacion> => {
+    const response = await api.post('/evaluaciones/', data);
+    return response.data;
+  },
+  getAll: async (): Promise<Evaluacion[]> => {
+    const response = await api.get('/evaluaciones/');
+    return response.data;
+  },
+};
+
+export default api;
