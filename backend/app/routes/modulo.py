@@ -1,7 +1,12 @@
-from flask import Blueprint
+from flask_restx import Namespace, Resource
 from app.controllers import moduloController
 
-modulo_bp = Blueprint('modulo', __name__)
+api = Namespace('modulo', description='Operaciones relacionadas con módulos')
 
-modulo_bp.route('/', methods=['GET'])(moduloController.listar_modulos)
-modulo_bp.route('/', methods=['POST'])(moduloController.crear_modulo_handler)
+@api.route('/')
+class ModuloListResource(Resource):
+    def get(self):
+        return moduloController.listar_modulos()
+
+    def post(self):
+        return moduloController.crear_modulo_handler()

@@ -1,7 +1,12 @@
-from flask import Blueprint
+from flask_restx import Namespace, Resource
 from app.controllers import seccionController
 
-seccion_bp = Blueprint('seccion', __name__)
+api = Namespace('seccion', description='Operaciones relacionadas con secciones')
 
-seccion_bp.route('/', methods=['GET'])(seccionController.listar_secciones)
-seccion_bp.route('/', methods=['POST'])(seccionController.crear_seccion)
+@api.route('/')
+class SeccionListResource(Resource):
+    def get(self):
+        return seccionController.listar_secciones()
+
+    def post(self):
+        return seccionController.crear_seccion()

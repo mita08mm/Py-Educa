@@ -1,10 +1,18 @@
-from flask import Blueprint, request, jsonify
+from flask_restx import Namespace, Resource, fields
 from app.controllers.usuarioController import crear_usuario
 
-usuario_bp = Blueprint("usuarios", __name__)
+api = Namespace('usuarios', description='Operaciones relacionadas con usuarios')
 
-@usuario_bp.route("/", methods=["POST"])
-def crear():
-    data = request.get_json()
-    nuevo_usuario = crear_usuario(data)
-    return jsonify(nuevo_usuario.to_dict()), 201
+usuario_model = api.model('Usuario', {
+    'nombre': fields.String(required=True, description='Nombre del usuario'),
+    'email': fields.String(required=True, description='Correo electrónico')
+})
+
+@api.route('/')
+class UsuarioResource(Resource):
+    @api.expect(usuario_model)
+    @api.response(201, 'Usuario creado exitosamente')
+    def post(self):
+        data = api.payload
+        nuevo_usuario = crear_usuario(data)
+        return nuevo_usuario.to_dict(), 201

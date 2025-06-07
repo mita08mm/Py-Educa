@@ -1,7 +1,14 @@
-from flask import Blueprint
+from flask_restx import Namespace, Resource
 from app.controllers import notaController
 
-nota_bp = Blueprint('nota', __name__)
+api = Namespace('nota', description='Operaciones relacionadas con notas')
 
-nota_bp.route("/calificar", methods=["POST"])(notaController.calificar_problema_controller)
-nota_bp.route('/', methods=['GET'])(notaController.get_nota_controller)
+@api.route('/')
+class NotaResource(Resource):
+    def get(self):
+        return notaController.get_nota_controller()
+
+@api.route('/calificar')
+class CalificarResource(Resource):
+    def post(self):
+        return notaController.calificar_problema_controller()

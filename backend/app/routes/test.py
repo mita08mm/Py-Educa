@@ -1,8 +1,8 @@
-# app/routes/test.py
-from flask import Blueprint, jsonify
+from flask_restx import Namespace, Resource
 
-test_bp = Blueprint("test", __name__)
+api = Namespace('test', description='Ruta de prueba para verificar backend')
 
-@test_bp.route("/message", methods=["GET"])
-def get_message():
-    return jsonify({"message": "¡Hola desde el backend en Docker!"})
+@api.route('/message')
+class TestMessageResource(Resource):
+    def get(self):
+        return {"message": "¡Hola desde el backend en Docker!"}

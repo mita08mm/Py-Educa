@@ -1,7 +1,12 @@
-from flask import Blueprint
+from flask_restx import Namespace, Resource
 from app.controllers import cursoController
 
-curso_bp = Blueprint('curso', __name__)
+api = Namespace('curso', description='Operaciones relacionadas con cursos')
 
-curso_bp.route('/', methods=['GET'])(cursoController.listar_cursos)
-curso_bp.route('/', methods=['POST'])(cursoController.crear_curso_handler) 
+@api.route('/')
+class CursoListResource(Resource):
+    def get(self):
+        return cursoController.listar_cursos()
+
+    def post(self):
+        return cursoController.crear_curso_handler()
