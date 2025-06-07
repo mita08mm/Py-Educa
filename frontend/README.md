@@ -21,10 +21,15 @@ Este repositorio contiene el frontend de nuestra plataforma educativa diseñada 
 - Vite build tool
 
 ### Key Libraries
-- React Query (Data fetching)
-- Zustand (State management)
-- Zod (Validation)
+- Material UI (componentes y estilos)
 - Axios (HTTP requests)
+- React Router (SPA routing)
+- Heroicons y React Icons (iconografía)
+
+### Dev Tools
+- Jest + Testing Library (testing)
+- ESLint (linting)
+- Babel (transpilación)
 
 ## Requisitos del sistema
 * Node.js 18+
