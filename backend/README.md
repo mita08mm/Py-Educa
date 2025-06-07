@@ -65,4 +65,4 @@ backend/
 ## Documentacion de swagger
 
 - Levantar el servidor e ingresar a la url:
-  http://localhost:5050/api
+  http://localhost:5000/api
