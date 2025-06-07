@@ -1,7 +1,12 @@
-from flask import Blueprint
+from flask_restx import Namespace, Resource
 from app.controllers import subseccionController
 
-subseccion_bp = Blueprint('subseccion', __name__)
+api = Namespace('subseccion', description='Operaciones relacionadas con subsecciones')
 
-subseccion_bp.route('/', methods=['GET'])(subseccionController.listar_subsecciones)
-subseccion_bp.route('/', methods=['POST'])(subseccionController.crear_subseccion)
+@api.route('/')
+class SubseccionListResource(Resource):
+    def get(self):
+        return subseccionController.listar_subsecciones()
+
+    def post(self):
+        return subseccionController.crear_subseccion()
