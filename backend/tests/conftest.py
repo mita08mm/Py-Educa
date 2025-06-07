@@ -28,13 +28,12 @@ def client(app):
     return app.test_client()
 
 @pytest.fixture(autouse=True)
-def cleanup():
-    yield
-    with db.engine.connect() as conn:
-        transaction = conn.begin()
+def cleanup(app):
+    with app.app_context():
+        yield
         for table in reversed(db.metadata.sorted_tables):
-            conn.execute(table.delete())
-        transaction.commit()
+            db.session.execute(table.delete())
+        db.session.commit()
 
 @pytest.fixture(autouse=True)
 def setup_dependencies(app):

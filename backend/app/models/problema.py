@@ -23,3 +23,5 @@ class Problema(db.Model):
         ),
     )
 
+    ejemplos = db.relationship("Ejemplo", back_populates="problema", cascade="all, delete-orphan")
+

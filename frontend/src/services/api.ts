@@ -36,6 +36,16 @@ export interface Subseccion {
   cod_seccion: number;
 }
 
+export interface Contenido {
+  cod_modulo: number;
+  cod_seccion: number;
+  cod_subseccion: number;
+  cod_contenido: number;
+  descripcion?: string;
+  link?: string;
+  imagen?: string;
+}
+
 export interface Evaluacion {
   cod_evaluacion?: number; // Cambiado a opcional para creación
   cod_modulo: number;
@@ -115,44 +125,29 @@ export const subseccionService = {
   },
 };
 
-// Servicios para Evaluaciones - Unificado con axios
+// Servicios para Contenido
+export const contenidoService = {
+  getBySubseccion: async (cod_subseccion: number): Promise<Contenido[]> => {
+    const response = await api.get(`/contenido/${cod_subseccion}`);
+    return response.data;
+  },
+  create: async (cod_subseccion: number, data: FormData): Promise<Contenido> => {
+    const response = await api.post(`/contenido/${cod_subseccion}`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+};
+
+// Servicios para Evaluaciones
 export const evaluacionService = {
-  // Obtener todas las evaluaciones
+  create: async (data: any): Promise<Evaluacion> => {
+    const response = await api.post('/evaluaciones/', data);
+    return response.data;
+  },
   getAll: async (): Promise<Evaluacion[]> => {
     const response = await api.get('/evaluaciones/');
     return response.data;
-  },
-
-  // Obtener evaluaciones por módulo
-  getByModulo: async (codModulo: number): Promise<Evaluacion[]> => {
-    const response = await api.get(`/evaluaciones/?modulo=${codModulo}`);
-    return response.data;
-  },
-
-  // Obtener una evaluación específica
-  getOne: async (codEvaluacion: number): Promise<Evaluacion> => {
-    const response = await api.get(`/evaluaciones/${codEvaluacion}`);
-    return response.data;
-  },
-
-  // Crear una nueva evaluación
-  create: async (evaluacion: Omit<Evaluacion, 'cod_evaluacion'>): Promise<Evaluacion> => {
-    const response = await api.post('/evaluaciones/', evaluacion);
-    return response.data;
-  },
-
-  // Actualizar una evaluación existente
-  update: async (evaluacion: Evaluacion): Promise<Evaluacion> => {
-    if (!evaluacion.cod_evaluacion) {
-      throw new Error('Se requiere el código de evaluación para actualizar');
-    }
-    const response = await api.put(`/evaluaciones/${evaluacion.cod_evaluacion}`, evaluacion);
-    return response.data;
-  },
-
-  // Eliminar una evaluación
-  delete: async (codEvaluacion: number): Promise<void> => {
-    await api.delete(`/evaluaciones/${codEvaluacion}`);
   },
 };
 

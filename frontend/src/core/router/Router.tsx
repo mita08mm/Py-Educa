@@ -7,6 +7,7 @@ import { SubsectionManagementPage } from "../../modules/courses/pages/Subsection
 import { MyLearning } from "../../modules/courses/pages/MyLearning";
 import { EvaluationExample } from "../../modules/courses/pages/EvaluationExample";
 import { EvaluationPage } from "../../modules/courses/pages/EvaluationPage";
+import { ContenidoPage } from "../../modules/courses/pages/ContenidoPage";
 // import CourseViewer from "../../modules/courses/pages/CourseViewer"; 
 
 export const router = createBrowserRouter([
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
     {
         path: "/subsections",
         element: <SubsectionManagementPage />,
+    },
+    {
+        path: "/contenido",
+        element: <ContenidoPage />,
     },
     { 
         path: "my-learning", 

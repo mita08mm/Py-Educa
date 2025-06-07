@@ -18,6 +18,7 @@ export const SubsectionManagementPage = () => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState<Seccion | null>(null);
   const [moduloSeleccionado, setModuloSeleccionado] = useState<Modulo | null>(null);
   const [cursoSeleccionado, setCursoSeleccionado] = useState<Curso | null>(null);
+  const [showForm, setShowForm] = useState<boolean>(false);
   
   // Cargar datos al iniciar
   useEffect(() => {
@@ -276,10 +277,16 @@ export const SubsectionManagementPage = () => {
               )}
             </div>
             <div className="space-x-4">
-              <Link to={`/sections/create?modulo=${moduloId}&curso=${cursoId}`} className="text-brand-400 hover:text-brand-300">
+              <button
+                onClick={() => setShowForm(!showForm)}
+                className="px-4 py-2 bg-[#46838C] text-white rounded-md hover:bg-[#3A6D75] focus:outline-none focus:ring-2 focus:ring-[#46838C]"
+              >
+                {showForm ? 'Ver Subsecciones' : 'Agregar Subsección'}
+              </button>
+              <Link to={`/sections?modulo=${moduloId}&curso=${cursoId}`} className="text-brand-400 hover:text-brand-300">
                 Volver a Secciones
               </Link>
-              <Link to={`/modules/create?curso=${cursoId}`} className="text-brand-400 hover:text-brand-300">
+              <Link to={`/modules?curso=${cursoId}`} className="text-brand-400 hover:text-brand-300">
                 Volver a Módulos
               </Link>
               <Link to="/courses/create" className="text-brand-400 hover:text-brand-300">
@@ -288,67 +295,72 @@ export const SubsectionManagementPage = () => {
             </div>
           </div>
           
-          {/* Formulario para crear subsección */}
-          {seccionSeleccionada && (
+          {showForm ? (
             <div className={cardClasses + " mb-6"}>
               <h2 className={titleClasses}>Nueva Subsección</h2>
               <SubsectionForm
                 onSubmit={crearSubseccion}
                 loading={loading}
-                secciones={[seccionSeleccionada]}
+                secciones={[seccionSeleccionada!]}
               />
             </div>
+          ) : (
+            <div>
+              <h2 className="text-2xl font-bold mb-4 text-brand-100">Subsecciones Disponibles</h2>
+              
+              {loading ? (
+                <p className="text-center py-4 text-brand-100">Cargando...</p>
+              ) : subsecciones.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {subsecciones.map((subseccion) => (
+                    <div key={subseccion.cod_subseccion} className={`${cardClasses} hover:border-brand-400`}>
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-xl font-bold text-brand-100">{subseccion.titulo_subseccion}</h3>
+                        <span className="text-xs px-2 py-1 rounded-full bg-brand-600 text-brand-100">
+                          Subsección {subseccion.cod_subseccion}
+                        </span>
+                      </div>
+                      
+                      <p className="mt-2 text-brand-100 text-sm">{subseccion.descripcion_subseccion || 'Sin descripción'}</p>
+                      
+                      <div className="mt-4 flex space-x-2">
+                        <Link
+                          to={`/contenido?subseccion=${subseccion.cod_subseccion}&seccion=${seccionId}&modulo=${moduloId}&curso=${cursoId}&crear=1`}
+                          className="text-brand-400 hover:text-brand-300 text-sm"
+                        >
+                          Gestionar Contenido
+                        </Link>
+                        <span className="text-brand-500">|</span>
+                        <button 
+                          className="text-brand-400 hover:text-brand-300 text-sm"
+                          onClick={() => {
+                            // Aquí iría la lógica para editar
+                            console.log('Editar subsección', subseccion.cod_subseccion);
+                          }}
+                        >
+                          Editar
+                        </button>
+                        <span className="text-brand-500">|</span>
+                        <button 
+                          className="text-red-500 hover:text-red-400 text-sm"
+                          onClick={() => {
+                            // Aquí iría la lógica para eliminar
+                            console.log('Eliminar subsección', subseccion.cod_subseccion);
+                          }}
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center py-4 bg-surface rounded-lg text-brand-100 border border-brand-600">
+                  No hay subsecciones disponibles. Crea una subsección para comenzar.
+                </p>
+              )}
+            </div>
           )}
-          
-          {/* Lista de subsecciones */}
-          <div>
-            <h2 className="text-2xl font-bold mb-4 text-brand-100">Subsecciones Disponibles</h2>
-            
-            {loading ? (
-              <p className="text-center py-4 text-brand-100">Cargando...</p>
-            ) : subsecciones.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {subsecciones.map((subseccion) => (
-                  <div key={subseccion.cod_subseccion} className={`${cardClasses} hover:border-brand-400`}>
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-xl font-bold text-brand-100">{subseccion.titulo_subseccion}</h3>
-                      <span className="text-xs px-2 py-1 rounded-full bg-brand-600 text-brand-100">
-                        Subsección {subseccion.cod_subseccion}
-                      </span>
-                    </div>
-                    
-                    <p className="mt-2 text-brand-100 text-sm">{subseccion.descripcion_subseccion || 'Sin descripción'}</p>
-                    
-                    <div className="mt-4 flex space-x-2">
-                      <button 
-                        className="text-brand-400 hover:text-brand-300 text-sm"
-                        onClick={() => {
-                          // Aquí iría la lógica para editar
-                          console.log('Editar subsección', subseccion.cod_subseccion);
-                        }}
-                      >
-                        Editar
-                      </button>
-                      <span className="text-brand-500">|</span>
-                      <button 
-                        className="text-red-500 hover:text-red-400 text-sm"
-                        onClick={() => {
-                          // Aquí iría la lógica para eliminar
-                          console.log('Eliminar subsección', subseccion.cod_subseccion);
-                        }}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-center py-4 bg-surface rounded-lg text-brand-100 border border-brand-600">
-                No hay subsecciones disponibles. Crea una subsección para comenzar.
-              </p>
-            )}
-          </div>
         </div>
       </div>
     </Layout>
