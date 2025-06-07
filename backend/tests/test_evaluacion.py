@@ -5,7 +5,7 @@ def test_crear_evaluacion_exitosa(app,client):
         "descripcion_seccion": "Resuelve la Evaluacion de Contenidos introductorios de funciones"
     }
 
-    response = client.post("/evaluacion/", json=data)
+    response = client.post("/api/evaluacion/", json=data)
     assert response.status_code == 201
 
     json_data = response.get_json()
@@ -20,7 +20,7 @@ def test_crear_evaluacion_falta_cod_modulo(client):
         "descripcion_seccion": "Debe fallar"
     }
 
-    response = client.post("/evaluacion/", json=data)
+    response = client.post("/api/evaluacion/", json=data)
     assert response.status_code == 400
     assert "error" in response.get_json()
 
@@ -30,15 +30,15 @@ def test_crear_evaluacion_falta_titulo(client):
         "descripcion_seccion": "Falta título"
     }
 
-    response = client.post("/evaluacion/", json=data)
+    response = client.post("/api/evaluacion/", json=data)
     assert response.status_code == 400
     assert "error" in response.get_json()
 
 def test_crear_evaluacion_json_vacio(client):
-    response = client.post("/evaluacion/", json={})
+    response = client.post("/api/evaluacion/", json={})
     assert response.status_code == 400
     assert "error" in response.get_json()
 
 def test_crear_evaluacion_sin_json(client):
-    response = client.post("/evaluacion/", data="texto plano")
+    response = client.post("/api/evaluacion/", data="texto plano")
     assert response.status_code == 400 or response.status_code == 415 

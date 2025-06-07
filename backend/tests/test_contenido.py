@@ -1,16 +1,16 @@
 import io
 
 def test_obtener_contenido(client):
-    response = client.get('/contenido?cod_subseccion=1')
+    response = client.get('/api/contenido?cod_subseccion=1')
     assert response.status_code in (200, 404)  # espera 200 o 404 si no hay datos aún
 
 def test_obtener_contenido_sin_datos(client):
-    response = client.get('/contenido/999')  
+    response = client.get('/api/contenido/999')  
     assert response.status_code == 200
     assert response.get_json() == []
     
 def test_obtener_contenido_cod_subseccion_invalido(client):
-    response = client.get('/contenido/abc')  # 'abc' no es int
+    response = client.get('/api/contenido/abc')  # 'abc' no es int
     assert response.status_code == 404
 
 def test_agregar_contenido_exitoso(client):
@@ -23,7 +23,7 @@ def test_agregar_contenido_exitoso(client):
     }
 
     response = client.post(
-        "/contenido/1",  # cod_subseccion=1
+        "/api/contenido/1",  # cod_subseccion=1
         data=data,
         content_type="multipart/form-data"
     )
@@ -45,7 +45,7 @@ def test_agregar_contenido_faltan_campos(client):
     }
 
     response = client.post(
-        "/contenido/1",
+        "/api/contenido/1",
         data=data,
         content_type="multipart/form-data"
     )
@@ -64,7 +64,7 @@ def test_editar_contenido_exitoso(client):
     }
     
     response = client.post(
-        "/contenido/1",
+        "/api/contenido/1",
         data=data_inicial,
         content_type="multipart/form-data"
     )
@@ -78,7 +78,7 @@ def test_editar_contenido_exitoso(client):
     }
     
     response = client.put(
-        f"/contenido/{contenido_id}",
+        f"/api/contenido/{contenido_id}",
         json=data_edicion
     )
     assert response.status_code == 200, f"Error editing content: {response.get_json()}"
@@ -97,7 +97,7 @@ def test_eliminar_contenido_exitoso(client):
     }
     
     response = client.post(
-        "/contenido/1",
+        "/api/contenido/1",
         data=data_inicial,
         content_type="multipart/form-data"
     )
@@ -105,11 +105,11 @@ def test_eliminar_contenido_exitoso(client):
     contenido_id = response.get_json()["cod_contenido"]
 
     # Eliminar contenido
-    response = client.delete(f"/contenido/{contenido_id}")
+    response = client.delete(f"/api/contenido/{contenido_id}")
     assert response.status_code == 200, f"Error deleting content: {response.get_json()}"
     assert "message" in response.get_json()
 
     # Verificar que el contenido ya no existe
-    response = client.get(f"/contenido/{contenido_id}")
+    response = client.get(f"/api/contenido/{contenido_id}")
     assert response.status_code == 200
     assert response.get_json() == []

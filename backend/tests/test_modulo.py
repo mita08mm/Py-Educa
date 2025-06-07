@@ -7,7 +7,7 @@ def test_post_crear_modulo(client):
         "descripcion_modulo": "Este módulo cubre los fundamentos del lenguaje Python."
     }
     
-    response = client.post("/modulos/", json=new_module_data)
+    response = client.post("/api/modulos/", json=new_module_data)
     assert response.status_code == 201
     data = response.get_json()
     
@@ -17,7 +17,7 @@ def test_post_crear_modulo(client):
     assert data["descripcion_modulo"] == new_module_data["descripcion_modulo"]
 
 def test_get_listar_modulos(client):
-    response = client.get("/modulos/")
+    response = client.get("/api/modulos/")
     assert response.status_code == 200
     data = response.get_json()
     assert isinstance(data, list)
