@@ -1,13 +1,22 @@
-from flask import Blueprint, request
+from flask_restx import Namespace, Resource, fields
 from app.controllers.evaluacionController import crear_evaluacion_controller, obtener_evaluacion_completa_controller
 
-evaluacion_bp = Blueprint('evaluacion', __name__)
+api = Namespace('evaluacion', description='Operaciones relacionadas con evaluacion')
 
-@evaluacion_bp.route('/', methods=['POST'])
-def crear_evaluacion():
-    data = request.get_json()
-    return crear_evaluacion_controller(data)
+evaluacion_model = api.model('Evaluacion', {
+    'cod_modulo': fields.Integer(required=True, description='Codigo modulo'),
+    'titulo_seccion': fields.String(required=True, description='Título de la sección'),
+    'descripcion_seccion': fields.String(required=True, description='Descripción de la sección')
+})
 
-@evaluacion_bp.route('/<int:cod_evaluacion>', methods=['GET'])
-def obtener_evaluacion_completa(cod_evaluacion):
-    return obtener_evaluacion_completa_controller(cod_evaluacion)
+@api.route('/')
+class EvaluacionResource(Resource):
+    @api.expect(evaluacion_model)
+    def post(self):
+        return crear_evaluacion_controller()
+
+@api.route('/<int:cod_evaluacion>')
+@api.param('cod_evaluacion', 'ID de la evaluación')
+class EvaluacionGetResource(Resource):
+    def get(self, cod_evaluacion):
+        return obtener_evaluacion_completa_controller(cod_evaluacion)
