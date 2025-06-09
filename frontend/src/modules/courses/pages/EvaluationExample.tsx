@@ -1,6 +1,7 @@
 // components/EvaluationExample.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CodeEditorComponent from '../../codeEditor/CodeEditorComponent';
 
 // Datos de ejemplo estáticos
 const evaluacionEjemplo = {
@@ -153,7 +154,7 @@ export const EvaluationExample = () => {
           </div>
           
           {/* Editor de código */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <h3 className="text-lg font-semibold text-brand-100 mb-2">Tu solución</h3>
             <div className="bg-surface-2 rounded-md overflow-hidden">
               <div className="bg-brand-800 p-2 flex justify-between items-center">
@@ -176,7 +177,8 @@ export const EvaluationExample = () => {
                 className="w-full h-64 p-4 bg-black text-green-400 font-mono text-sm focus:outline-none"
               />
             </div>
-          </div>
+          </div> */}
+          <CodeEditorComponent/>
           
           {/* Botones de acción */}
           <div className="flex justify-between">
