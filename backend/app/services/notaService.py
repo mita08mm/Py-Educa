@@ -22,7 +22,11 @@ class NotaService:
             db.session.add(nota_existente)
 
         db.session.commit()
-        return nota_existente
+        return nota_existente, None
     
     def obtener_nota(cod_problema, cod_usuario):
-        return Nota.query.get((cod_problema, cod_usuario))
+        nota = Nota.query.filter_by(
+            cod_problema=cod_problema, 
+            cod_usuario=cod_usuario
+        ).first()
+        return nota, None if nota else None
