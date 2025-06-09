@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Crear una instancia de axios con la URL base
 const api = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -57,6 +57,14 @@ export interface Evaluacion {
   output_ejemplo: string;
   codigo: string;
 }
+
+export interface Nota {
+  cod_problema: number;
+  cod_usuario: number;
+  nota: number;
+  nota_total: number;
+}
+
 
 // Servicios para Cursos
 export const cursoService = {
@@ -151,4 +159,16 @@ export const evaluacionService = {
   },
 };
 
+export const notaService = {
+  getNota: async (
+    cod_problema:number, cod_usuario: number
+  ): Promise<Nota> => {
+    const response = await api.get('/nota',{ params: {cod_problema,cod_usuario}});
+    return response.data
+  },
+  calificar: async (notaData: Nota): Promise<any> => {
+    const response = await api.post('/nota/califica', notaData);
+    return response.data
+  }
+}
 export default api;
