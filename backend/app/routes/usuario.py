@@ -19,6 +19,14 @@ class UsuarioResource(Resource):
         nuevo_usuario = crear_usuario(data)
         return nuevo_usuario.to_dict(), 201
     
+    @api.doc(params={'cod_curso': 'Código del curso para filtrar usuarios'})
+    @api.response(200, 'Lista de usuarios obtenida exitosamente')
+    @api.response(400, 'Parámetros inválidos')
+    @api.response(404, 'No se encontraron usuarios')
     def get(self):
+        """Obtener lista de usuarios.
+        
+        Retorna una lista de usuarios que pertenecen a un curso específico si se proporciona cod_curso
+        """
         cod_curso = request.args.get('cod_curso', type=int)
         return usuarioController.obtener_usuarios(cod_curso)
