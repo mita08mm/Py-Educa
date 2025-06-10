@@ -27,3 +27,14 @@ def get_nota_controller():
     nota, _ = NotaService.obtener_nota(cod_problema, cod_usuario)
 
     return nota_schema.dump(nota), 200
+
+def get_notas_controller(cod_usuario):
+    if not cod_usuario:
+        return {"error": "cod_usuario es requerido"}, 400
+
+    notas = NotaService.obtener_notas_de_usuario(cod_usuario)
+
+    if notas is None:
+        return {"error": "No se encontraron notas para este usuario"}, 404
+
+    return notas, 200
