@@ -4,7 +4,18 @@ import CodeEditorWindow from "./components/CodeEditorWindow";
 import { classnames } from "./utils/general";
 import CustomInput from "./components/CustomInput";
 
-const pythonDefault = `// some comment`;
+const pythonDefault = `# {{PROTECTED_START}}
+def suma(a, b):
+    # Esta función debe sumar dos números
+    # {{PROTECTED_END}}
+    
+    # Escribe tu solución aquí
+    return a + b
+    
+# {{PROTECTED_START}}    
+# No modificar las pruebas
+print(suma(2, 3))  # Debe imprimir 5
+# {{PROTECTED_END}}`;
 
 const CodeEditorComponent = () => {
   const [code, setCode] = useState(pythonDefault);
@@ -35,6 +46,7 @@ const CodeEditorComponent = () => {
           <CodeEditorWindow
             code={code}
             onChange={onChange}
+            defaultValue={pythonDefault}
             // theme={theme.value}
           />
         </div>
