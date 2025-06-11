@@ -178,6 +178,13 @@ export const ModuleManagementPage = () => {
                           Gestionar Secciones
                         </Link>
                         <span className="text-brand-500">|</span>
+                      <Link
+                        to={`/evaluation/create?modulo=${modulo.cod_modulo}&curso=${cursoId}`}
+                        className="text-brand-400 hover:text-brand-300 text-sm"
+                      >
+                        Añadir Evaluación
+                      </Link>
+                        <span className="text-brand-500">|</span>
                         <button 
                           className="text-brand-400 hover:text-brand-300 text-sm"
                           onClick={() => {
