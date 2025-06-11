@@ -152,7 +152,7 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
     const newValue = val || '';
     setInternalValue(newValue);
     if (onChange) {
-      onChange(newValue);
+      onChange('code', newValue);
     }
   };
 

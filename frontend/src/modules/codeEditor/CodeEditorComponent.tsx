@@ -19,7 +19,7 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({ initialCode =
   const [code, setCode] = useState(initialCode);
   const [outputDetails, setOutputDetails] = useState(null);
   const [customInput, setCustomInput] = useState("");
-  const [processing, setProcessing] = useState<null | boolean>(null);
+  const [processing, setProcessing] = useState(false);
 
   const onChange = (action: string, data: string) => {
     switch (action) {
@@ -35,8 +35,10 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({ initialCode =
   };
 
   const handleCompile = async () => {
+    if (!code) return;
     setProcessing(true);
     setOutputDetails(null);
+    console.log("Compilar presionado", code);
 
     const formData = {
       language_id: JUDGE0_LANGUAGE_ID_PYTHON,
@@ -57,15 +59,27 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({ initialCode =
           },
         }
       );
-      checkStatus(data.token);
+      if (!data.token) {
+        setProcessing(false);
+        alert("No se recibió token de Judge0");
+        console.error("Respuesta Judge0 sin token:", data);
+        return;
+      }
+      console.log("Token recibido de Judge0:", data.token);
+      checkStatus(data.token, 0);
     } catch (err) {
       setProcessing(false);
       alert("Error al enviar el código a Judge0");
-      console.error(err);
+      console.error("Error en handleCompile:", err);
     }
   };
 
-  const checkStatus = async (token: string) => {
+  const checkStatus = async (token: string, attempt: number) => {
+    if (attempt > 15) {
+      setProcessing(false);
+      alert("Timeout esperando respuesta de Judge0");
+      return;
+    }
     try {
       const { data } = await axios.get(
         `${import.meta.env.VITE_RAPID_API_URL}/${token}`,
@@ -77,9 +91,10 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({ initialCode =
           },
         }
       );
+      console.log("Respuesta polling Judge0:", data);
       if (data.status?.id <= 2) {
         // In Queue or Processing
-        setTimeout(() => checkStatus(token), 2000);
+        setTimeout(() => checkStatus(token, attempt + 1), 2000);
         return;
       } else {
         setProcessing(false);
@@ -88,7 +103,7 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({ initialCode =
     } catch (err) {
       setProcessing(false);
       alert("Error al obtener el resultado de Judge0");
-      console.error(err);
+      console.error("Error en checkStatus:", err);
     }
   };
 
@@ -126,7 +141,7 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({ initialCode =
         </button>
       </div>
       <div className="right-container flex flex-shrink-0 w-[30%] flex-col">
-        <OutputWindow outputDetails={outputDetails} />
+        <OutputWindow outputDetails={outputDetails} processing={processing} />
         <div className="flex flex-col items-end">
           <CustomInput
             customInput={customInput}
@@ -140,7 +155,7 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({ initialCode =
               !code ? "opacity-50" : ""
             )}
           >
-            {processing ? "Processing..." : "Compilar y Ejecutar"}
+            {processing ? "Procesando..." : "Compilar y Ejecutar"}
           </button>
         </div>
         {outputDetails && <OutputDetails outputDetails={outputDetails} />}
