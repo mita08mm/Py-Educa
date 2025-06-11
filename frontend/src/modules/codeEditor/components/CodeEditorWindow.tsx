@@ -157,7 +157,7 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
   };
 
   return (
-    <div className="overlay rounded-md overflow-hidden w-full h-full shadow-4xl">
+    <div className="overlay rounded-md overflow-hidden w-full h-full shadow-4xl bg-brand-800 dark:bg-surface" style={{backgroundColor: '#0F172A'}}>
       <style>
         {`
           .protectedCode {
@@ -165,6 +165,9 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
           }
           .protectedInline {
             color: #888 !important;
+          }
+          .monaco-editor, .monaco-editor-background, .monaco-editor .margin, .monaco-editor .inputarea.ime-input {
+            background-color: #0F172A !important;
           }
           .monaco-editor .view-overlays .current-line {
             border: none;

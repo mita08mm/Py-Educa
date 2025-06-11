@@ -40,11 +40,11 @@ const OutputWindow = ({ outputDetails, processing }) => {
 
   return (
     <>
-      <h1 className="font-bold text-xl bg-clip-text bg-gradient-to-r mb-2">
+      <h1 className="font-bold text-xl bg-clip-text bg-gradient-to-r mb-2 text-gray-100">
         Output
       </h1>
-      <div className="w-full h-56 bg-white rounded-md text-[#1e293b] font-normal text-sm overflow-y-auto">
-        <pre className={`px-2 py-1 font-normal text-xs ${color}`}>{message}</pre>
+      <div className="w-full h-56 rounded-md bg-brand-800 dark:bg-surface text-gray-100 font-normal text-sm overflow-y-auto">
+        <pre className={`px-2 py-1 font-normal text-xs text-gray-100 ${color}`}>{message}</pre>
       </div>
     </>
   );

@@ -127,7 +127,7 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({ initialCode =
   };
 
   return (
-    <div className="flex flex-row space-x-4 items-start px-4 py-4">
+    <div className="flex flex-row space-x-4 items-start px-4 py-4 bg-brand-800 dark:bg-surface min-h-screen">
       <div className="flex flex-col w-full h-full justify-start items-end">
         <CodeEditorWindow
           code={code}
