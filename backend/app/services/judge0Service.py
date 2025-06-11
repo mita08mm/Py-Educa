@@ -3,6 +3,13 @@ import time
 from flask import current_app
 import logging
 
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s:%(message)s'
+)
+logger = logging.getLogger(__name__)
+
 PYTHON3_LANGUAGE_ID = 71
 
 def submit_code_to_judge0(source_code: str, stdin: str = "") -> dict:
@@ -23,19 +30,24 @@ def submit_code_to_judge0(source_code: str, stdin: str = "") -> dict:
     }
     
     try:
-        # Log request details
-        logging.info(f"Submitting code to Judge0: {submit_url}")
-        logging.info(f"Payload: {payload}")
+        # Debug prints and logging
+        logger.debug("="*50)
+        logger.debug("Starting code submission")
+        logger.debug(f"URL: {submit_url}")
+        logger.debug(f"Headers: {headers}")
+        logger.debug(f"Payload: {payload}")
         
         # Submit code
         response = requests.post(submit_url, headers=headers, json=payload)
-        logging.info(f"Initial response status: {response.status_code}")
-        logging.info(f"Initial response body: {response.text}")
+        logger.debug(f"Initial Response Status: {response.status_code}")
+        logger.debug(f"Initial Response Body: {response.text}")
         
         if response.status_code == 201:
             token = response.json().get("token")
             if not token:
                 raise Exception("No token received from Judge0")
+            
+            logger.debug(f"Received token: {token}")
             
             # Get results URL
             get_url = f"{current_app.config['JUDGE0_API_URL']}/submissions/{token}?base64_encoded=false"
@@ -43,39 +55,36 @@ def submit_code_to_judge0(source_code: str, stdin: str = "") -> dict:
             # Poll for results
             max_attempts = 10
             for attempt in range(max_attempts):
-                logging.info(f"Fetching results, attempt {attempt + 1}/{max_attempts}")
+                logger.debug(f"Attempt {attempt + 1}/{max_attempts} to fetch results")
                 
                 result_response = requests.get(get_url, headers=headers)
-                logging.info(f"Result response status: {result_response.status_code}")
-                logging.info(f"Result response body: {result_response.text}")
+                logger.debug(f"Result Status: {result_response.status_code}")
+                logger.debug(f"Result Body: {result_response.text}")
                 
                 if result_response.status_code == 200:
                     result = result_response.json()
                     status = result.get("status", {})
                     
+                    logger.debug(f"Processing status: {status}")
+                    
                     # Check if processing is complete
-                    if status.get("id") not in [1, 2]:  # 1=In Queue, 2=Processing
-                        output = {
+                    if status.get("id") not in [1, 2]:
+                        return {
                             "stdout": result.get("stdout"),
                             "stderr": result.get("stderr"),
                             "compile_output": result.get("compile_output"),
-                            "status": {
-                                "id": status.get("id"),
-                                "description": status.get("description")
-                            }
+                            "status": result.get("status") 
                         }
-                        logging.info(f"Final output: {output}")
-                        return output
                 
-                time.sleep(2)  # Increased wait time between attempts
+                time.sleep(2)
             
             raise Exception("Timeout waiting for code execution results")
         else:
             raise Exception(f"Error submitting code: {response.status_code} - {response.text}")
             
     except requests.exceptions.RequestException as e:
-        logging.error(f"Request failed: {str(e)}")
+        logger.error(f"Request failed: {str(e)}")
         raise Exception(f"Error de conexión con Judge0: {str(e)}")
     except Exception as e:
-        logging.error(f"Unexpected error: {str(e)}")
+        logger.error(f"Unexpected error: {str(e)}")
         raise

@@ -17,15 +17,19 @@ def execute_code_controller():
         logging.info("Executing code through Judge0...")
         result = submit_code_to_judge0(code, stdin)
         
+        # Log the raw result for debugging
+        logging.debug(f"Raw result from Judge0 service: {result}")
+        
+        # Create response with proper null handling
         response = {
-            "stdout": result["stdout"],
-            "stderr": result["stderr"],
-            "compile_output": result["compile_output"],
-            "status": result["status"]["description"]
+            "stdout": result.get("stdout") if result.get("stdout") is not None else "No output",
+            "stderr": result.get("stderr") if result.get("stderr") is not None else "No errors",
+            "compile_output": result.get("compile_output") if result.get("compile_output") is not None else "No compilation output",
+            "status": result.get("status", {}).get("description") if result.get("status") else "Unknown"
         }
         
         logging.info(f"Code execution completed successfully: {response}")
-        return jsonify(response)
+        return response
         
     except Exception as e:
         error_msg = str(e)
