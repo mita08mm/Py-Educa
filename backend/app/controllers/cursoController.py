@@ -1,4 +1,5 @@
-from flask import request, jsonify
+from flask import request, Response
+import json
 from app.services.cursoService import crear_curso, get_all_cursos
 from app.schemas.cursoSchema import CursoSchema
 
@@ -10,11 +11,14 @@ def crear_curso_handler():
     errors = curso_schema.validate(data)
 
     if errors:
-        return jsonify(errors), 400
+        return Response(json.dumps(errors), status=400, mimetype='application/json')
 
-    curso, _ = crear_curso(data)  # Se espera una tupla
-    return jsonify(curso_schema.dump(curso)), 201
+    valid_data = curso_schema.load(data)
+    curso, _ = crear_curso(valid_data)
+    result = curso_schema.dump(curso)
+    return Response(json.dumps(result), status=201, mimetype='application/json')
 
 def listar_cursos():
     cursos = get_all_cursos()
-    return jsonify(cursos_schema.dump(cursos)), 200 
+    result = cursos_schema.dump(cursos)
+    return Response(json.dumps(result), status=200, mimetype='application/json')

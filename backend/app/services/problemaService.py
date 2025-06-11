@@ -9,6 +9,7 @@ def crear_problema_con_ejemplos(data):
         cod_seccion=data["cod_seccion"],
         titulo_problema=data["titulo_problema"],
         descripcion_problema=data["descripcion_problema"],
+        editor=data.get("editor"),  # Puede ser None
         input=data["input"],
         output=data["output"]
     )
@@ -17,13 +18,14 @@ def crear_problema_con_ejemplos(data):
     db.session.flush()  # Obtener cod_problema antes de commit
 
     ejemplos_data = data.get("ejemplos", [])
-    for ej in ejemplos_data:
-        ejemplo = Ejemplo(
-            cod_problema=problema.cod_problema,
-            input_ejemplo=ej["input_ejemplo"],
-            output_ejemplo=ej["output_ejemplo"]
-        )
-        db.session.add(ejemplo)
+    if ejemplos_data and isinstance(ejemplos_data, list):
+        for ej in ejemplos_data:
+            ejemplo = Ejemplo(
+                cod_problema=problema.cod_problema,
+                input_ejemplo=ej["input_ejemplo"],
+                output_ejemplo=ej["output_ejemplo"]
+            )
+            db.session.add(ejemplo)
 
     db.session.commit()
     return problema

@@ -7,13 +7,13 @@ secciones_schema = SeccionSchema(many=True)
 
 def listar_secciones():
     secciones = get_all_secciones()
-    return jsonify(secciones_schema.dump(secciones)), 200
+    return secciones_schema.dump(secciones), 200
 
 def crear_seccion():
     data = request.get_json()
     errors = seccion_schema.validate(data)
     if errors:
-        return jsonify(errors), 400
+        return errors, 400
 
     nueva = create_seccion(data)
-    return jsonify(seccion_schema.dump(nueva)), 201
+    return seccion_schema.dump(nueva), 201

@@ -13,6 +13,7 @@ class Problema(db.Model):
 
     titulo_problema = db.Column("titulo_problema", db.String(100), nullable=False)
     descripcion_problema = db.Column("descripcion_problema", db.Text, nullable=False)
+    editor= db.Column(db.Text)
     input = db.Column("input", db.Text, nullable=False)
     output = db.Column("output", db.Text, nullable=False)
 
