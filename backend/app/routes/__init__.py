@@ -11,6 +11,7 @@ from .contenido import api as contenido_ns
 from .nota import api as nota_ns
 from .evaluacion import api as evaluacion_ns
 from .problema import api as problema_ns
+from .judge0 import api as judge0_ns
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -31,6 +32,7 @@ api.add_namespace(contenido_ns, path='/contenido')
 api.add_namespace(nota_ns, path='/nota')
 api.add_namespace(evaluacion_ns, path='/evaluacion')
 api.add_namespace(problema_ns, path='/problema')
+api.add_namespace(judge0_ns, path='/judge0')
 
 def register_routes(app):
     app.register_blueprint(api_bp)
