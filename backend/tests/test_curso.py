@@ -1,6 +1,6 @@
 import pytest
 import base64
-from app.services.curso_service import crear_curso, get_all_cursos
+from app.services.cursoService import crear_curso, get_all_cursos
 from app.models.curso import Curso
 from app.extensions import db
 
