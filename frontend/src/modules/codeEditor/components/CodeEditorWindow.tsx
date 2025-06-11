@@ -1,33 +1,53 @@
 import { Editor } from "@monaco-editor/react";
 import React, { useState, useRef, useEffect } from "react";
 
+/**
+ * CodeEditorWindow
+ *
+ * Props:
+ * - value: string (código actual, controlado)
+ * - defaultValue: string (código inicial, no controlado)
+ * - onChange: (value: string) => void (callback cuando cambia el código)
+ * - language: string (por defecto 'python')
+ * - theme: string (por defecto 'vs-dark')
+ * - height: string (por defecto '85vh')
+ * - width: string (por defecto '100%')
+ */
 interface CodeEditorWindowProps {
-  onChange: (key: string, value: string) => void;
-  code?: string;
+  value?: string;
   defaultValue?: string;
+  onChange?: (value: string) => void;
+  language?: string;
+  theme?: string;
+  height?: string;
+  width?: string;
   protectedPatterns?: {
     start: string;
     end: string;
   };
 }
 
-const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({ 
-  onChange, 
-  code, 
-  defaultValue,
+const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
+  value,
+  defaultValue = '',
+  onChange,
+  language = 'python',
+  theme = 'vs-dark',
+  height = '85vh',
+  width = '100%',
   protectedPatterns = {
     start: "{{PROTECTED_START}}",
     end: "{{PROTECTED_END}}"
   }
 }) => {
-  const [value, setValue] = useState<string>(code || "");
+  const [internalValue, setInternalValue] = useState<string>(value ?? defaultValue);
   const editorRef = useRef<any>(null);
-  const originalValue = useRef<string>(defaultValue || code || "");
+  const originalValue = useRef<string>(defaultValue || value || "");
 
   // Inicializar con el valor por defecto
   useEffect(() => {
     if (defaultValue) {
-      setValue(defaultValue);
+      setInternalValue(defaultValue);
       originalValue.current = defaultValue;
     }
   }, [defaultValue]);
@@ -58,8 +78,10 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
       }
       
       const newValue = currentValue;
-      setValue(newValue);
-      onChange("code", newValue);
+      setInternalValue(newValue);
+      if (onChange) {
+        onChange(newValue);
+      }
     });
   };
 
@@ -123,13 +145,17 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
   const getCleanCode = (): string => {
     const { start, end } = protectedPatterns;
     const regex = new RegExp(`${start}[\\s\\S]*?${end}`, 'g');
-    return value.replace(regex, '').replace(/\n\s*\n/g, '\n');
+    return internalValue.replace(regex, '').replace(/\n\s*\n/g, '\n');
   };
 
-  const handleEditorChange = (value) => {
-    setValue(value);
-    onChange("code", value);
+  const handleEditorChange = (val: string | undefined) => {
+    const newValue = val || '';
+    setInternalValue(newValue);
+    if (onChange) {
+      onChange(newValue);
+    }
   };
+
   return (
     <div className="overlay rounded-md overflow-hidden w-full h-full shadow-4xl">
       <style>
@@ -147,11 +173,11 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
       </style>
       
       <Editor
-        height="85vh"
-        width={"100%"}
-        language={"python"}
-        value={value}
-        theme={"vs-light"}
+        height={height}
+        width={width}
+        language={language}
+        value={value !== undefined ? value : internalValue}
+        theme={theme}
         defaultValue={defaultValue}
         onChange={handleEditorChange}
         onMount={handleEditorDidMount}
