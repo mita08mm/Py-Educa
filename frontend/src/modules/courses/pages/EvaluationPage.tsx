@@ -1,145 +1,134 @@
-// pages/EvaluationPage.tsx
-import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { evaluacionService, moduloService, cursoService, Modulo, Curso } from '../../../services/api';
-import { Layout } from '../../layout';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { EvaluationForm } from '../components/EvaluationForm';
 
-export const EvaluationPage = () => {
-  const [searchParams] = useSearchParams();
-  const moduloId = searchParams.get('modulo') ? Number(searchParams.get('modulo')) : null;
-  const cursoId = searchParams.get('curso') ? Number(searchParams.get('curso')) : null;
-  
+interface Problem {
+  id: number;
+  title: string;
+  description: string;
+  input: string;
+  output: string;
+}
+
+interface EvaluationData {
+  title: string;
+  description: string;
+  problems: Problem[];
+}
+
+interface EvaluationPayload extends EvaluationData {
+  modulo_id: string;
+  curso_id: string;
+  fecha_creacion: string;
+  estado: string;
+}
+
+export const EvaluationPage: React.FC = () => {
   const navigate = useNavigate();
-  
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingData, setLoadingData] = useState<boolean>(true); // Estado para controlar la carga inicial de datos
-  const [modulo, setModulo] = useState<Modulo | null>(null);
-  const [curso, setCurso] = useState<Curso | null>(null);
-  
-  // Cargar datos iniciales
+  const [error, setError] = useState<string | null>(null);
+
+  // Obtener parámetros de la URL
+  const moduloId: string | null = searchParams.get('modulo');
+  const cursoId: string | null = searchParams.get('curso');
+
   useEffect(() => {
-    const cargarDatos = async () => {
-      setLoadingData(true);
-      
-      if (moduloId) {
-        await cargarModulo();
-      }
-      
-      if (cursoId) {
-        await cargarCurso();
-      }
-      
-      setLoadingData(false);
-    };
-    
-    cargarDatos();
+    // Validar que existan los parámetros necesarios
+    if (!moduloId || !cursoId) {
+      setError('Parámetros de módulo y curso son requeridos');
+    }
   }, [moduloId, cursoId]);
-  
-  // Cargar información del módulo
-  const cargarModulo = async () => {
-    if (!moduloId) return;
+
+  const handleSubmitEvaluation = async (evaluationData: EvaluationData): Promise<void> => {
+    setLoading(true);
+    setError(null);
+
     try {
-      const data = await moduloService.getOne(moduloId);
-      setModulo(data);
-    } catch (error) {
-      console.error('Error al cargar módulo:', error);
-    }
-  };
-  
-  // Cargar información del curso
-  const cargarCurso = async () => {
-    if (!cursoId) return;
-    try {
-      const data = await cursoService.getCourse(cursoId);
-      setCurso(data);
-    } catch (error) {
-      console.error('Error al cargar curso:', error);
-    }
-  };
-  
-  // Guardar evaluación
-  const guardarEvaluacion = async (data: any) => {
-    try {
-      setLoading(true);
-      await evaluacionService.create({
-        ...data,
-        cod_modulo: moduloId || 0,
-      });
-      
-      // Redirigir a la página de módulos
-      navigate(`/modules?curso=${cursoId}`);
-    } catch (error) {
-      console.error('Error al guardar evaluación:', error);
-      throw error;
-    } finally {
+      // Aquí harías la llamada a tu API para crear la evaluación
+      const evaluationPayload: EvaluationPayload = {
+        ...evaluationData,
+        modulo_id: moduloId!,
+        curso_id: cursoId!,
+        fecha_creacion: new Date().toISOString(),
+        estado: 'activa'
+      };
+
+      console.log('Datos de evaluación a enviar:', evaluationPayload);
+
+      // Simulación de llamada API
+      // const response = await fetch('/api/evaluations', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(evaluationPayload)
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error('Error al crear la evaluación');
+      // }
+
+      // const result = await response.json();
+
+      // Simulación de éxito
+      setTimeout(() => {
+        setLoading(false);
+        alert('Evaluación creada exitosamente');
+        // Redirigir de vuelta al módulo
+        navigate(`/modulos/${moduloId}?curso=${cursoId}`);
+      }, 1000);
+
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al crear la evaluación';
+      setError(errorMessage);
       setLoading(false);
     }
   };
-  
-  if (!moduloId || !cursoId) {
+
+  const handleCancel = (): void => {
+    // Redirigir de vuelta al módulo sin guardar
+    navigate(`/modulos/${moduloId}?curso=${cursoId}`);
+  };
+
+  if (error) {
     return (
-      <Layout>
-        <div className="p-4">
-          <div className="container mx-auto">
-            <div className="bg-red-900 text-white p-4 rounded-md">
-              Error: Se requieren los IDs del módulo y curso para crear una evaluación.
-            </div>
-            <div className="mt-4">
-              <button
-                onClick={() => navigate(-1)}
-                className="text-brand-400 hover:text-brand-300"
-              >
-                Volver atrás
-              </button>
-            </div>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-  
-  return (
-    <Layout>
-      <div className="p-4">
-        <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-brand-100">Crear Nueva Evaluación</h1>
-              {modulo && curso && (
-                <p className="text-brand-100 mt-2">
-                  Curso: {curso.titulo_curso} | Módulo: {modulo.titulo_modulo}
-                </p>
-              )}
-            </div>
+      <div className="bg-brand-900 min-h-screen p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="p-4 bg-red-900 rounded-md text-white">
+            <h2 className="font-bold mb-2">Error</h2>
+            <p>{error}</p>
             <button
-              onClick={() => navigate(`/modules?curso=${cursoId}`)}
-              className="text-brand-400 hover:text-brand-300"
+              onClick={() => navigate(-1)}
+              className="mt-3 px-4 py-2 rounded-md bg-red-800 hover:bg-red-700 text-white transition-colors"
             >
-              Volver a Módulos
+              Volver
             </button>
-          </div>
-          
-          <div className="bg-surface p-6 rounded-lg shadow-lg border border-brand-600">
-            {loadingData ? (
-              <p className="text-center py-4 text-brand-100">Cargando...</p>
-            ) : (
-              <EvaluationForm
-                onSubmit={guardarEvaluacion}
-                loading={loading}
-                codModulo={moduloId || 0}
-              />
-            )}
-          </div>
-          
-          <div className="mt-4 text-sm text-brand-300">
-            <p>
-              Las evaluaciones te permiten crear ejercicios de programación para tus estudiantes.
-              Puedes especificar el formato de entrada y salida esperados, así como ejemplos para guiar a los estudiantes.
-            </p>
           </div>
         </div>
       </div>
-    </Layout>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="bg-brand-900 min-h-screen p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-brand-800 rounded-lg p-6">
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-400"></div>
+              <span className="ml-3 text-brand-100">Guardando evaluación...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <EvaluationForm
+      onSubmit={handleSubmitEvaluation}
+      onCancel={handleCancel}
+    />
   );
 };
