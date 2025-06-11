@@ -1,45 +1,69 @@
 import pytest
+import base64
+from app.services.curso_service import crear_curso, get_all_cursos
+from app.models.curso import Curso
+from app.extensions import db
 
-# Test: crear curso exitosamente
-def test_crear_curso_exitoso(client):
+def test_crear_curso_con_imagen(app):
+    # Imagen pequeña base64 válida (1x1 px png)
+    imagen_base64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgWRGV1sAAAAASUVORK5CYII="
+    
     data = {
-        "titulo_curso": "Curso de Flask",
-        "descripcion_curso": "Curso práctico con Flask"
+        "titulo_curso": "Curso con Imagen",
+        "descripcion_curso": "Descripcion ejemplo",
+        "imagen_curso": imagen_base64
     }
 
-    response = client.post("/api/cursos", json=data)
-    assert response.status_code == 201
+    with app.app_context():
+        curso, error = crear_curso(data)
 
-    json_data = response.get_json()
-    assert isinstance(json_data["cod_curso"], int)
-    assert json_data["titulo_curso"] == data["titulo_curso"]
-    assert json_data["descripcion_curso"] == data["descripcion_curso"]
+        assert error is None
+        assert curso.titulo_curso == "Curso con Imagen"
+        assert curso.descripcion_curso == "Descripcion ejemplo"
+        assert curso.imagen_curso is not None
+        assert isinstance(curso.imagen_curso, (bytes, bytearray))
 
 
-# Test: error por datos inválidos (falta titulo)
-def test_crear_curso_sin_titulo(client):
+def test_crear_curso_sin_imagen(app):
     data = {
-        "descripcion_curso": "Este curso no tiene título"
+        "titulo_curso": "Curso sin Imagen",
+        "descripcion_curso": "Descripcion ejemplo"
     }
 
-    response = client.post("/api/cursos", json=data)
-    assert response.status_code == 400
+    with app.app_context():
+        curso, error = crear_curso(data)
 
-    json_data = response.get_json()
-    assert "titulo_curso" in json_data  # marshmallow devuelve errores por campo
+        assert error is None
+        assert curso.titulo_curso == "Curso sin Imagen"
+        assert curso.descripcion_curso == "Descripcion ejemplo"
+        assert curso.imagen_curso is None
 
 
-# Test: obtener lista de cursos
-def test_listar_cursos(client):
-    # Se asume que ya hay al menos un curso en la base de datos
-    response = client.get("/api/cursos")
-    assert response.status_code == 200
+def test_crear_curso_imagen_invalida(app, capsys):
+    # Base64 inválido (texto random)
+    data = {
+        "titulo_curso": "Curso Imagen Invalida",
+        "descripcion_curso": "Descripcion ejemplo",
+        "imagen_curso": "data:image/png;base64,@@@invalidbase64@@@"
+    }
 
-    json_data = response.get_json()
-    assert isinstance(json_data, list)
+    with app.app_context():
+        curso, error = crear_curso(data)
 
-    if json_data:  # si hay cursos
-        for curso in json_data:
-            assert "cod_curso" in curso
-            assert "titulo_curso" in curso
-            assert isinstance(curso["cod_curso"], int)
+        # Debería seguir creando curso aunque la imagen falle
+        assert error is None
+        assert curso.titulo_curso == "Curso Imagen Invalida"
+        assert curso.imagen_curso is None
+
+        # Chequeamos que se imprimió error por decodificación
+        captured = capsys.readouterr()
+        assert "Error decodificando imagen" in captured.out
+
+
+def test_get_all_cursos(app):
+    with app.app_context():
+        cursos = get_all_cursos()
+        assert isinstance(cursos, list)
+        # Cada item debe ser instancia de Curso
+        for curso in cursos:
+            assert isinstance(curso, Curso)
