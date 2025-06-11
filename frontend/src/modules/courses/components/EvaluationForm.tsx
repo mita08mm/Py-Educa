@@ -1,226 +1,297 @@
 import { useState } from 'react';
 import { Evaluacion } from '../../../services/api';
 
-interface EvaluationFormProps {
-  onSubmit: (data: Omit<Evaluacion, 'cod_evaluacion'>) => Promise<void>;
-  loading: boolean;
-  codModulo: number;
-  initialData?: Omit<Evaluacion, 'cod_evaluacion'>;
+interface Problem {
+  id: number;
+  title: string;
+  description: string;
+  input: string;
+  output: string;
 }
 
-export const EvaluationForm = ({
-  onSubmit,
-  loading,
-  codModulo,
-  initialData
-}: EvaluationFormProps) => {
-  const [formData, setFormData] = useState<Omit<Evaluacion, 'cod_evaluacion'>>({
-    cod_modulo: codModulo,
-    titulo_evaluacion: initialData?.titulo_evaluacion || '',
-    descripcion_evaluacion: initialData?.descripcion_evaluacion || '',
-    input: initialData?.input || '',
-    output: initialData?.output || '',
-    input_ejemplo: initialData?.input_ejemplo || '',
-    output_ejemplo: initialData?.output_ejemplo || '',
-    codigo: initialData?.codigo || '',
+interface EvaluationData {
+  title: string;
+  description: string;
+  problems?: Problem[];
+}
+
+interface EvaluationFormProps {
+  onSubmit: (data: EvaluationData & { problems: Problem[] }) => void;
+  onCancel: () => void;
+}
+
+export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCancel }) => {
+  const [evaluationData, setEvaluationData] = useState<EvaluationData>({
+    title: '',
+    description: ''
   });
 
-  const [error, setError] = useState<string | null>(null);
+  const [problems, setProblems] = useState<Problem[]>([]);
+  const [currentProblem, setCurrentProblem] = useState<Omit<Problem, 'id'>>({
+    title: '',
+    description: '',
+    input: '',
+    output: ''
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
+  const [showProblemForm, setShowProblemForm] = useState<boolean>(false);
+
+  const handleEvaluationChange = (field: keyof EvaluationData, value: string): void => {
+    setEvaluationData(prev => ({
       ...prev,
-      [name]: value
+      [field]: value
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    
-    if (!formData.titulo_evaluacion.trim()) {
-      setError('El título de la evaluación es obligatorio');
-      return;
-    }
-    
-    try {
-      await onSubmit(formData);
-      
-      // Limpiar el formulario si es uno nuevo
-      if (!initialData) {
-        setFormData({
-          cod_modulo: codModulo,
-          titulo_evaluacion: '',
-          descripcion_evaluacion: '',
-          input: '',
-          output: '',
-          input_ejemplo: '',
-          output_ejemplo: '',
-          codigo: '',
-        });
-      }
-    } catch (err) {
-      setError('Error al guardar la evaluación. Inténtalo de nuevo.');
-      console.error(err);
+  const handleProblemChange = (field: keyof Omit<Problem, 'id'>, value: string): void => {
+    setCurrentProblem(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const addProblem = (): void => {
+    if (currentProblem.title && currentProblem.description) {
+      setProblems(prev => [...prev, { ...currentProblem, id: Date.now() }]);
+      setCurrentProblem({
+        title: '',
+        description: '',
+        input: '',
+        output: ''
+      });
+      setShowProblemForm(false);
     }
   };
 
-  const inputClasses = "w-full p-3 rounded-md bg-brand-600 border border-brand-600 text-brand-100 focus:outline-none focus:border-brand-400";
-  const textareaClasses = "w-full p-3 rounded-md bg-brand-600 border border-brand-600 text-brand-100 focus:outline-none focus:border-brand-400 min-h-32";
-  const codeTextareaClasses = "w-full p-3 rounded-md bg-brand-600 border border-brand-600 text-brand-100 font-mono focus:outline-none focus:border-brand-400 min-h-48";
+  const removeProblem = (problemId: number): void => {
+    setProblems(prev => prev.filter(p => p.id !== problemId));
+  };
+
+  const handleSubmit = (): void => {
+    const evaluationComplete = {
+      ...evaluationData,
+      problems: problems
+    };
+    onSubmit(evaluationComplete);
+  };
+
+  const canSubmit: boolean = evaluationData.title !== '' && evaluationData.description !== '' && problems.length > 0;
+
+  // Clases de estilos reutilizables actualizadas con los colores del ModuleForm
+  const inputClasses = "w-full p-2 border border-brand-500 rounded-md bg-brand-600 text-brand-100 focus:border-brand-300 focus:outline-none";
+  const textareaClasses = "w-full p-2 border border-brand-500 rounded-md bg-brand-600 text-brand-100 focus:border-brand-300 focus:outline-none min-h-32";
+  const cardClasses = "bg-brand-700 rounded-lg p-6 border border-brand-500";
+  const buttonPrimaryClasses = "px-4 py-2 rounded-md bg-brand-400 hover:bg-brand-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+  const buttonSecondaryClasses = "px-4 py-2 rounded-md bg-brand-500 hover:bg-brand-400 text-brand-100 transition-colors";
+  const buttonDangerClasses = "text-red-400 hover:text-red-300 text-sm transition-colors";
+  const labelClasses = "block text-sm font-medium mb-1 text-brand-100";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="p-3 bg-red-900 rounded-md text-white">
-          {error}
-        </div>
-      )}
-      
-      <div>
-        <label htmlFor="titulo_evaluacion" className="block mb-1 text-brand-100">
-          Título
-        </label>
-        <input
-          type="text"
-          id="titulo_evaluacion"
-          name="titulo_evaluacion"
-          value={formData.titulo_evaluacion}
-          onChange={handleChange}
-          className={inputClasses}
-          placeholder="Título de la evaluación"
-        />
-      </div>
-      
-      <div>
-        <label htmlFor="descripcion_evaluacion" className="block mb-1 text-brand-100">
-          Descripción
-        </label>
-        <textarea
-          id="descripcion_evaluacion"
-          name="descripcion_evaluacion"
-          value={formData.descripcion_evaluacion}
-          onChange={handleChange}
-          className={textareaClasses}
-          placeholder="Descripción detallada de la evaluación"
-        />
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-        <div>
-          <label htmlFor="input" className="block mb-1 text-brand-100">
-            Input
-          </label>
-          <textarea
-            id="input"
-            name="input"
-            value={formData.input}
-            onChange={handleChange}
-            className={textareaClasses}
-            placeholder="Formato del input esperado"
-          />
-        </div>
-        
-        <div>
-          <label htmlFor="output" className="block mb-1 text-brand-100">
-            Output
-          </label>
-          <textarea
-            id="output"
-            name="output"
-            value={formData.output}
-            onChange={handleChange}
-            className={textareaClasses}
-            placeholder="Formato del output esperado"
-          />
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="input_ejemplo" className="block mb-1 text-brand-100">
-            Input Ejemplo
-          </label>
-          <textarea
-            id="input_ejemplo"
-            name="input_ejemplo"
-            value={formData.input_ejemplo}
-            onChange={handleChange}
-            className={textareaClasses}
-            placeholder="Ejemplo de input"
-          />
-        </div>
-        
-        <div>
-          <label htmlFor="output_ejemplo" className="block mb-1 text-brand-100">
-            Output Ejemplo
-          </label>
-          <textarea
-            id="output_ejemplo"
-            name="output_ejemplo"
-            value={formData.output_ejemplo}
-            onChange={handleChange}
-            className={textareaClasses}
-            placeholder="Ejemplo de output"
-          />
-        </div>
-      </div>
-      
-      <div>
-        
-        <label htmlFor="codigo" className="block mb-1 text-brand-100">
-        <div className="flex items-center justify-between">
-            <span>Código</span>
-            <div className="flex space-x-3">
-            <button 
-                type="button"
-                className="bg-gray-600 px-4 py-2 rounded-md text-white hover:bg-brand-500"
-                onClick={() => setFormData(prev => ({ ...prev, codigo: '' }))}
+    <div className="bg-brand-800 min-h-screen p-6">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header */}
+        <div className={cardClasses}>
+          <h1 className="text-2xl font-bold text-brand-100 mb-6">Crear nueva evaluación</h1>
+          
+          {/* Título */}
+          <div className="mb-4">
+            <label htmlFor="title" className={labelClasses}>Título</label>
+            <input
+              type="text"
+              id="title"
+              value={evaluationData.title}
+              onChange={(e) => handleEvaluationChange('title', e.target.value)}
+              className={inputClasses}
+              placeholder="Ingrese el título de la evaluación"
+            />
+          </div>
+
+          {/* Descripción */}
+          <div className="mb-6">
+            <label htmlFor="description" className={labelClasses}>Descripción</label>
+            <textarea
+              id="description"
+              value={evaluationData.description}
+              onChange={(e) => handleEvaluationChange('description', e.target.value)}
+              className={textareaClasses}
+              placeholder="Ingrese la descripción de la evaluación"
+              rows={3}
+            />
+          </div>
+
+          {/* Botones de acción principal */}
+          <div className="flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={onCancel}
+              className={buttonSecondaryClasses}
             >
-                Limpiar
+              Cancelar
             </button>
             <button
-                type="button"
-                className="px-4 py-2 rounded-md bg-brand-400 text-white hover:bg-brand-500"
-                onClick={() => console.log('Correr código')}
+              type="button"
+              onClick={handleSubmit}
+              disabled={!canSubmit}
+              className={buttonPrimaryClasses}
             >
-                Correr Código
+              Guardar Evaluación
             </button>
-            </div>
-        </div>
-        </label>
-        <div className="relative">
-          <textarea
-            id="codigo"
-            name="codigo"
-            value={formData.codigo}
-            onChange={handleChange}
-            className={codeTextareaClasses}
-            placeholder="Código de la evaluación"
-          />
-          <div className="absolute right-2 bottom-2 flex space-x-2">
-            
           </div>
         </div>
+
+        {/* Vista previa de la evaluación */}
+        {evaluationData.title && (
+          <div className={cardClasses}>
+            <h2 className="text-xl font-bold text-brand-100 mb-4">Evaluación de Programación</h2>
+            <div className="mb-4">
+              <label className={labelClasses}>Título</label>
+              <div className="w-full p-2 rounded-md bg-brand-600 border border-brand-500 text-brand-100">
+                {evaluationData.title}
+              </div>
+            </div>
+            <div>
+              <label className={labelClasses}>Descripción</label>
+              <div className="w-full p-2 rounded-md bg-brand-600 border border-brand-500 text-brand-100 min-h-[60px] whitespace-pre-wrap">
+                {evaluationData.description}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Problemas de la Evaluación */}
+        <div className={cardClasses}>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-bold text-brand-100">Problemas de la Evaluación</h3>
+            <button
+              type="button"
+              onClick={() => setShowProblemForm(true)}
+              className="bg-brand-400 hover:bg-brand-500 text-white px-3 py-1 rounded-md text-sm transition-colors flex items-center"
+            >
+              <span className="mr-1">+</span> Añadir Problema
+            </button>
+          </div>
+
+          {/* Lista de problemas existentes */}
+          {problems.map((problem) => (
+            <div key={problem.id} className="bg-brand-600 rounded-lg p-4 mb-4 border border-brand-500">
+              <div className="flex justify-between items-start mb-2">
+                <h4 className="text-brand-100 font-semibold">{problem.title}</h4>
+                <button
+                  type="button"
+                  onClick={() => removeProblem(problem.id)}
+                  className={buttonDangerClasses}
+                >
+                  ✕
+                </button>
+              </div>
+              <p className="text-brand-200 text-sm mb-3">{problem.description}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-brand-200 text-xs mb-1">Entrada (Input)</label>
+                  <div className="bg-brand-700 rounded-md px-3 py-2 text-brand-100 text-sm min-h-[40px] border border-brand-500">
+                    {problem.input || 'No especificado'}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-brand-200 text-xs mb-1">Salida (Output)</label>
+                  <div className="bg-brand-700 rounded-md px-3 py-2 text-brand-100 text-sm min-h-[40px] border border-brand-500">
+                    {problem.output || 'No especificado'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Formulario para nuevo problema */}
+          {showProblemForm && (
+            <div className="bg-brand-600 rounded-lg p-4 mb-4 border border-brand-500">
+              <h4 className="text-brand-100 font-semibold mb-3">Nuevo Problema</h4>
+              
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="problem-title" className={labelClasses}>Título del Problema</label>
+                  <input
+                    type="text"
+                    id="problem-title"
+                    value={currentProblem.title}
+                    onChange={(e) => handleProblemChange('title', e.target.value)}
+                    className={inputClasses}
+                    placeholder="Ej: Suma de Arrays"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="problem-description" className={labelClasses}>Descripción del Problema</label>
+                  <textarea
+                    id="problem-description"
+                    value={currentProblem.description}
+                    onChange={(e) => handleProblemChange('description', e.target.value)}
+                    className={textareaClasses}
+                    placeholder="Descripción detallada del problema"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="problem-input" className={labelClasses}>Entrada (Input)</label>
+                    <textarea
+                      id="problem-input"
+                      value={currentProblem.input}
+                      onChange={(e) => handleProblemChange('input', e.target.value)}
+                      className="w-full p-2 border border-brand-500 rounded-md bg-brand-600 text-brand-100 focus:border-brand-300 focus:outline-none min-h-20 resize-none"
+                      placeholder="Formato de entrada esperado"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="problem-output" className={labelClasses}>Salida (Output)</label>
+                    <textarea
+                      id="problem-output"
+                      value={currentProblem.output}
+                      onChange={(e) => handleProblemChange('output', e.target.value)}
+                      className="w-full p-2 border border-brand-500 rounded-md bg-brand-600 text-brand-100 focus:border-brand-300 focus:outline-none min-h-20 resize-none"
+                      placeholder="Formato de salida esperado"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowProblemForm(false);
+                    setCurrentProblem({
+                      title: '',
+                      description: '',
+                      input: '',
+                      output: ''
+                    });
+                  }}
+                  className={buttonSecondaryClasses}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={addProblem}
+                  disabled={!currentProblem.title || !currentProblem.description}
+                  className={buttonPrimaryClasses}
+                >
+                  Guardar Problema
+                </button>
+              </div>
+            </div>
+          )}
+
+          {problems.length === 0 && !showProblemForm && (
+            <div className="text-center py-8">
+              <p className="text-brand-200">No hay problemas agregados aún</p>
+              <p className="text-brand-300 text-sm">Haz clic en "Añadir Problema" para comenzar</p>
+            </div>
+          )}
+        </div>
       </div>
-      
-      <div className="mt-6 flex justify-end space-x-3">
-        <button
-          type="button"
-          className="px-4 py-2 rounded-md bg-gray-700 text-white hover:bg-gray-600"
-          onClick={() => window.history.back()}
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 rounded-md bg-brand-400 text-white hover:bg-brand-500"
-          disabled={loading}
-        >
-          {loading ? 'Guardando...' : 'Guardar Evaluación'}
-        </button>
-      </div>
-    </form>
+    </div>
   );
 };

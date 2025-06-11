@@ -17,6 +17,8 @@ def app():
         "JWT_SECRET_KEY": "test-jwt-secret-key",
     })
 
+    app.db = db
+
     with app.app_context():
         db.create_all()  # Create all tables
         yield app
