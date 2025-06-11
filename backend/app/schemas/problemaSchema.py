@@ -8,6 +8,7 @@ class ProblemaCreateSchema(Schema):
     cod_subseccion = fields.Int(required=False, allow_none=True)
     titulo_problema = fields.Str(required=True)
     descripcion_problema = fields.Str(required=True)
+    editor = fields.Str(required=False, allow_none=True)  
     input = fields.Str(required=True)
     output = fields.Str(required=True)
     ejemplos = fields.List(fields.Nested(EjemploSchema), required=False)
