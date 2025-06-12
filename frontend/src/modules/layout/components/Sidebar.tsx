@@ -23,6 +23,7 @@ const studentMenu = [
   { label: "Inicio", path: "/", icon: HomeIcon },
   { label: "Mi Aprendizaje", path: "/my-learning", icon: AcademicCapIcon },
   { label: "Ejemplo de evaluacion", path: "/evaluation-example", icon: AcademicCapIcon },
+  { label: "Calificaciones", path: "/grades", icon: ChartBarIcon}
 ];
 
 // Menú para profesores

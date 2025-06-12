@@ -9,6 +9,8 @@ import { EvaluationExample } from "../../modules/courses/pages/EvaluationExample
 import { EvaluationPage } from "../../modules/courses/pages/EvaluationPage";
 import { ContenidoPage } from "../../modules/courses/pages/ContenidoPage";
 // import CourseViewer from "../../modules/courses/pages/CourseViewer"; 
+import GradesPage, {PageGrades} from '../../modules/courses/pages/GradesPage'
+import CodeEditorComponent from '../../modules/codeEditor/CodeEditorComponent';
 
 export const router = createBrowserRouter([
     {
@@ -50,5 +52,13 @@ export const router = createBrowserRouter([
     { 
         path: "my-learning/:courseId/*", 
         element: <MyLearning />,
+    },
+    {
+        path: "grades",
+        element: <GradesPage />
+    },
+    {
+        path: "/code-editor",
+        element: <CodeEditorComponent />,
     },
 ]);
