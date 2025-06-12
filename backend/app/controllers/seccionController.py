@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request
 from app.services.seccionService import get_all_secciones, create_seccion
 from app.schemas.seccionSchema import SeccionSchema
 
