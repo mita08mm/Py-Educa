@@ -8,14 +8,12 @@ interface CustomInputProps {
 
 const CustomInput: React.FC<CustomInputProps> = ({ customInput, setCustomInput }) => {
   return (
-    <textarea
-      rows={5}
+    <input
+      type="text"
       value={customInput}
       onChange={(e) => setCustomInput(e.target.value)}
-      placeholder={`Custom input`}
-      className={classnames(
-        "focus:outline-none w-full border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-white mt-2"
-      )}
+      placeholder="Ingresa los datos de entrada para tu programa..."
+      className="w-full px-4 py-3 rounded-lg bg-gray-800 border-2 border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 hover:border-gray-500 transition-all duration-200 font-mono text-sm shadow-lg"
     />
   );
 };
