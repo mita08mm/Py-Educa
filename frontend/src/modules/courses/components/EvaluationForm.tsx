@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Evaluacion } from '../../../services/api';
+import TemplateEditorWindow from '../../codeEditor/components/TemplateEditorWindow';
 
 interface Problem {
   id: number;
   title: string;
   description: string;
-  input: string;
-  output: string;
+  input?: string;
+  output?: string;
+  template: string;
 }
 
 interface EvaluationData {
@@ -31,7 +32,8 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
     title: '',
     description: '',
     input: '',
-    output: ''
+    output: '',
+    template: '# Escribe tu código aquí\n# Las líneas marcadas con # STATIC no podrán ser editadas por los estudiantes\n\ndef solucion():\n    pass  # STATIC'
   });
 
   const [showProblemForm, setShowProblemForm] = useState<boolean>(false);
@@ -50,14 +52,22 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
     }));
   };
 
+  const handleTemplateChange = (value: string): void => {
+    setCurrentProblem(prev => ({
+      ...prev,
+      template: value
+    }));
+  };
+
   const addProblem = (): void => {
-    if (currentProblem.title && currentProblem.description) {
+    if (currentProblem.title && currentProblem.description && currentProblem.template) {
       setProblems(prev => [...prev, { ...currentProblem, id: Date.now() }]);
       setCurrentProblem({
         title: '',
         description: '',
         input: '',
-        output: ''
+        output: '',
+        template: '# Escribe tu código aquí\n# Las líneas marcadas con # STATIC no podrán ser editadas por los estudiantes\n\ndef solucion():\n    pass  # STATIC'
       });
       setShowProblemForm(false);
     }
@@ -88,7 +98,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
 
   return (
     <div className="bg-brand-800 min-h-screen p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className={cardClasses}>
           <h1 className="text-2xl font-bold text-brand-100 mb-6">Crear nueva evaluación</h1>
@@ -185,18 +195,38 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
                 </button>
               </div>
               <p className="text-brand-200 text-sm mb-3">{problem.description}</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-brand-200 text-xs mb-1">Entrada (Input)</label>
-                  <div className="bg-brand-700 rounded-md px-3 py-2 text-brand-100 text-sm min-h-[40px] border border-brand-500">
-                    {problem.input || 'No especificado'}
-                  </div>
+              
+              {/* Input y Output opcionales */}
+              {(problem.input || problem.output) && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {problem.input && (
+                    <div>
+                      <label className="block text-brand-200 text-xs mb-1">Entrada (Input)</label>
+                      <div className="bg-brand-700 rounded-md px-3 py-2 text-brand-100 text-sm min-h-[40px] border border-brand-500">
+                        {problem.input}
+                      </div>
+                    </div>
+                  )}
+                  {problem.output && (
+                    <div>
+                      <label className="block text-brand-200 text-xs mb-1">Salida (Output)</label>
+                      <div className="bg-brand-700 rounded-md px-3 py-2 text-brand-100 text-sm min-h-[40px] border border-brand-500">
+                        {problem.output}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-brand-200 text-xs mb-1">Salida (Output)</label>
-                  <div className="bg-brand-700 rounded-md px-3 py-2 text-brand-100 text-sm min-h-[40px] border border-brand-500">
-                    {problem.output || 'No especificado'}
-                  </div>
+              )}
+
+              {/* Plantilla de código */}
+              <div>
+                <label className="block text-brand-200 text-xs mb-2">Plantilla de Código</label>
+                <div className="border border-brand-500 rounded-md overflow-hidden">
+                  <TemplateEditorWindow
+                    value={problem.template}
+                    height="300px"
+                    onChange={() => {}} // Solo lectura en la vista previa
+                  />
                 </div>
               </div>
             </div>
@@ -209,7 +239,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
               
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="problem-title" className={labelClasses}>Título del Problema</label>
+                  <label htmlFor="problem-title" className={labelClasses}>Título del Problema *</label>
                   <input
                     type="text"
                     id="problem-title"
@@ -221,7 +251,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
                 </div>
 
                 <div>
-                  <label htmlFor="problem-description" className={labelClasses}>Descripción del Problema</label>
+                  <label htmlFor="problem-description" className={labelClasses}>Descripción del Problema *</label>
                   <textarea
                     id="problem-description"
                     value={currentProblem.description}
@@ -234,23 +264,38 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="problem-input" className={labelClasses}>Entrada (Input)</label>
+                    <label htmlFor="problem-input" className={labelClasses}>Entrada (Input) <span className="text-brand-300 text-xs">(Opcional)</span></label>
                     <textarea
                       id="problem-input"
                       value={currentProblem.input}
                       onChange={(e) => handleProblemChange('input', e.target.value)}
                       className="w-full p-2 border border-brand-500 rounded-md bg-brand-600 text-brand-100 focus:border-brand-300 focus:outline-none min-h-20 resize-none"
-                      placeholder="Formato de entrada esperado"
+                      placeholder="Formato de entrada esperado (opcional)"
                     />
                   </div>
                   <div>
-                    <label htmlFor="problem-output" className={labelClasses}>Salida (Output)</label>
+                    <label htmlFor="problem-output" className={labelClasses}>Salida (Output) <span className="text-brand-300 text-xs">(Opcional)</span></label>
                     <textarea
                       id="problem-output"
                       value={currentProblem.output}
                       onChange={(e) => handleProblemChange('output', e.target.value)}
                       className="w-full p-2 border border-brand-500 rounded-md bg-brand-600 text-brand-100 focus:border-brand-300 focus:outline-none min-h-20 resize-none"
-                      placeholder="Formato de salida esperado"
+                      placeholder="Formato de salida esperado (opcional)"
+                    />
+                  </div>
+                </div>
+
+                {/* Editor de plantilla de código */}
+                <div>
+                  <label className={labelClasses}>Plantilla de Código *</label>
+                  <p className="text-brand-300 text-xs mb-2">
+                    Crea la plantilla base para el problema. Las líneas marcadas con # STATIC no podrán ser editadas por los estudiantes.
+                  </p>
+                  <div className="border border-brand-500 rounded-md overflow-hidden">
+                    <TemplateEditorWindow
+                      value={currentProblem.template}
+                      onChange={handleTemplateChange}
+                      height="400px"
                     />
                   </div>
                 </div>
@@ -265,7 +310,8 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
                       title: '',
                       description: '',
                       input: '',
-                      output: ''
+                      output: '',
+                      template: '# Escribe tu código aquí\n# Las líneas marcadas con # STATIC no podrán ser editadas por los estudiantes\n\ndef solucion():\n    pass  # STATIC'
                     });
                   }}
                   className={buttonSecondaryClasses}
@@ -275,7 +321,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
                 <button
                   type="button"
                   onClick={addProblem}
-                  disabled={!currentProblem.title || !currentProblem.description}
+                  disabled={!currentProblem.title || !currentProblem.description || !currentProblem.template}
                   className={buttonPrimaryClasses}
                 >
                   Guardar Problema
