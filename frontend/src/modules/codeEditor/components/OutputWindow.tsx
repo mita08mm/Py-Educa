@@ -40,7 +40,7 @@ const OutputWindow = ({ outputDetails, processing }) => {
 
   return (
     <>
-      <h1 className="font-bold text-xl bg-clip-text bg-gradient-to-r mb-2 text-gray-100">
+      <h1 className="ml-2 font-bold text-xl bg-clip-text bg-gradient-to-r mb-2 text-gray-100">
         Output
       </h1>
       <div className="w-full h-56 rounded-md bg-brand-800 dark:bg-surface text-gray-100 font-normal text-sm overflow-y-auto">
