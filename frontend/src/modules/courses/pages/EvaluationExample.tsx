@@ -217,22 +217,6 @@ export const EvaluationExample = () => {
             </div>
           </div>
           
-          {/* Editor de código */}
-          {/* <div className="mb-6">
-            <h3 className="text-lg font-semibold text-brand-100 mb-2">Tu solución</h3>
-            <div className="bg-surface-2 rounded-md overflow-hidden">
-              <div className="bg-brand-800 p-2 flex justify-between items-center">
-                <span className="text-white">Editor de código - {problemaActual.nombre}</span>
-                <span className="text-brand-300 text-sm">Python</span>
-              </div>
-              <textarea
-                value={codigos[problemaActual.id] || ''}
-                onChange={(e) => handleCambiarCodigo(e.target.value)}
-                className="w-full h-48 sm:h-64 p-4 bg-black text-green-400 font-mono text-sm focus:outline-none resize-none"
-                placeholder={`// Escribe tu solución para ${problemaActual.nombre} aquí...`}
-              />
-            </div>
-          </div> */}
           <CodeEditorComponent/>
           
           {/* Botones de acción */}
