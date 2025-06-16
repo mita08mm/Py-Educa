@@ -82,7 +82,8 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
       ...evaluationData,
       problems: problems
     };
-    onSubmit(evaluationComplete);
+    console.log(problems)
+    //onSubmit(evaluationComplete);
   };
 
   const canSubmit: boolean = evaluationData.title !== '' && evaluationData.description !== '' && problems.length > 0;

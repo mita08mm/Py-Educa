@@ -9,8 +9,10 @@ services:
       - FLASK_APP=app.py
       - FLASK_ENV=development
       - DATABASE_URL=postgresql://user:password@db:5432/python_learning_platform
+      - CODE_SANDBOX_URL=http://code-sandbox:5001
     depends_on:
       - db
+      - code-sandbox
     volumes:
       - ./backend:/app
     networks:
@@ -21,7 +23,7 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_API_URL=http://backend:5000
+      - VITE_API_URL=http://localhost:5000
       - NODE_ENV=development
     volumes:
       - ./frontend:/app
@@ -31,6 +33,24 @@ services:
       - backend
     networks:
       - app-network
+
+  code-sandbox:
+    build: ./code-sandbox
+    ports:
+      - "5001:5001"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./code-sandbox:/app
+    networks:
+      - app-network
+    # Add security options
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
 
   db:
     image: postgres:13

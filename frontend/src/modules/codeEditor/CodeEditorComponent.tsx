@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import OutputWindow from "./components/OutputWindow";
 import CodeEditorWindow from "./components/CodeEditorWindow";
 import { classnames } from "./utils/general";
 import CustomInput from "./components/CustomInput";
-import axios from "axios";
 import OutputDetails from "./components/OutputDetails";
+import {
+  executeCode,
+  CodeExecutionResult,
+} from "./services/codeExecutionService";
 
 interface CodeEditorComponentProps {
   initialCode?: string;
@@ -12,19 +15,19 @@ interface CodeEditorComponentProps {
 }
 
 const pythonDefault = `# Escribe tu código aquí
-
+print("¡Hola Mundo!")
 `;
 
-const JUDGE0_LANGUAGE_ID_PYTHON = 71; // Python 3
-
-const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({ 
-  initialCode = pythonDefault, 
-  onCodeChange 
+const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({
+  initialCode = pythonDefault,
+  onCodeChange,
 }) => {
   const [code, setCode] = useState(initialCode);
-  const [outputDetails, setOutputDetails] = useState(null);
+  const [outputDetails, setOutputDetails] =
+    useState<CodeExecutionResult | null>(null);
   const [customInput, setCustomInput] = useState("");
   const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onChange = (action: string, data: string) => {
     switch (action) {
@@ -43,91 +46,24 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({
     if (!code) return;
     setProcessing(true);
     setOutputDetails(null);
-    console.log("Compilar presionado", code);
-
-    const formData = {
-      language_id: JUDGE0_LANGUAGE_ID_PYTHON,
-      source_code: btoa(code),
-      stdin: btoa(customInput),
-    };
+    setError(null);
+    console.log("Ejecutando código:", code);
 
     try {
-      const { data } = await axios.post(
-        import.meta.env.VITE_RAPID_API_URL,
-        formData,
-        {
-          params: { base64_encoded: "true", fields: "*" },
-          headers: {
-            "content-type": "application/json",
-            "X-RapidAPI-Host": import.meta.env.VITE_RAPID_API_HOST,
-            "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_KEY,
-          },
-        }
-      );
-      if (!data.token) {
-        setProcessing(false);
-        alert("No se recibió token de Judge0");
-        console.error("Respuesta Judge0 sin token:", data);
-        return;
-      }
-      console.log("Token recibido de Judge0:", data.token);
-      checkStatus(data.token, 0);
+      const result = await executeCode(code);
+      setOutputDetails(result);
     } catch (err) {
+      console.error("Error al ejecutar el código:", err);
+      setError(err instanceof Error ? err.message : "Error desconocido");
+      setOutputDetails({
+        status: { id: 4, description: "Error" },
+        stdout: "",
+        stderr: err instanceof Error ? err.message : "Error desconocido",
+        memory: "0",
+        time: "0",
+      });
+    } finally {
       setProcessing(false);
-      alert("Error al enviar el código a Judge0");
-      console.error("Error en handleCompile:", err);
-    }
-  };
-
-  const checkStatus = async (token: string, attempt: number) => {
-    if (attempt > 15) {
-      setProcessing(false);
-      alert("Timeout esperando respuesta de Judge0");
-      return;
-    }
-    try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_RAPID_API_URL}/${token}`,
-        {
-          params: { base64_encoded: "true", fields: "*" },
-          headers: {
-            "X-RapidAPI-Host": import.meta.env.VITE_RAPID_API_HOST,
-            "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_KEY,
-          },
-        }
-      );
-      console.log("Respuesta polling Judge0:", data);
-      if (data.status?.id <= 2) {
-        // In Queue or Processing
-        setTimeout(() => checkStatus(token, attempt + 1), 2000);
-        return;
-      } else {
-        setProcessing(false);
-        setOutputDetails(data);
-      }
-    } catch (err) {
-      setProcessing(false);
-      alert("Error al obtener el resultado de Judge0");
-      console.error("Error en checkStatus:", err);
-    }
-  };
-
-  const testJudge0Connection = async () => {
-    try {
-      const response = await axios.get(
-        import.meta.env.VITE_RAPID_API_URL.replace('/submissions', '/config_info'),
-        {
-          headers: {
-            "x-rapidapi-host": import.meta.env.VITE_RAPID_API_HOST,
-            "x-rapidapi-key": import.meta.env.VITE_RAPID_API_KEY,
-          },
-        }
-      );
-      alert("Conexión exitosa a Judge0. Revisa la consola para ver la respuesta.");
-      console.log("Judge0 config:", response.data);
-    } catch (error) {
-      alert("Error conectando a Judge0. Revisa la consola.");
-      console.error("Error connecting to Judge0:", error);
     }
   };
 
@@ -156,24 +92,28 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({
             </div>
             <div className="text-gray-300 text-xs">Python 3</div>
           </div>
-          
+
           <CodeEditorWindow
             value={code}
-            onChange={onChange}
+            onChange={(newCode) => {
+              setCode(newCode);
+              if (onCodeChange) onCodeChange(newCode);
+            }}
             height="400px"
             theme="vs-dark"
             language="python"
+            defaultValue={initialCode}
           />
         </div>
 
-        {/* Panel de salida - PRIMERO */}
+        {/* Panel de salida */}
         <div className="space-y-4">
           {/* Ventana de salida */}
           <div className="space-y-2">
             <div className="bg-[#0F172A] rounded-lg border border-brand-700">
-              <OutputWindow 
-                outputDetails={outputDetails} 
-                processing={processing} 
+              <OutputWindow
+                outputDetails={outputDetails}
+                processing={processing}
               />
             </div>
           </div>
@@ -192,9 +132,19 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({
               </div>
             </div>
           )}
+
+          {/* Mensaje de error */}
+          {error && (
+            <div className="bg-red-100 dark:bg-red-900/50 border border-red-200 dark:border-red-800 rounded-lg p-4">
+              <p className="text-red-600 dark:text-red-400 text-sm">
+                <i className="fas fa-exclamation-circle mr-2"></i>
+                {error}
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Panel de entrada personalizada y controles - SEGUNDO */}
+        {/* Panel de entrada personalizada y controles */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Entrada personalizada */}
           <div className="space-y-2">
@@ -232,17 +182,9 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({
               ) : (
                 <>
                   <i className="fas fa-play"></i>
-                  <span>Probar código</span>
+                  <span>Ejecutar código</span>
                 </>
               )}
-            </button>
-
-            <button
-              onClick={testJudge0Connection}
-              className="w-full px-4 py-2 bg-brand-600 hover:bg-brand-500 text-gray-300 hover:text-white rounded-lg text-sm transition-colors duration-200"
-            >
-              <i className="fas fa-wifi mr-2"></i>
-              Probar conexión
             </button>
           </div>
         </div>
