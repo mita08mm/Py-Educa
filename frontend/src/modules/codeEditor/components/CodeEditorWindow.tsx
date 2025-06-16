@@ -1,18 +1,6 @@
 import { Editor } from "@monaco-editor/react";
 import React, { useState, useRef, useEffect } from "react";
 
-/**
- * CodeEditorWindow
- *
- * Props:
- * - value: string (código actual, controlado)
- * - defaultValue: string (código inicial, no controlado)
- * - onChange: (value: string) => void (callback cuando cambia el código)
- * - language: string (por defecto 'python')
- * - theme: string (por defecto 'vs-dark')
- * - height: string (por defecto '85vh')
- * - width: string (por defecto '100%')
- */
 interface CodeEditorWindowProps {
   value?: string;
   defaultValue?: string;
@@ -21,150 +9,165 @@ interface CodeEditorWindowProps {
   theme?: string;
   height?: string;
   width?: string;
-  protectedPatterns?: {
-    start: string;
-    end: string;
-  };
 }
 
 const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
   value,
-  defaultValue = '',
+  defaultValue = "",
   onChange,
-  language = 'python',
-  theme = 'vs-dark',
-  height = '85vh',
-  width = '100%',
-  protectedPatterns = {
-    start: "{{PROTECTED_START}}",
-    end: "{{PROTECTED_END}}"
-  }
+  language = "python",
+  theme = "vs-dark",
+  height = "85vh",
+  width = "100%",
 }) => {
-  const [internalValue, setInternalValue] = useState<string>(value ?? defaultValue);
+  const [internalValue, setInternalValue] = useState<string>(
+    value ?? defaultValue
+  );
   const editorRef = useRef<any>(null);
-  const originalValue = useRef<string>(defaultValue || value || "");
+  const monacoRef = useRef<any>(null);
+  const staticLinesContent = useRef<Set<string>>(new Set());
+  const staticLineNumbers = useRef<Set<number>>(new Set());
 
-  // Inicializar con el valor por defecto
   useEffect(() => {
     if (defaultValue) {
       setInternalValue(defaultValue);
-      originalValue.current = defaultValue;
     }
   }, [defaultValue]);
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
     editorRef.current = editor;
-    updateProtectedRanges(editor, monaco);
-    
+    monacoRef.current = monaco;
+    extractStaticLines(defaultValue || "");
+    applyDecorations(editor, monaco);
+
     editor.onDidChangeModelContent(() => {
-      const currentValue = editor.getValue();
-      const hasProtectedContent = originalValue.current.includes(protectedPatterns.start);
-      
-      if (hasProtectedContent) {
-        // Verificar si se modificaron las partes protegidas
-        const protectedSections = extractProtectedSections(originalValue.current);
-        const currentProtectedSections = extractProtectedSections(currentValue);
-        
-        const isModified = protectedSections.some((section, i) => {
-          return currentProtectedSections[i] !== section;
-        });
-        
-        if (isModified) {
-          // Restaurar el valor original si se modificó código protegido
-          editor.setValue(originalValue.current);
-          updateProtectedRanges(editor, monaco);
-          return;
+      const model = editor.getModel();
+      const currentLines = model.getLinesContent();
+      const edits: any[] = [];
+
+      const updatedLines = currentLines.map((line, index) => {
+        if (isStaticLine(line)) {
+          const matchedOriginal = Array.from(staticLinesContent.current).find(
+            (original) => {
+              return original.trimEnd() === line.trimEnd();
+            }
+          );
+
+          if (!matchedOriginal) {
+            const originalLine = findOriginalStaticLineBySuffix(line);
+            if (originalLine) {
+              edits.push({
+                range: new monaco.Range(
+                  index + 1,
+                  1,
+                  index + 1,
+                  line.length + 1
+                ),
+                text: originalLine,
+              });
+              return originalLine;
+            }
+          }
         }
+        return line;
+      });
+
+      if (edits.length > 0) {
+        setTimeout(() => {
+          editor.executeEdits("restore-static", edits);
+        }, 0);
       }
-      
-      const newValue = currentValue;
+
+      const newValue = editor.getValue();
       setInternalValue(newValue);
-      if (onChange) {
-        onChange(newValue);
+      if (onChange) onChange(newValue);
+
+      applyDecorations(editor, monaco); // re-aplica decoraciones actualizadas
+    });
+    editor.onKeyDown((e: any) => {
+  const position = editor.getPosition();
+  const line = position.lineNumber;
+
+  if (staticLineNumbers.current.has(line)) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+});
+
+  };
+
+  const isStaticLine = (line: string) => line.trim().endsWith("# STATIC");
+
+  const extractStaticLines = (code: string) => {
+    const lines = code.split("\n");
+    staticLinesContent.current.clear();
+    lines.forEach((line) => {
+      if (isStaticLine(line)) {
+        staticLinesContent.current.add(line);
       }
     });
   };
 
-  const extractProtectedSections = (content: string): string[] => {
-    const sections: string[] = [];
-    const { start, end } = protectedPatterns;
-    let currentIndex = 0;
-    
-    while (true) {
-      const startIdx = content.indexOf(start, currentIndex);
-      if (startIdx === -1) break;
-      
-      const endIdx = content.indexOf(end, startIdx);
-      if (endIdx === -1) break;
-      
-      sections.push(content.substring(startIdx, endIdx + end.length));
-      currentIndex = endIdx + end.length;
+  const findOriginalStaticLineBySuffix = (
+    modifiedLine: string
+  ): string | null => {
+    const suffix = "# STATIC";
+    const base = modifiedLine.split(suffix)[0].trim();
+    for (const original of staticLinesContent.current) {
+      const originalBase = original.split(suffix)[0].trim();
+      if (originalBase === base) {
+        return original;
+      }
     }
-    
-    return sections;
+    return null;
   };
 
-  const updateProtectedRanges = (editor: any, monaco: any) => {
-    const model = editor.getModel();
-    const fullText = model.getValue();
-    const { start, end } = protectedPatterns;
-    
-    const protectedRanges = [];
-    let currentIndex = 0;
-    
-    while (true) {
-      const startIdx = fullText.indexOf(start, currentIndex);
-      if (startIdx === -1) break;
-      
-      const endIdx = fullText.indexOf(end, startIdx);
-      if (endIdx === -1) break;
-      
-      const startPos = model.getPositionAt(startIdx);
-      const endPos = model.getPositionAt(endIdx + end.length);
-      
-      protectedRanges.push({
-        range: new monaco.Range(
-          startPos.lineNumber,
-          startPos.column,
-          endPos.lineNumber,
-          endPos.column
-        ),
+  const applyDecorations = (editor: any, monaco: any) => {
+  const model = editor.getModel();
+  const lines = model.getLinesContent();
+  const decorations = [];
+  const staticLineNums = new Set<number>();
+
+  lines.forEach((line: string, index: number) => {
+    if (isStaticLine(line)) {
+      staticLineNums.add(index + 1);
+      decorations.push({
+        range: new monaco.Range(index + 1, 1, index + 1, line.length + 1),
         options: {
-          className: 'protectedCode',
-          hoverMessage: { value: 'Esta parte no se puede modificar' },
-          inlineClassName: 'protectedInline'
-        }
+          className: "staticLine",
+          hoverMessage: {
+            value: "Esta línea no se puede modificar (# STATIC)",
+          },
+          marginClassName: "staticLineMargin",
+        },
       });
-      
-      currentIndex = endIdx + end.length;
     }
-    
-    editor.createDecorationsCollection(protectedRanges);
-  };
+  });
 
-  const getCleanCode = (): string => {
-    const { start, end } = protectedPatterns;
-    const regex = new RegExp(`${start}[\\s\\S]*?${end}`, 'g');
-    return internalValue.replace(regex, '').replace(/\n\s*\n/g, '\n');
-  };
+  staticLineNumbers.current = staticLineNums;
+  editor.createDecorationsCollection(decorations);
+};
+
 
   const handleEditorChange = (val: string | undefined) => {
-    const newValue = val || '';
+    const newValue = val || "";
     setInternalValue(newValue);
-    if (onChange) {
-      onChange('code', newValue);
-    }
+    if (onChange) onChange(newValue);
   };
 
   return (
-    <div className="overlay rounded-md overflow-hidden w-full h-full shadow-4xl bg-brand-800 dark:bg-surface" style={{backgroundColor: '#0F172A'}}>
+    <div
+      className="overlay rounded-md overflow-hidden w-full h-full shadow-4xl"
+      style={{ backgroundColor: "#0F172A" }}
+    >
       <style>
         {`
-          .protectedCode {
-            background-color: rgba(255, 165, 0, 0.1);
+          .staticLine {
+            background-color: rgba(34, 197, 94, 0.1) !important;
+            border-left: 3px solid #22C55E;
           }
-          .protectedInline {
-            color: #888 !important;
+          .staticLineMargin {
+            background-color: rgba(34, 197, 94, 0.2) !important;
           }
           .monaco-editor, .monaco-editor-background, .monaco-editor .margin, .monaco-editor .inputarea.ime-input {
             background-color: #0F172A !important;
@@ -172,9 +175,12 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
           .monaco-editor .view-overlays .current-line {
             border: none;
           }
+          .monaco-editor .line-numbers {
+            color: #64748B !important;
+          }
         `}
       </style>
-      
+
       <Editor
         height={height}
         width={width}
@@ -188,8 +194,13 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
           minimap: { enabled: false },
           fontSize: 14,
           automaticLayout: true,
-          lineNumbers: 'on',
-          scrollBeyondLastLine: false
+          lineNumbers: "on",
+          scrollBeyondLastLine: false,
+          wordWrap: "on",
+          folding: true,
+          renderLineHighlight: "all",
+          cursorBlinking: "smooth",
+          selectOnLineNumbers: true,
         }}
       />
     </div>
