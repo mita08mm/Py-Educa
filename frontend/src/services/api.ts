@@ -12,6 +12,7 @@ export interface Curso {
   cod_curso?: number;
   titulo_curso: string;
   descripcion_curso?: string;
+  imagen_curso?: string;
 }
 
 export interface Modulo {
@@ -78,8 +79,10 @@ export const cursoService = {
     return response.data;
   },
 
-  createCourse: async (data: Curso): Promise<Curso> => {
-    const response = await api.post('/cursos/', data);
+  createCourse: async (data: FormData): Promise<Curso> => {
+    const response = await api.post('/cursos/', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },  
+    });
     return response.data;
   },
 

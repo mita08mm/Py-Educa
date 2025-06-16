@@ -18,7 +18,6 @@ export const ContenidoList = ({ cod_subseccion }: ContenidoListProps) => {
     try {
       setLoading(true);
       const data = await contenidoService.getBySubseccion(cod_subseccion);
-      console.log("Respuesta de contenido:", data);
       setContenidos(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar el contenido');

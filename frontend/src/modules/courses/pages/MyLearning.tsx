@@ -51,8 +51,8 @@ export const MyLearning = () => {
             >
                 <div className="relative h-40 w-full">
                   <img
-                    // src={c.image } 
-                    src={"https://skoolofcode.us/wp-content/uploads/2022/09/artturi-jalli-g5_rxRjvKmg-unsplash-2048x1536.jpg"} 
+                    src={c.imagen_curso} 
+                    // src={"https://skoolofcode.us/wp-content/uploads/2022/09/artturi-jalli-g5_rxRjvKmg-unsplash-2048x1536.jpg"} 
                     alt={c.titulo_curso}
                     className="h-full w-full object-cover group-hover:scale-105 transition"
                   />

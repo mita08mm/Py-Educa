@@ -2,22 +2,32 @@ import { useState } from 'react';
 import { Curso } from '../../../services/api';
 
 interface CourseFormProps {
-  onSubmit: (data: Omit<Curso, 'cod_curso'>) => Promise<void>;
+  onSubmit: (data: FormData) => Promise<void>; 
   initialData?: Omit<Curso, 'cod_curso'>;
   loading: boolean;
 }
 
 export const CourseForm = ({ onSubmit, initialData, loading }: CourseFormProps) => {
-  const [formData, setFormData] = useState<Omit<Curso, 'cod_curso'>>(
+  const [formData, setFormData] = useState<Omit<Curso, 'cod_curso'> & { imagen_curso: File | null }>(
     initialData || {
       titulo_curso: '',
       descripcion_curso: '',
+      imagen_curso: null,
     }
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(formData);
+    const form = new FormData();
+    form.append('titulo_curso', formData.titulo_curso);
+    form.append('descripcion_curso', formData.descripcion_curso || '');
+
+    if (formData.imagen_curso) {
+      form.append('imagen_curso', formData.imagen_curso);  // Añadir el archivo de imagen
+    }
+
+    // Llamar a la función onSubmit para enviar los datos del formulario
+    await onSubmit(form); 
   };
 
   const inputClasses = "w-full p-2 border border-brand-500 rounded-md bg-brand-600 text-brand-100 focus:border-brand-300 focus:outline-none";
@@ -48,6 +58,19 @@ export const CourseForm = ({ onSubmit, initialData, loading }: CourseFormProps) 
         />
       </div>
       
+      <div>
+        <label htmlFor="imagen" className="block text-sm font-medium text-[#E2E8F0] mb-1">
+          Imagen
+        </label>
+        <input
+          type="file"
+          id="imagen"
+          accept="image/*"
+          onChange={(e) => setFormData({ ...formData, imagen_curso: e.target.files?.[0] || null })}
+          className="w-full px-3 py-2 bg-[#1E293B] border border-[#334155] rounded-md text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#46838C]"
+        />
+      </div>
+
       <button
         type="submit"
         disabled={loading}
