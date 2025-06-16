@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 interface CodeEditorWindowProps {
   value?: string;
   defaultValue?: string;
-  onChange?: (value: string) => void;
+  onChange?: (code: string) => void;
   language?: string;
   theme?: string;
   height?: string;
@@ -14,7 +14,7 @@ interface CodeEditorWindowProps {
 const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
   value,
   defaultValue = "",
-  onChange,
+  onChange = () => {},
   language = "python",
   theme = "vs-dark",
   height = "85vh",
@@ -150,7 +150,7 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
 
 
   const handleEditorChange = (val: string | undefined) => {
-    const newValue = val || "";
+    const newValue = val ?? "";
     setInternalValue(newValue);
     if (onChange) onChange(newValue);
   };

@@ -30,10 +30,12 @@ def execute_code(code):
         stdout = io.StringIO()
         stderr = io.StringIO()
 
+        exec_globals = {}
+        
         # Execute the code with limits
         with redirect_stdout(stdout), redirect_stderr(stderr):
             set_limits()
-            exec(open(temp_file).read())
+            exec(open(temp_file).read(), exec_globals)
 
         return {
             'status': {'id': 3, 'description': 'Accepted'},

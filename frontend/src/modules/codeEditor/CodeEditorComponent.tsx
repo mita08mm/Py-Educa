@@ -4,7 +4,10 @@ import CodeEditorWindow from "./components/CodeEditorWindow";
 import { classnames } from "./utils/general";
 import CustomInput from "./components/CustomInput";
 import OutputDetails from "./components/OutputDetails";
-import { executeCode, CodeExecutionResult } from "./services/codeExecutionService";
+import {
+  executeCode,
+  CodeExecutionResult,
+} from "./services/codeExecutionService";
 
 interface CodeEditorComponentProps {
   initialCode?: string;
@@ -15,12 +18,13 @@ const pythonDefault = `# Escribe tu código aquí
 print("¡Hola Mundo!")
 `;
 
-const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({ 
-  initialCode = pythonDefault, 
-  onCodeChange 
+const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({
+  initialCode = pythonDefault,
+  onCodeChange,
 }) => {
   const [code, setCode] = useState(initialCode);
-  const [outputDetails, setOutputDetails] = useState<CodeExecutionResult | null>(null);
+  const [outputDetails, setOutputDetails] =
+    useState<CodeExecutionResult | null>(null);
   const [customInput, setCustomInput] = useState("");
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,13 +54,13 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({
       setOutputDetails(result);
     } catch (err) {
       console.error("Error al ejecutar el código:", err);
-      setError(err instanceof Error ? err.message : 'Error desconocido');
+      setError(err instanceof Error ? err.message : "Error desconocido");
       setOutputDetails({
-        status: { id: 4, description: 'Error' },
-        stdout: '',
-        stderr: err instanceof Error ? err.message : 'Error desconocido',
-        memory: '0',
-        time: '0'
+        status: { id: 4, description: "Error" },
+        stdout: "",
+        stderr: err instanceof Error ? err.message : "Error desconocido",
+        memory: "0",
+        time: "0",
       });
     } finally {
       setProcessing(false);
@@ -88,13 +92,17 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({
             </div>
             <div className="text-gray-300 text-xs">Python 3</div>
           </div>
-          
+
           <CodeEditorWindow
             value={code}
-            onChange={onChange}
+            onChange={(newCode) => {
+              setCode(newCode);
+              if (onCodeChange) onCodeChange(newCode);
+            }}
             height="400px"
             theme="vs-dark"
             language="python"
+            defaultValue={initialCode}
           />
         </div>
 
@@ -103,9 +111,9 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({
           {/* Ventana de salida */}
           <div className="space-y-2">
             <div className="bg-[#0F172A] rounded-lg border border-brand-700">
-              <OutputWindow 
-                outputDetails={outputDetails} 
-                processing={processing} 
+              <OutputWindow
+                outputDetails={outputDetails}
+                processing={processing}
               />
             </div>
           </div>

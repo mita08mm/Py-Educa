@@ -17,7 +17,7 @@ export const executeCode = async (code: string): Promise<CodeExecutionResult> =>
   try {
     console.log('Enviando código al backend:', code);
     const response = await axios.post(`${API_URL}/api/code/execute`, { code });
-    console.log('Respuesta del backend:', response.data);
+    console.log('Respuesta del backend:', response);
     return response.data;
   } catch (error) {
     console.error('Error al ejecutar el código:', error);
