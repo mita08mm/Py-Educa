@@ -54,27 +54,28 @@ export const ContenidoList = ({ cod_subseccion }: ContenidoListProps) => {
           key={contenido.cod_contenido}
           className="bg-[#1E293B] border border-[#334155] rounded-lg p-4 space-y-4"
         >
-          <div className="flex flex-col md:flex-row-reverse justify-center items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4">
+            {contenido.descripcion && (
+              <article
+              className={`prose prose-invert max-w-none flex-1 ${
+                contenido.imagen ? 'lg:prose-lg' : 'prose-xl'
+              }
+                prose-h1:text-3xl lg:prose-h1:text-4xl prose-h1:font-bold
+                prose-h2:text-2xl lg:prose-h2:text-3xl prose-h2:font-semibold
+                prose-h3:text-xl lg:prose-h3:text-2xl
+                prose-p:text-justify prose-p:leading-relaxed
+                prose-img:rounded-lg prose-img:shadow-md`}
+              dangerouslySetInnerHTML={{ __html: contenido.descripcion }}
+            />
+            )}
             {contenido.imagen && (
-              <div className="md:w-1/3 w-full flex justify-center md:justify-end">
+              <div className="lg:w-2/5 xl:w-1/3 flex-shrink-0">
                 <img
                   src={contenido.imagen}
                   alt="Contenido"
-                  className="max-w-full h-auto rounded-lg"
+                  className="max-w-full h-auto object-cover rounded-lg shadow-lg"
                 />
               </div>
-            )}
-
-            {/* {contenido.descripcion && (
-              <div className="md:w-2/3 p-6 md:p-8">
-                <p className="text-[#E2E8F0]">{contenido.descripcion}</p>
-              </div>
-            )} */}
-            {contenido.descripcion && (
-              <article
-                className="prose prose-invert prose-lg md:prose-xl max-w-none text-[#E2E8F0]"   // tipografía Tailwind + modo oscuro
-                dangerouslySetInnerHTML={{ __html: contenido.descripcion }}
-              />
             )}
           </div>
 
