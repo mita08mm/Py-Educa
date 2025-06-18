@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, Flask
 from flask_restx import Api
 
 from .usuario import api as usuario_ns
@@ -12,6 +12,7 @@ from .nota import api as nota_ns
 from .evaluacion import api as evaluacion_ns
 from .problema import api as problema_ns
 from .judge0 import api as judge0_ns
+from .codeExecution import code_execution_bp
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -34,5 +35,7 @@ api.add_namespace(evaluacion_ns, path='/evaluacion')
 api.add_namespace(problema_ns, path='/problema')
 api.add_namespace(judge0_ns, path='/judge0')
 
-def register_routes(app):
+def register_routes(app: Flask):
+    """Registra todas las rutas de la aplicación"""
     app.register_blueprint(api_bp)
+    app.register_blueprint(code_execution_bp, url_prefix='/api/code')

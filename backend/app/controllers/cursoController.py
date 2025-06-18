@@ -7,16 +7,27 @@ curso_schema = CursoSchema()
 cursos_schema = CursoSchema(many=True)
 
 def crear_curso_handler():
-    data = request.get_json()
-    errors = curso_schema.validate(data)
+    try:
+        titulo_curso = request.form.get('titulo_curso')
+        descripcion_curso = request.form.get('descripcion_curso', '')
+        imagen_archivo = request.files.get('imagen_curso')  # Se asegura de que se obtiene la imagen
 
-    if errors:
-        return Response(json.dumps(errors), status=400, mimetype='application/json')
+        if not titulo_curso:
+            return Response(json.dumps({"error": "titulo_curso es requerido"}), status=400, mimetype='application/json')
 
-    valid_data = curso_schema.load(data)
-    curso, _ = crear_curso(valid_data)
-    result = curso_schema.dump(curso)
-    return Response(json.dumps(result), status=201, mimetype='application/json')
+        imagen_bytes = None
+        if imagen_archivo:
+            imagen_bytes = imagen_archivo.read()  # Se lee el archivo de imagen
+
+        curso = crear_curso(
+            titulo_curso=titulo_curso,  # Se pasa correctamente el título
+            descripcion_curso=descripcion_curso,
+            imagen_curso=imagen_bytes
+        )
+
+        return Response(curso_schema.dumps(curso), status=201, mimetype='application/json')
+    except Exception as e:
+        return Response(json.dumps({"error": str(e)}), status=500, mimetype='application/json')
 
 def listar_cursos():
     cursos = get_all_cursos()

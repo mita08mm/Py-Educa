@@ -43,7 +43,8 @@ export const CourseDetail = () => {
         {/* Header del curso */}
         <div className="relative h-64 rounded-lg overflow-hidden mb-8">
           <img
-            src={"https://skoolofcode.us/wp-content/uploads/2022/09/artturi-jalli-g5_rxRjvKmg-unsplash-2048x1536.jpg"}
+            src={course.imagen_curso}
+            // src={"https://skoolofcode.us/wp-content/uploads/2022/09/artturi-jalli-g5_rxRjvKmg-unsplash-2048x1536.jpg"}
             alt={course.titulo_curso}
             className="w-full h-full object-cover"
           />

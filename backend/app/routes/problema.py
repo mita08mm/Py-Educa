@@ -16,6 +16,7 @@ problema_model = api.model('Problema', {
     'descripcion_problema': fields.String(required=True, description='Descripción del problema'),
     'input': fields.String(required=True, description='Entrada de prueba para el problema'),
     'output': fields.String(required=True, description='Salida esperada de la entrada de prueba'),
+    'editor': fields.String(required=False, description='Plantilla de codigo del problema'),
     'ejemplos': fields.List(fields.Nested(ejemplo_model), required=True, description='Lista de ejemplos de entrada/salida')
 })
 

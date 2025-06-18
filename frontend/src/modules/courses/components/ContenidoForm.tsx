@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { contenidoService, Contenido } from '../../../services/api';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';  
+import 'tailwindcss/tailwind.css';
 
 interface ContenidoFormProps {
   cod_modulo: number;
@@ -16,7 +19,16 @@ export const ContenidoForm = ({ cod_modulo, cod_seccion, cod_subseccion, onSucce
     link: '',
   });
   const [imagen, setImagen] = useState<File | null>(null);
-
+  const toolbar = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      [{ size: ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['clean'],
+    ],
+  };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -56,13 +68,13 @@ export const ContenidoForm = ({ cod_modulo, cod_seccion, cod_subseccion, onSucce
         <label htmlFor="descripcion" className="block text-sm font-medium text-[#E2E8F0] mb-1">
           Descripción
         </label>
-        <textarea
+        <ReactQuill
           id="descripcion"
+          theme="snow"
           value={formData.descripcion}
-          onChange={(e) => setFormData(prev => ({ ...prev, descripcion: e.target.value }))}
+          onChange={(html) => setFormData(prev => ({ ...prev, descripcion: html }))}
+          modules={toolbar}
           className="w-full px-3 py-2 bg-[#1E293B] border border-[#334155] rounded-md text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#46838C]"
-          rows={4}
-          required
         />
       </div>
 
@@ -75,7 +87,7 @@ export const ContenidoForm = ({ cod_modulo, cod_seccion, cod_subseccion, onSucce
           id="link"
           value={formData.link}
           onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
-          className="w-full px-3 py-2 bg-[#1E293B] border border-[#334155] rounded-md text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#46838C]"
+          className="w-full px-3 py-2 bg-[#efeff0] border border-[#334155] rounded-md text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#46838C]"
           placeholder="https://ejemplo.com"
         />
       </div>
