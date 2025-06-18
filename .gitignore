@@ -52,3 +52,10 @@ logs/
 Thumbs.db 
 
 docker-compose.yml
+
+# Configuraciones limitadas locales 
+docker-compose.optimized.yml
+docker-compose.minimal.yml
+backend/Dockerfile.optimized
+frontend/Dockerfile.optimized
+docker-settings.md
