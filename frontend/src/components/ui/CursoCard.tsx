@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import type { Curso } from "../../types/curso";
 
 interface CursoCardProps {
@@ -5,6 +6,12 @@ interface CursoCardProps {
 }
 
 const CursoCard = ({ curso }: CursoCardProps) => {
+  const navigate = useNavigate();
+
+  const handleVerCurso = () => {
+    navigate(`/curso/${curso.cod_curso}`);
+  };
+
   return (
     <div className="bg-neo-mint border-4 border-black shadow-brutal-lg hover:shadow-brutal-xl transition-shadow duration-100">
       <div className="h-48 bg-neo-yellow border-b-4 border-black flex items-center justify-center">
@@ -26,7 +33,10 @@ const CursoCard = ({ curso }: CursoCardProps) => {
         <p className="text-gray-800 mb-4 font-medium">
           {curso.descripcion_curso}
         </p>
-        <button className="bg-neo-red border-3 border-black shadow-brutal px-6 py-2 font-brutal hover:shadow-brutal-lg transition-shadow duration-100">
+        <button
+          onClick={handleVerCurso}
+          className="bg-neo-red border-3 border-black shadow-brutal px-6 py-2 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+        >
           VER CURSO
         </button>
       </div>
