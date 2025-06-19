@@ -17,6 +17,11 @@ services:
       - ./backend:/app
     networks:
       - app-network
+    # Hardware limitations 
+    mem_limit: 300m
+    cpus: 0.5
+    memswap_limit: 400m
+    restart: unless-stopped
 
   frontend:
     build: ./frontend
@@ -33,6 +38,11 @@ services:
       - backend
     networks:
       - app-network
+    # Hardware limitations for frontend
+    mem_limit: 400m
+    cpus: 0.5
+    memswap_limit: 500m
+    restart: unless-stopped
 
   code-sandbox:
     build: ./code-sandbox
@@ -44,13 +54,18 @@ services:
       - ./code-sandbox:/app
     networks:
       - app-network
-    # Add security options
+    # Add security 
     cap_drop:
       - ALL
     cap_add:
       - NET_BIND_SERVICE
     security_opt:
       - no-new-privileges:true
+    # Hardware limitations for sandbox (more restrictive for security)
+    mem_limit: 200m
+    cpus: 0.25
+    memswap_limit: 250m
+    restart: unless-stopped
 
   db:
     image: postgres:13
@@ -64,17 +79,26 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app-network
+    # Hardware limitations for database
+    mem_limit: 512m
+    cpus: 0.75
+    memswap_limit: 600m
+    restart: unless-stopped
 
-  pgadmin:
-    image: dpage/pgadmin4:8.1
-    container_name: pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - 8080:80
-    networks:
-      - app-network 
+  # pgadmin:
+  #   image: dpage/pgadmin4:8.1
+  #   container_name: pgadmin
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@example.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - 8080:80
+  #   networks:
+  #     - app-network
+  #   # Resource limits for pgadmin (optional)
+  #   # Uncomment if needed:
+  #   # mem_limit: 100m
+  #   # cpus: 0.25
 
 volumes:
   postgres_data:

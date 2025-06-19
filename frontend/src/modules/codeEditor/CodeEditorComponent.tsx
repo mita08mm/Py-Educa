@@ -50,7 +50,11 @@ const CodeEditorComponent: React.FC<CodeEditorComponentProps> = ({
     console.log("Ejecutando código:", code);
 
     try {
-      const result = await executeCode(code);
+      // Convertir el input personalizado a un array de líneas
+      const inputArray = customInput.trim() ? customInput.split('\n').filter(line => line.trim()) : undefined;
+      console.log("Input array:", inputArray);
+      
+      const result = await executeCode(code, inputArray);
       setOutputDetails(result);
     } catch (err) {
       console.error("Error al ejecutar el código:", err);

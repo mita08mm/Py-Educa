@@ -10,7 +10,8 @@ def execute_code():
     
     Request body:
     {
-        "code": "código Python a ejecutar"
+        "code": "código Python a ejecutar",
+        "input": ["entrada1", "entrada2"] (opcional)
     }
     
     Returns:
@@ -19,7 +20,8 @@ def execute_code():
         "stdout": str,
         "stderr": str,
         "memory": str,
-        "time": str
+        "time": str,
+        "input_used": int
     }
     """
     try:
@@ -31,9 +33,12 @@ def execute_code():
         if not isinstance(code, str) or not code.strip():
             return jsonify({'error': 'El código debe ser una cadena no vacía'}), 400
 
+        # Extraer input si está presente
+        input_data = data.get('input', [])
+
         # Crear una nueva instancia del servicio para cada solicitud
         code_service = CodeExecutionService()
-        result = code_service.execute_code(code)
+        result = code_service.execute_code(code, input_data)
         
         return jsonify(result)
     except Exception as e:
@@ -43,5 +48,6 @@ def execute_code():
             'stdout': '',
             'stderr': str(e),
             'memory': '0',
-            'time': '0'
+            'time': '0',
+            'input_used': 0
         }), 500 

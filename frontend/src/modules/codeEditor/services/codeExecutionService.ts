@@ -11,12 +11,20 @@ export interface CodeExecutionResult {
   stderr: string;
   memory: string;
   time: string;
+  input_used?: number;
 }
 
-export const executeCode = async (code: string): Promise<CodeExecutionResult> => {
+export const executeCode = async (code: string, input?: string[]): Promise<CodeExecutionResult> => {
   try {
     console.log('Enviando código al backend:', code);
-    const response = await axios.post(`${API_URL}/api/code/execute`, { code });
+    console.log('Input proporcionado:', input);
+    
+    const payload: any = { code };
+    if (input && input.length > 0) {
+      payload.input = input;
+    }
+    
+    const response = await axios.post(`${API_URL}/api/code/execute`, payload);
     console.log('Respuesta del backend:', response);
     return response.data;
   } catch (error) {

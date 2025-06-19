@@ -1,7 +1,7 @@
 # 🐍 Code Sandbox - Documentación Técnica
 
 ## 📋 Descripción
-Entorno seguro para ejecutar código Python en tiempo real. Integrado con la plataforma Py-Educa.
+Entorno seguro para ejecutar código Python en tiempo real con soporte completo para entrada interactiva. Integrado con la plataforma Py-Educa.
 
 ## 🏗️ Arquitectura
 ```
@@ -18,16 +18,37 @@ Frontend → Backend (/api/code/execute) → Code Sandbox (/execute) → Resulta
 - **Framework**: Flask
 
 ### **Límites de Seguridad:**
-- **CPU**: 5 segundos máximo
-- **Memoria**: 50MB máximo  
-- **Archivo**: 1MB máximo
+- **CPU**: 10 segundos máximo
+- **Memoria**: 100MB máximo  
+- **Archivo**: 2MB máximo
 - **Capacidades Docker**: `cap_drop: ALL`, `no-new-privileges:true`
+
+## 🆕 Nuevas Funcionalidades
+
+### **✅ Soporte Completo para Input**
+- Simulación de `input()` function
+- Múltiples entradas en secuencia
+- Manejo de errores de input
+- Contador de inputs utilizados
+
+### **✅ Librerías Científicas**
+- `numpy`: Cálculos numéricos
+- `matplotlib`: Creación de gráficos
+- `pandas`: Análisis de datos
+- `scipy`: Funciones científicas
+
+### **✅ Acceso a Archivos**
+- Directorio `data/` disponible
+- Archivos de ejemplo incluidos
+- Lectura de archivos CSV, TXT
 
 ## 📡 Endpoints
 
 ### **Directo al Sandbox:**
 ```
 POST http://localhost:5001/execute
+GET  http://localhost:5001/health
+GET  http://localhost:5001/test
 ```
 
 ### **A través del Backend:**
@@ -37,10 +58,11 @@ POST http://localhost:5000/api/code/execute
 
 ## 📊 Formatos de Request/Response
 
-### **Request:**
+### **Request (con Input):**
 ```json
 {
-  "code": "print('Hello World')"
+  "code": "nombre = input('Ingresa tu nombre: ')\nprint(f'¡Hola {nombre}!')",
+  "input": ["Juan"]
 }
 ```
 
@@ -48,10 +70,11 @@ POST http://localhost:5000/api/code/execute
 ```json
 {
   "status": {"id": 3, "description": "Accepted"},
-  "stdout": "Hello World\n",
+  "stdout": "¡Hola Juan!\n",
   "stderr": "",
   "memory": "0",
-  "time": "0"
+  "time": "0",
+  "input_used": 1
 }
 ```
 
@@ -62,7 +85,8 @@ POST http://localhost:5000/api/code/execute
   "stdout": "",
   "stderr": "NameError: name 'x' is not defined",
   "memory": "0",
-  "time": "0"
+  "time": "0",
+  "input_used": 0
 }
 ```
 
@@ -76,6 +100,7 @@ POST http://localhost:5000/api/code/execute
 
 ### **execute_code.py**
 - Lógica principal de ejecución
+- Simulador de input interactivo
 - Configuración de límites de recursos
 - Manejo de errores y excepciones
 - Captura de stdout/stderr
@@ -90,6 +115,14 @@ POST http://localhost:5000/api/code/execute
 - Flask==2.0.1
 - Werkzeug==2.0.1
 - Gunicorn==20.1.0
+- numpy==1.21.0
+- matplotlib==3.5.0
+- pandas==1.3.0
+- scipy==1.7.0
+
+### **data/**
+- `ejemplo_datos.txt`: Datos numéricos para ejercicios
+- `nombres.txt`: Lista de nombres para ejercicios de strings
 
 ## 🔗 Integración con Backend
 
@@ -104,9 +137,12 @@ class CodeExecutionService:
     def __init__(self):
         self.sandbox_url = current_app.config.get('CODE_SANDBOX_URL', 'http://code-sandbox:5001')
     
-    def execute_code(self, code: str) -> Dict[str, Any]:
-        # Hace request HTTP al sandbox
-        response = requests.post(f"{self.sandbox_url}/execute", json={"code": code})
+    def execute_code(self, code: str, input_data: List[str] = None) -> Dict[str, Any]:
+        # Hace request HTTP al sandbox con input
+        payload = {"code": code}
+        if input_data:
+            payload["input"] = input_data
+        response = requests.post(f"{self.sandbox_url}/execute", json=payload)
         return response.json()
 ```
 
@@ -157,12 +193,15 @@ docker-compose ps
 # Test directo al sandbox
 curl -X POST http://localhost:5001/execute \
   -H "Content-Type: application/json" \
-  -d '{"code": "print(\"test\")"}'
+  -d '{"code": "print(input(\"Test: \"))", "input": ["Hello"]}'
 
 # Test a través del backend
 curl -X POST http://localhost:5000/api/code/execute \
   -H "Content-Type: application/json" \
-  -d '{"code": "print(\"test\")"}'
+  -d '{"code": "print(input(\"Test: \"))", "input": ["Hello"]}'
+
+# Health check
+curl http://localhost:5001/health
 ```
 
 ## 🔧 Personalización
@@ -173,7 +212,11 @@ curl -X POST http://localhost:5000/api/code/execute \
 flask==2.0.1
 werkzeug==2.0.1
 gunicorn==20.1.0
-numpy==1.21.0  # Nueva librería
+numpy==1.21.0
+matplotlib==3.5.0
+pandas==1.3.0
+scipy==1.7.0
+# Nueva librería aquí
 ```
 
 2. Reconstruir:
@@ -186,10 +229,49 @@ docker-compose restart code-sandbox
 Editar `execute_code.py` función `set_limits()`:
 ```python
 def set_limits():
-    # CPU time limit (cambiar 5 por el valor deseado)
-    resource.setrlimit(resource.RLIMIT_CPU, (5, 5))
-    # Memory limit (cambiar 50 por el valor en MB)
-    resource.setrlimit(resource.RLIMIT_AS, (50 * 1024 * 1024, 50 * 1024 * 1024))
+    # CPU time limit (cambiar 10 por el valor deseado)
+    resource.setrlimit(resource.RLIMIT_CPU, (10, 10))
+    # Memory limit (cambiar 100 por el valor en MB)
+    resource.setrlimit(resource.RLIMIT_AS, (100 * 1024 * 1024, 100 * 1024 * 1024))
+```
+
+### **Agregar Archivos de Datos:**
+1. Colocar archivos en `data/`
+2. Acceder desde el código con `__data_dir__/archivo.txt`
+
+## 🎯 Ejemplos de Uso
+
+### **Ejemplo Básico con Input:**
+```python
+nombre = input("Ingresa tu nombre: ")
+edad = int(input("Ingresa tu edad: "))
+print(f"¡Hola {nombre}! Tienes {edad} años")
+```
+
+**Input:** `["Juan", "25"]`
+
+### **Ejemplo con Librerías:**
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+datos = [1, 2, 3, 4, 5]
+promedio = np.mean(datos)
+print(f"Promedio: {promedio}")
+
+plt.plot(datos)
+plt.title("Gráfico de ejemplo")
+plt.show()
+```
+
+### **Ejemplo con Archivos:**
+```python
+with open('__data_dir__/nombres.txt', 'r') as f:
+    nombres = f.read().splitlines()
+
+print("Nombres en el archivo:")
+for nombre in nombres:
+    print(f"- {nombre}")
 ```
 
 ## 🐛 Troubleshooting
@@ -198,68 +280,25 @@ def set_limits():
 
 **"Failed to resolve 'code-sandbox'"**
 - Verificar que el contenedor se llame `code-sandbox`
-- Verificar red Docker: `docker network ls`
+- Revisar `docker-compose.yml`
 
-**"Connection refused"**
-- Verificar que el sandbox esté corriendo: `docker ps | grep sandbox`
-- Verificar puerto 5001: `netstat -an | grep 5001`
+**"EOFError: No more input data available"**
+- Proporcionar más entradas en el array `input`
+- Verificar que el código no pida más inputs de los proporcionados
 
-**"Timeout"**
-- El código tarda más de 5 segundos
-- Optimizar código o aumentar límite en `set_limits()`
+**"ModuleNotFoundError"**
+- Verificar que la librería esté en `requirements.txt`
+- Reconstruir el contenedor: `docker-compose build code-sandbox`
 
-**"vite: not found"**
-- Reconstruir frontend: `docker-compose build frontend`
+**"Resource limit exceeded"**
+- Reducir la complejidad del código
+- Aumentar límites en `set_limits()` si es necesario
 
-### **Logs de Debug:**
-```bash
-# Ver logs del sandbox
-docker-compose logs -f code-sandbox
+## 📚 Documentación Adicional
 
-# Ver logs del backend
-docker-compose logs -f backend
+- `ejercicios_ejemplo.md`: Ejercicios con librerías científicas
+- `ejemplos_con_input.md`: Ejemplos detallados de uso con input
+- `data/`: Archivos de ejemplo para ejercicios
 
-# Ver logs de todos los servicios
-docker-compose logs -f
-```
-
-## 🛡️ Seguridad
-
-### **Medidas Implementadas:**
-- Usuario no-root (`codeuser`)
-- Límites estrictos de recursos
-- Capacidades Docker limitadas
-- Archivos temporales que se eliminan
-- Entorno aislado en contenedor
-- Validación de entrada JSON
-
-### **Configuración Docker:**
-```yaml
-cap_drop:
-  - ALL
-cap_add:
-  - NET_BIND_SERVICE
-security_opt:
-  - no-new-privileges:true
-```
-
-## 📈 Monitoreo
-
-### **Estado de Servicios:**
-```bash
-docker-compose ps
-```
-
-### **Uso de Recursos:**
-```bash
-docker stats
-```
-
-### **Verificar Conectividad:**
-```bash
-# Desde host
-curl http://localhost:5001
-
-# Desde contenedor backend
-docker exec py-educa-backend-1 curl http://code-sandbox:5001
-```
+¡Tu sandbox está completo y listo para cualquier tipo de ejercicio! 🎉
+ 
