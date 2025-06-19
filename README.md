@@ -160,3 +160,124 @@ Cuando se ejecuta el workflow, realiza las siguientes acciones:
 5. Verifica que el backend responda correctamente.
 6. Verifica que el frontend esté disponible.
 7. Detiene los contenedores después de las pruebas.
+
+## Guía de Instalación Local (Windows, Mac, Linux)
+
+### Prerrequisitos
+
+Asegúrate de tener instalados los siguientes programas:
+
+#### 1. Git
+- Descarga e instala desde: https://git-scm.com/downloads
+
+#### 2. Node.js y npm
+- Descarga e instala desde: https://nodejs.org/
+- Verifica la instalación:
+  ```bash
+  node -v
+  npm -v
+  ```
+
+#### 3. Python 3.9 o superior
+- Windows: https://www.python.org/downloads/windows/
+- Mac: https://www.python.org/downloads/macos/
+- Linux: https://www.python.org/downloads/source/
+- Verifica la instalación:
+  ```bash
+  python --version
+  # o en algunos sistemas
+  python3 --version
+  ```
+
+#### 4. pip (gestor de paquetes de Python)
+- Suele venir con Python, si no: https://pip.pypa.io/en/stable/installation/
+
+#### 5. Docker (opcional, recomendado para pruebas y despliegue)
+- https://www.docker.com/products/docker-desktop/
+
+---
+
+## Clonar el repositorio
+
+```bash
+git clone <URL_DEL_REPOSITORIO>
+cd Py-Educa
+```
+
+---
+
+## Instalación del Backend
+
+1. Ve a la carpeta del backend:
+   ```bash
+   cd backend
+   ```
+
+2. (Opcional) Crea y activa un entorno virtual:
+   - **Windows:**
+     ```bash
+     python -m venv venv
+     venv\Scripts\activate
+     ```
+   - **Mac/Linux:**
+     ```bash
+     python3 -m venv venv
+     source venv/bin/activate
+     ```
+
+3. Instala las dependencias:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Configura la base de datos:
+   - Por defecto, el proyecto puede estar configurado para usar SQLite o MySQL. Revisa `backend/app/config.py` para detalles.
+   - Si usas SQLite, no necesitas instalar nada extra.
+   - Si usas MySQL/PostgreSQL, instala el motor y crea la base de datos localmente.
+
+5. (Opcional) Carga datos de ejemplo:
+   ```bash
+   # Por ejemplo, para MySQL:
+   mysql -u <usuario> -p <nombre_db> < ../db/datosEjemplo.sql
+   ```
+
+6. Ejecuta el backend:
+   ```bash
+   # Usualmente:
+   python run.py
+   # o
+   flask run
+   ```
+
+---
+
+## Instalación del Frontend
+
+1. Ve a la carpeta del frontend:
+   ```bash
+   cd ../frontend
+   ```
+
+2. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+
+3. Ejecuta la app en modo desarrollo:
+   ```bash
+   npm run dev
+   ```
+
+4. Accede a la app en: [http://localhost:5173](http://localhost:5173) (o el puerto que indique la consola).
+
+---
+
+## Notas adicionales
+
+- Si usas Docker, puedes construir y correr los contenedores con los Dockerfiles incluidos.
+- Asegúrate de que el backend y frontend apunten a los endpoints correctos (revisa CORS y variables de entorno).
+- Si tienes problemas con dependencias, revisa las versiones recomendadas en los archivos `requirements.txt` y `package.json`.
+
+---
+
+¡Listo! Ahora puedes desarrollar y probar Py-Educa en tu máquina local. Si tienes dudas, revisa la documentación interna o contacta al equipo de desarrollo.
