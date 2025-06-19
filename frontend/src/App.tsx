@@ -1,8 +1,11 @@
 import "./App.css";
 
 function App() {
-  return <h1 className="bg-blue-700"> Hola mundo!</h1>;
+  return (
+    <div className="bg-sepi03 text-sepi24 p-4 rounded-lg">
+      ¡Hola con estilo sepia! 🎨
+    </div>
+  );
 }
 
 export default App;
-  
