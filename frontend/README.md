@@ -1,55 +1,54 @@
-# 🐍 Python Learning Platform - Frontend
+# React + TypeScript + Vite
 
-![React](https://img.shields.io/badge/React-18.2-%2361DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-%233178C6)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.3-%2306B6D4)
-![Vite](https://img.shields.io/badge/Vite-4.0-%23646CFF)
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Este repositorio contiene el frontend de nuestra plataforma educativa diseñada para enseñar programación en Python de manera interactiva y accesible.
+Currently, two official plugins are available:
 
-## ✨ Features
-- Cursos con material interactivo
-- Editor de código integrado
-- Ejercicios prácticos y proyectos
-- Responsive Design 
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## 🛠 Tech Stack
+## Expanding the ESLint configuration
 
-### Core
-- React 18 + TypeScript
-- Tailwind CSS
-- Vite build tool
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-### Key Libraries
-- Material UI (componentes y estilos)
-- Axios (HTTP requests)
-- React Router (SPA routing)
-- Heroicons y React Icons (iconografía)
-
-### Dev Tools
-- Jest + Testing Library (testing)
-- ESLint (linting)
-- Babel (transpilación)
-
-## Requisitos del sistema
-* Node.js 18+
-* npm 9+ o yarn 1.22+
-* Navegador moderno (Chrome, Firefox, Edge, Safari)
-
-## 🚀 Quick Start
-1. Instalar dependencias
-```bash
-npm install
-# or
-yarn
+```js
+export default tseslint.config({
+  extends: [
+    // Remove ...tseslint.configs.recommended and replace with this
+    ...tseslint.configs.recommendedTypeChecked,
+    // Alternatively, use this for stricter rules
+    ...tseslint.configs.strictTypeChecked,
+    // Optionally, add this for stylistic rules
+    ...tseslint.configs.stylisticTypeChecked,
+  ],
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
 ```
-2. Set up del entorno
-```bash
-cp .env.example .env
-```
-3. Iniciar el servidor de desarrollo
-```bash
-npm run dev
-# or
-yarn dev
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default tseslint.config({
+  plugins: {
+    // Add the react-x and react-dom plugins
+    'react-x': reactX,
+    'react-dom': reactDom,
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended typescript rules
+    ...reactX.configs['recommended-typescript'].rules,
+    ...reactDom.configs.recommended.rules,
+  },
+})
 ```
