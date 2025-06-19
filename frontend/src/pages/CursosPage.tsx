@@ -1,7 +1,9 @@
 import { useCursos } from "../hooks/useCursos";
 import CursoCard from "../components/ui/CursoCard";
+import { useNavigate } from "react-router-dom";
 
 const CursosPage = () => {
+  const navigate = useNavigate();
   const { cursos, loading, error } = useCursos();
 
   if (loading) {
@@ -28,12 +30,22 @@ const CursosPage = () => {
 
   return (
     <div>
-      {/* Título */}
+      {/* Título y botón crear */}
       <div className="bg-neo-magenta border-5 border-black shadow-brutal-xl p-8 mb-8">
-        <h1 className="font-brutal text-4xl text-white mb-2">MIS CURSOS</h1>
-        <p className="text-xl font-bold text-black">
-          Explora todos los cursos disponibles
-        </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="font-brutal text-4xl text-white mb-2">MIS CURSOS</h1>
+            <p className="text-xl font-bold text-black">
+              Explora todos los cursos disponibles
+            </p>
+          </div>
+          <button
+            onClick={() => navigate("/crear-curso")}
+            className="bg-neo-lime border-4 border-black shadow-brutal-lg px-6 py-4 font-brutal text-xl hover:shadow-brutal-xl transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+          >
+            ➕ CREAR CURSO
+          </button>
+        </div>
       </div>
 
       {/* Grid de cursos */}

@@ -4,9 +4,9 @@ const Navbar = () => {
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo y título */}
-          <div className="flex items-center space-x-4">
-            <h1 className="font-brutal text-3xl text-black">
-              CURSO<span className="text-white">BRUTAL</span>
+          <div className="flex items-center space-x-4 ">
+            <h1 className="font-brutal text-3xl text-neo-cyan ">
+              PY<span className="text-neo-yellow">EDUCA</span>
             </h1>
           </div>
 
