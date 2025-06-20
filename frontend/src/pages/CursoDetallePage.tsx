@@ -1,6 +1,8 @@
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCursoDetalle } from "../hooks/useCursoDetalle";
 import ModuloCard from "../components/ui/ModuloCard";
+import CrearModuloModal from "../components/ui/CrearModuloModal";
 
 const CursoDetallePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -8,6 +10,13 @@ const CursoDetallePage = () => {
   const cursoId = id ? parseInt(id) : 0;
 
   const { curso, modulos, loading, error } = useCursoDetalle(cursoId);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleModuloCreated = () => {
+    setRefreshKey((prev) => prev + 1);
+    window.location.reload();
+  };
 
   if (loading) {
     return (
@@ -92,10 +101,13 @@ const CursoDetallePage = () => {
                 <div className="font-brutal text-2xl mb-1">0%</div>
                 <div className="font-bold">PROGRESO</div>
               </div>
-              <div className="bg-neo-cyan border-3 border-black shadow-brutal p-4 text-center">
-                <div className="font-brutal text-2xl mb-1">⭐</div>
-                <div className="font-bold">PREMIUM</div>
-              </div>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-neo-cyan border-3 border-black shadow-brutal p-4 text-center hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+              >
+                <div className="font-brutal text-2xl mb-1">➕</div>
+                <div className="font-bold">CREAR MÓDULO</div>
+              </button>
             </div>
           </div>
         </div>
@@ -103,9 +115,11 @@ const CursoDetallePage = () => {
 
       {/* Título de módulos */}
       <div className="bg-neo-yellow border-4 border-black shadow-brutal-lg p-6 mb-8">
-        <h2 className="font-brutal text-3xl text-black">
-          📋 MÓDULOS DEL CURSO ({modulos.length})
-        </h2>
+        <div className="flex justify-between items-center">
+          <h2 className="font-brutal text-3xl text-black">
+            📋 MÓDULOS DEL CURSO ({modulos.length})
+          </h2>
+        </div>
       </div>
 
       {/* Grid de módulos */}
@@ -121,6 +135,7 @@ const CursoDetallePage = () => {
             <span className="font-brutal text-2xl">
               NO HAY MÓDULOS DISPONIBLES
             </span>
+            <br />
           </div>
         </div>
       )}
@@ -134,6 +149,15 @@ const CursoDetallePage = () => {
           ← VOLVER
         </button>
       </div>
+
+      {/* Modal para crear módulo */}
+      <CrearModuloModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        cursoId={cursoId}
+        cursoTitulo={curso.titulo_curso}
+        onModuloCreated={handleModuloCreated}
+      />
     </div>
   );
 };
