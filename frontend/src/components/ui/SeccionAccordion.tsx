@@ -1,4 +1,6 @@
+import { useState } from "react";
 import type { Seccion, Subseccion } from "../../types/seccion";
+import CrearSubseccionModal from "./CrearSubseccionModal";
 
 interface SeccionConSubsecciones extends Seccion {
   subsecciones: Subseccion[];
@@ -9,6 +11,8 @@ interface SeccionAccordionProps {
   index: number;
   isOpen: boolean;
   onToggle: () => void;
+  moduloId: number;
+  onContentCreated: () => void;
 }
 
 const SeccionAccordion = ({
@@ -16,7 +20,11 @@ const SeccionAccordion = ({
   index,
   isOpen,
   onToggle,
+  moduloId,
+  onContentCreated,
 }: SeccionAccordionProps) => {
+  const [isSubseccionModalOpen, setIsSubseccionModalOpen] = useState(false);
+
   const sectionColors = [
     "bg-neo-mint",
     "bg-neo-coral",
@@ -54,7 +62,7 @@ const SeccionAccordion = ({
         <div className="flex items-center space-x-3">
           <div className="bg-neo-red border-2 border-black shadow-brutal px-3 py-1">
             <span className="font-brutal text-sm">
-              {seccion.subsecciones.length} TEMAS
+              {seccion.subsecciones.length} SUB-SECCIONES
             </span>
           </div>
           <span
@@ -102,18 +110,50 @@ const SeccionAccordion = ({
                   </div>
                 </div>
               ))}
+
+              {/* Botón para agregar nuevo tema */}
+              <div className="pt-3 border-t-2 border-gray-300">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsSubseccionModalOpen(true);
+                  }}
+                  className="w-full bg-neo-cyan border-3 border-black shadow-brutal p-4 font-brutal hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1"
+                >
+                  ➕ AÑADIR NUEVO TEMA A ESTA SECCIÓN
+                </button>
+              </div>
             </div>
           ) : (
             <div className="p-6 text-center">
-              <div className="bg-neo-orange border-3 border-black shadow-brutal p-4 inline-block">
+              <div className="bg-neo-orange border-3 border-black shadow-brutal p-4 mb-4">
                 <span className="font-brutal text-lg">
-                  NO HAY TEMAS DISPONIBLES
+                  NO HAY SUB-SECCIONES DISPONIBLES
                 </span>
               </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsSubseccionModalOpen(true);
+                }}
+                className="bg-neo-lime border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+              >
+                ➕ CREAR EL PRIMER TEMA
+              </button>
             </div>
           )}
         </div>
       )}
+
+      {/* Modal para crear subsección */}
+      <CrearSubseccionModal
+        isOpen={isSubseccionModalOpen}
+        onClose={() => setIsSubseccionModalOpen(false)}
+        moduloId={moduloId}
+        seccionId={seccion.cod_seccion!}
+        seccionTitulo={seccion.titulo_seccion}
+        onSubseccionCreated={onContentCreated}
+      />
     </div>
   );
 };

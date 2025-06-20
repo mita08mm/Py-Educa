@@ -17,7 +17,7 @@ export const seccionService = {
   },
 
   create: async (data: Seccion): Promise<Seccion> => {
-    const response = await api.post("/secciones", data);
+    const response = await api.post("/secciones/", data);
     return response.data as Seccion;
   },
 };
@@ -29,7 +29,7 @@ export const subseccionService = {
   },
 
   create: async (data: Subseccion): Promise<Subseccion> => {
-    const response = await api.post("/subsecciones", data);
+    const response = await api.post("/subsecciones/", data);
     return response.data as Subseccion;
   },
 };

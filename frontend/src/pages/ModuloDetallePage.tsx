@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useModuloDetalle } from "../hooks/useModuloDetalle";
 import SeccionAccordion from "../components/ui/SeccionAccordion";
+import CrearSeccionModal from "../components/ui/CrearSeccionModal";
 
 const ModuloDetallePage = () => {
   const { moduloId } = useParams<{ moduloId: string }>();
@@ -9,7 +10,13 @@ const ModuloDetallePage = () => {
   const moduloIdNum = moduloId ? parseInt(moduloId) : 0;
 
   const { modulo, secciones, loading, error } = useModuloDetalle(moduloIdNum);
-  const [openSections, setOpenSections] = useState<number[]>([0]); // Abrir primera sección por defecto
+  const [openSections, setOpenSections] = useState<number[]>([0]);
+  const [isSeccionModalOpen, setIsSeccionModalOpen] = useState(false);
+
+  const handleContentCreated = () => {
+    // Refrescar la página para mostrar el nuevo contenido
+    window.location.reload();
+  };
 
   const toggleSection = (index: number) => {
     setOpenSections((prev) =>
@@ -104,30 +111,33 @@ const ModuloDetallePage = () => {
                 <div className="font-brutal text-2xl mb-1">
                   {totalSubsecciones}
                 </div>
-                <div className="font-bold">TEMAS</div>
+                <div className="font-bold">SUB-SECCION</div>
               </div>
               <div className="bg-neo-cyan border-3 border-black shadow-brutal p-4 text-center">
                 <div className="font-brutal text-2xl mb-1">0%</div>
                 <div className="font-bold">PROGRESO</div>
               </div>
-              <div className="bg-neo-orange border-3 border-black shadow-brutal p-4 text-center">
-                <div className="font-brutal text-2xl mb-1">⏱️</div>
-                <div className="font-bold">2H ESTIMADO</div>
-              </div>
+              <button
+                onClick={() => setIsSeccionModalOpen(true)}
+                className="bg-neo-orange border-3 border-black shadow-brutal p-4 text-center hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+              >
+                <div className="font-brutal text-2xl mb-1">➕</div>
+                <div className="font-bold">CREAR SECCIÓN</div>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Controles */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
         <div className="bg-neo-yellow border-4 border-black shadow-brutal p-4">
           <h2 className="font-brutal text-2xl text-black">
             📋 CONTENIDO DEL MÓDULO
           </h2>
         </div>
 
-        <div className="flex space-x-3">
+        <div className="flex space-x-3 flex-wrap gap-2">
           <button
             onClick={() => setOpenSections(secciones.map((_, i) => i))}
             className="bg-neo-lime border-3 border-black shadow-brutal px-4 py-2 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
@@ -153,12 +163,14 @@ const ModuloDetallePage = () => {
               index={index}
               isOpen={openSections.includes(index)}
               onToggle={() => toggleSection(index)}
+              moduloId={moduloIdNum}
+              onContentCreated={handleContentCreated}
             />
           ))}
         </div>
       ) : (
         <div className="text-center py-12">
-          <div className="bg-neo-orange border-4 border-black shadow-brutal p-8 inline-block">
+          <div className="bg-neo-orange border-4 border-black shadow-brutal p-8 inline-block mb-6">
             <span className="font-brutal text-2xl">
               NO HAY SECCIONES DISPONIBLES
             </span>
@@ -167,6 +179,13 @@ const ModuloDetallePage = () => {
               ¡Agrega contenido a este módulo!
             </span>
           </div>
+          <br />
+          <button
+            onClick={() => setIsSeccionModalOpen(true)}
+            className="bg-neo-lime border-4 border-black shadow-brutal px-8 py-4 font-brutal text-xl hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+          >
+            ➕ CREAR LA PRIMERA SECCIÓN
+          </button>
         </div>
       )}
 
@@ -178,7 +197,27 @@ const ModuloDetallePage = () => {
         >
           ← VOLVER AL CURSO
         </button>
+
+        <div className="bg-white border-3 border-black shadow-brutal px-6 py-3">
+          <span className="font-brutal text-lg">Módulo #{moduloIdNum}</span>
+        </div>
+
+        <button
+          disabled
+          className="bg-gray-400 border-4 border-black shadow-brutal-lg px-8 py-4 font-brutal text-lg cursor-not-allowed opacity-50"
+        >
+          SIGUIENTE MÓDULO →
+        </button>
       </div>
+
+      {/* Modal para crear sección */}
+      <CrearSeccionModal
+        isOpen={isSeccionModalOpen}
+        onClose={() => setIsSeccionModalOpen(false)}
+        moduloId={moduloIdNum}
+        moduloTitulo={modulo.titulo_modulo}
+        onSeccionCreated={handleContentCreated}
+      />
     </div>
   );
 };
