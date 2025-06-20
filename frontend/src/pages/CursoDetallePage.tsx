@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCursoDetalle } from "../hooks/useCursoDetalle";
 import ModuloCard from "../components/ui/ModuloCard";
@@ -11,10 +11,8 @@ const CursoDetallePage = () => {
 
   const { curso, modulos, loading, error } = useCursoDetalle(cursoId);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleModuloCreated = () => {
-    setRefreshKey((prev) => prev + 1);
     window.location.reload();
   };
 

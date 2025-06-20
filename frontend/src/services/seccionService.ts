@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { Seccion, Subseccion } from "../types/seccion";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -13,7 +13,11 @@ const api = axios.create({
 export const seccionService = {
   getAll: async (): Promise<Seccion[]> => {
     const response = await api.get("/secciones");
-    return response.data as Seccion[];
+    const data = response.data;
+    if (Array.isArray(data)) {
+      return data.filter(item => item && typeof item === 'object' && 'cod_seccion' in item);
+    }
+    return [];
   },
 
   create: async (data: Seccion): Promise<Seccion> => {
