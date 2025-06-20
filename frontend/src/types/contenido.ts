@@ -7,3 +7,10 @@ export interface Contenido {
   link?: string;
   imagen?: string;
 }
+export interface CreateContenidoData {
+  cod_modulo: number;
+  cod_seccion: number;
+  descripcion?: string;
+  link?: string;
+  imagen?: string;
+}

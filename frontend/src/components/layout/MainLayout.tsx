@@ -11,7 +11,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     <div className="min-h-screen bg-neo-cream">
       <Navbar />
       <div className="flex">
-        <Sidebar />
         <main className="flex-1 p-8">{children}</main>
       </div>
     </div>

@@ -6,13 +6,19 @@ export const useCreateContenido = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const createContenido = async (subseccionId: number, formData: FormData) => {
+  const createContenido = async (subseccionId: number, data: FormData) => {
     try {
       setLoading(true);
       setError(null);
       setSuccess(false);
-      console.log("Creando contenido con datos:", formData);
-      await contenidoService.create(subseccionId, formData);
+
+      console.log("=== ENVIANDO CONTENIDO ===");
+      console.log("Subsección ID:", subseccionId);
+      for (const pair of data.entries()) {
+        console.log(pair[0] + ": ", pair[1]);
+      }
+
+      await contenidoService.create(subseccionId, data);
       setSuccess(true);
     } catch (err) {
       console.error("Error en useCreateContenido:", err);

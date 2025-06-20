@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useCreateContenido } from "../../hooks/usecreateContenido";
+import { useCreateContenido } from "../../hooks/useCreateContenido";
 import { getYouTubeThumbnail } from "../../utils/youtubeUtils";
-
+import { useSubseccionDatos } from "../../hooks/useSubseccionDatos";
 interface CrearContenidoModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -24,7 +24,7 @@ const CrearContenidoModal = ({
     descripcion: "",
     link: "",
   });
-
+  const { subseccionDatos } = useSubseccionDatos(subseccionId);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [youtubePreview, setYoutubePreview] = useState<string | null>(null);
@@ -74,8 +74,12 @@ const CrearContenidoModal = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!subseccionDatos) {
+      return;
+    }
     const submitData = new FormData();
-
+    submitData.append("cod_modulo", subseccionDatos.cod_modulo.toString());
+    submitData.append("cod_seccion", subseccionDatos.cod_seccion.toString());
     if (formData.descripcion.trim()) {
       submitData.append("descripcion", formData.descripcion);
     }

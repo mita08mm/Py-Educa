@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Contenido } from "../types/contenido";
+import type { Contenido, CreateContenidoData } from "../types/contenido";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -20,7 +20,6 @@ export const contenidoService = {
     cod_subseccion: number,
     data: FormData
   ): Promise<Contenido> => {
-    console.log("Creating contenido with data:", data);
     const response = await api.post(`/contenido/${cod_subseccion}`, data, {
       headers: { "Content-Type": "multipart/form-data" },
     });
