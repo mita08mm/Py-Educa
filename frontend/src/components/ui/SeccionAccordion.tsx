@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Seccion, Subseccion } from "../../types/seccion";
 import CrearSubseccionModal from "./CrearSubseccionModal";
+import { useNavigate } from "react-router-dom";
 
 interface SeccionConSubsecciones extends Seccion {
   subsecciones: Subseccion[];
@@ -24,6 +25,7 @@ const SeccionAccordion = ({
   onContentCreated,
 }: SeccionAccordionProps) => {
   const [isSubseccionModalOpen, setIsSubseccionModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const sectionColors = [
     "bg-neo-mint",
@@ -35,6 +37,10 @@ const SeccionAccordion = ({
   ];
 
   const bgColor = sectionColors[index % sectionColors.length];
+
+  const handleEstudiar = (subseccionId: number) => {
+    navigate(`/contenido/${subseccionId}`);
+  };
 
   return (
     <div className={`${bgColor} border-4 border-black shadow-brutal-lg`}>
@@ -104,7 +110,10 @@ const SeccionAccordion = ({
                       </div>
                     </div>
 
-                    <button className="bg-neo-lime border-3 border-black shadow-brutal px-4 py-2 font-brutal text-sm hover:shadow-brutal-lg transition-shadow duration-100">
+                    <button
+                      onClick={() => handleEstudiar(subseccion.cod_subseccion!)}
+                      className="bg-neo-lime border-3 border-black shadow-brutal px-4 py-2 font-brutal text-sm hover:shadow-brutal-lg transition-shadow duration-100"
+                    >
                       ESTUDIAR
                     </button>
                   </div>

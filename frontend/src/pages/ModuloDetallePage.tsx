@@ -197,17 +197,6 @@ const ModuloDetallePage = () => {
         >
           ← VOLVER AL CURSO
         </button>
-
-        <div className="bg-white border-3 border-black shadow-brutal px-6 py-3">
-          <span className="font-brutal text-lg">Módulo #{moduloIdNum}</span>
-        </div>
-
-        <button
-          disabled
-          className="bg-gray-400 border-4 border-black shadow-brutal-lg px-8 py-4 font-brutal text-lg cursor-not-allowed opacity-50"
-        >
-          SIGUIENTE MÓDULO →
-        </button>
       </div>
 
       {/* Modal para crear sección */}
