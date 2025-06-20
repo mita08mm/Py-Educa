@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import type { Modulo } from "../../types/modulo";
 
 interface ModuloCardProps {
@@ -6,6 +7,8 @@ interface ModuloCardProps {
 }
 
 const ModuloCard = ({ modulo, index }: ModuloCardProps) => {
+  const navigate = useNavigate();
+
   const cardColors = [
     "bg-neo-mint",
     "bg-neo-sage",
@@ -16,6 +19,10 @@ const ModuloCard = ({ modulo, index }: ModuloCardProps) => {
   ];
 
   const bgColor = cardColors[index % cardColors.length];
+
+  const handleEntrarModulo = () => {
+    navigate(`/modulo/${modulo.cod_modulo}`);
+  };
 
   return (
     <div
@@ -32,12 +39,14 @@ const ModuloCard = ({ modulo, index }: ModuloCardProps) => {
         <h3 className="font-brutal text-xl mb-3 text-black">
           {modulo.titulo_modulo.toUpperCase()}
         </h3>
-
         <p className="text-gray-800 mb-6 font-medium">
           {modulo.descripcion_modulo}
         </p>
 
-        <button className="bg-neo-red border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100">
+        <button
+          onClick={handleEntrarModulo}
+          className="bg-neo-red border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+        >
           ENTRAR AL MÓDULO
         </button>
       </div>
