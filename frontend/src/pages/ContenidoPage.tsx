@@ -144,13 +144,6 @@ const ContenidoPage = () => {
             📚 MATERIAL DE ESTUDIO
           </h2>
         </div>
-
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-neo-lime border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1"
-        >
-          ➕ NUEVO CONTENIDO
-        </button>
       </div>
 
       {/* Grid de contenido */}

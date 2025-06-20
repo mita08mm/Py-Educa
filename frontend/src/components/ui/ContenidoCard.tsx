@@ -1,132 +1,275 @@
-import { useState } from "react";
-import type { Contenido } from "../../types/contenido";
-import {
-  getYouTubeEmbedUrl,
-  getYouTubeThumbnail,
-} from "../../utils/youtubeUtils";
+import React, { useState } from "react";
 
 interface ContenidoCardProps {
-  contenido: Contenido;
+  contenido: {
+    cod_contenido: number;
+    titulo?: string;
+    descripcion?: string;
+    imagen?: string;
+    link?: string;
+    orden?: number;
+  };
   index: number;
 }
 
-const ContenidoCard = ({ contenido, index }: ContenidoCardProps) => {
-  const [showVideo, setShowVideo] = useState(false);
+const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
   const [imageError, setImageError] = useState(false);
+  const [activeTab, setActiveTab] = useState<"content" | "video">("content");
 
-  const cardColors = [
-    "bg-neo-mint",
-    "bg-neo-coral",
-    "bg-neo-lavender",
+  // Determinar qué tipo de contenido tenemos
+  const hasImage =
+    contenido.imagen && contenido.imagen.trim() !== "" && !imageError;
+  const hasVideo = contenido.link && contenido.link.trim() !== "";
+  const hasDescription =
+    contenido.descripcion && contenido.descripcion.trim() !== "";
+  const hasTitle = contenido.titulo && contenido.titulo.trim() !== "";
+
+  // Función para obtener el embed URL de YouTube
+  const getYouTubeEmbedUrl = (url: string) => {
+    try {
+      const videoId = url.match(
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/
+      );
+      return videoId ? `https://www.youtube.com/embed/${videoId[1]}` : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const colors = [
     "bg-neo-yellow",
-    "bg-neo-aqua",
-    "bg-neo-sage",
+    "bg-neo-lime",
+    "bg-neo-coral",
+    "bg-neo-cyan",
+    "bg-neo-magenta",
+    "bg-neo-orange",
   ];
 
-  const bgColor = cardColors[index % cardColors.length];
-  const embedUrl = contenido.link ? getYouTubeEmbedUrl(contenido.link) : null;
-  const thumbnail = contenido.link ? getYouTubeThumbnail(contenido.link) : null;
+  const cardColor = colors[index % colors.length];
+  const embedUrl =
+    hasVideo && contenido.link ? getYouTubeEmbedUrl(contenido.link) : null;
+
+  // Si tenemos tanto imagen como video, usamos tabs
+  const needsTabs = hasImage && hasVideo;
+
+  // Determinar tab inicial
+  React.useEffect(() => {
+    if (needsTabs) {
+      setActiveTab(hasImage ? "content" : "video");
+    }
+  }, [hasImage, hasVideo, needsTabs]);
 
   return (
     <div
-      className={`${bgColor} border-4 border-black shadow-brutal-lg hover:shadow-brutal-xl transition-all duration-100`}
+      className={`${cardColor} border-4 border-black shadow-brutal-lg hover:shadow-brutal-xl transition-all duration-200 hover:translate-x-1 hover:translate-y-1 overflow-hidden`}
     >
-      {/* Header */}
-      <div className="p-4 border-b-4 border-black bg-black text-white">
-        <div className="flex items-center justify-between">
-          <span className="font-brutal text-lg">CONTENIDO #{index + 1}</span>
-          <div className="flex space-x-2">
-            {contenido.link && (
-              <span className="bg-neo-red border-2 border-white px-2 py-1 text-xs font-brutal">
-                📹 VIDEO
+      {/* Header de la Card */}
+      <div className="bg-black text-white p-4 border-b-4 border-black">
+        <div className="flex justify-between items-center flex-wrap gap-2">
+          <h3 className="font-brutal text-lg">
+            {hasTitle ? contenido.titulo : `CONTENIDO #${index + 1}`}
+          </h3>
+
+          {/* Badges de tipo de contenido */}
+          <div className="flex gap-2 flex-wrap">
+            {hasDescription && (
+              <span className="bg-white text-black px-2 py-1 text-xs font-bold border-2 border-white">
+                📝 TEXTO
               </span>
             )}
-            {contenido.imagen && (
-              <span className="bg-neo-lime border-2 border-white px-2 py-1 text-xs font-brutal text-black">
-                🖼️ IMAGEN
+            {hasImage && (
+              <span className="bg-neo-yellow text-black px-2 py-1 text-xs font-bold border-2 border-white">
+                📷 IMAGEN
+              </span>
+            )}
+            {hasVideo && (
+              <span className="bg-neo-red text-white px-2 py-1 text-xs font-bold border-2 border-white">
+                🎥 VIDEO
               </span>
             )}
           </div>
         </div>
+
+        {/* Tabs si hay imagen Y video */}
+        {needsTabs && (
+          <div className="flex mt-3 gap-2">
+            <button
+              onClick={() => setActiveTab("content")}
+              className={`px-3 py-1 font-brutal text-sm border-2 transition-all duration-100 ${
+                activeTab === "content"
+                  ? "bg-white text-black border-white"
+                  : "bg-transparent text-white border-white hover:bg-white hover:text-black"
+              }`}
+            >
+              📝 CONTENIDO
+            </button>
+            <button
+              onClick={() => setActiveTab("video")}
+              className={`px-3 py-1 font-brutal text-sm border-2 transition-all duration-100 ${
+                activeTab === "video"
+                  ? "bg-white text-black border-white"
+                  : "bg-transparent text-white border-white hover:bg-white hover:text-black"
+              }`}
+            >
+              🎥 VIDEO
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Contenido principal */}
-      <div className="p-6">
-        {/* Video de YouTube */}
-        {contenido.link && embedUrl && (
-          <div className="mb-6">
-            {!showVideo ? (
-              <div className="relative">
-                <img
-                  src={thumbnail || "/placeholder-video.jpg"}
-                  alt="Video thumbnail"
-                  className="w-full h-48 object-cover border-3 border-black shadow-brutal"
-                  onError={() => setImageError(true)}
-                />
-                <button
-                  onClick={() => setShowVideo(true)}
-                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 hover:bg-opacity-30 transition-all duration-200"
-                >
-                  <div className="bg-neo-red border-4 border-white shadow-brutal-lg p-4 rounded-full">
-                    <span className="font-brutal text-3xl text-white">▶</span>
+      <div className="p-4 space-y-4">
+        {/* Contenido basado en tabs o tipo disponible */}
+        {needsTabs ? (
+          // Modo con tabs
+          <>
+            {activeTab === "content" && (
+              <div className="space-y-4">
+                {/* Descripción */}
+                {hasDescription && (
+                  <div className="bg-white border-3 border-black shadow-brutal p-4">
+                    <p className="font-bold text-base leading-relaxed">
+                      {contenido.descripcion}
+                    </p>
                   </div>
-                </button>
+                )}
+
+                {/* Imagen */}
+                {hasImage && (
+                  <div className="bg-white border-3 border-black shadow-brutal p-2">
+                    <div className="relative overflow-hidden border-2 border-black">
+                      <img
+                        src={contenido.imagen}
+                        alt={
+                          hasTitle ? contenido.titulo : "Imagen del contenido"
+                        }
+                        className="w-full h-auto max-h-80 object-contain bg-gray-100"
+                        onError={() => setImageError(true)}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="relative">
-                <iframe
-                  src={embedUrl}
-                  title={`Video ${index + 1}`}
-                  className="w-full h-64 border-3 border-black shadow-brutal"
-                  allowFullScreen
-                />
-                <button
-                  onClick={() => setShowVideo(false)}
-                  className="absolute top-2 right-2 bg-neo-red border-2 border-black shadow-brutal px-3 py-1 font-brutal text-sm hover:shadow-brutal-lg"
-                >
-                  ✕
-                </button>
+            )}
+
+            {activeTab === "video" && hasVideo && (
+              <div className="bg-black border-3 border-black shadow-brutal">
+                {embedUrl ? (
+                  <div className="relative aspect-video">
+                    <iframe
+                      src={embedUrl}
+                      title={hasTitle ? contenido.titulo : "Video"}
+                      className="w-full h-full border-none"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : (
+                  <div className="p-4 text-center">
+                    <a
+                      href={contenido.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-neo-red text-white px-6 py-3 font-brutal border-3 border-white shadow-brutal hover:shadow-brutal-lg transition-all duration-100 inline-block hover:translate-x-1"
+                    >
+                      🔗 ABRIR ENLACE
+                    </a>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        ) : (
+          // Modo sin tabs - mostrar todo disponible
+          <div className="space-y-4">
+            {/* Descripción */}
+            {hasDescription && (
+              <div className="bg-white border-3 border-black shadow-brutal p-4">
+                <p className="font-bold text-base leading-relaxed">
+                  {contenido.descripcion}
+                </p>
+              </div>
+            )}
+
+            {/* Solo imagen */}
+            {hasImage && !hasVideo && (
+              <div className="bg-white border-3 border-black shadow-brutal p-2">
+                <div className="relative overflow-hidden border-2 border-black">
+                  <img
+                    src={contenido.imagen}
+                    alt={hasTitle ? contenido.titulo : "Imagen del contenido"}
+                    className="w-full h-auto max-h-80 object-contain bg-gray-100"
+                    onError={() => setImageError(true)}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Solo video */}
+            {hasVideo && !hasImage && (
+              <div className="bg-black border-3 border-black shadow-brutal">
+                {embedUrl ? (
+                  <div className="relative aspect-video">
+                    <iframe
+                      src={embedUrl}
+                      title={hasTitle ? contenido.titulo : "Video"}
+                      className="w-full h-full border-none"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : (
+                  <div className="p-4 text-center">
+                    <a
+                      href={contenido.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-neo-red text-white px-6 py-3 font-brutal border-3 border-white shadow-brutal hover:shadow-brutal-lg transition-all duration-100 inline-block hover:translate-x-1"
+                    >
+                      🔗 ABRIR ENLACE
+                    </a>
+                  </div>
+                )}
               </div>
             )}
           </div>
         )}
 
-        {/* Imagen adicional */}
-        {contenido.imagen && (
-          <div className="mb-6">
-            <img
-              src={contenido.imagen}
-              alt={`Contenido ${index + 1}`}
-              className="w-full max-h-64 object-cover border-3 border-black shadow-brutal"
-              onError={() => setImageError(true)}
-            />
+        {/* Footer con acciones */}
+        <div className="flex justify-between items-center pt-4 border-t-3 border-black">
+          <div className="text-sm font-bold">
+            #{contenido.orden || index + 1}
           </div>
-        )}
 
-        {/* Descripción */}
-        {contenido.descripcion && (
-          <div className="bg-white border-3 border-black shadow-brutal p-4">
-            <h4 className="font-brutal text-lg mb-2">📝 DESCRIPCIÓN:</h4>
-            <p className="text-gray-800 font-medium leading-relaxed">
-              {contenido.descripcion}
-            </p>
-          </div>
-        )}
-
-        {/* Link original del video */}
-        {contenido.link && (
-          <div className="mt-4">
-            <a
-              href={contenido.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-neo-red border-3 border-black shadow-brutal px-4 py-2 font-brutal text-sm hover:shadow-brutal-lg transition-shadow duration-100"
-            >
-              🔗 VER EN YOUTUBE
-            </a>
-          </div>
-        )}
+          {/* Enlaces rápidos si hay múltiples tipos de contenido */}
+          {(hasImage || hasVideo) && (
+            <div className="flex gap-2">
+              {hasImage && !needsTabs && (
+                <span className="text-xs font-bold px-2 py-1 bg-black text-white">
+                  📷
+                </span>
+              )}
+              {hasVideo && !needsTabs && (
+                <span className="text-xs font-bold px-2 py-1 bg-black text-white">
+                  🎥
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Estado vacío */}
+      {!hasDescription && !hasImage && !hasVideo && (
+        <div className="p-8 text-center">
+          <div className="bg-white border-3 border-black shadow-brutal p-6">
+            <span className="font-brutal text-lg">⚠️ CONTENIDO VACÍO</span>
+            <br />
+            <span className="text-sm font-bold">
+              Este elemento no tiene contenido asignado
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

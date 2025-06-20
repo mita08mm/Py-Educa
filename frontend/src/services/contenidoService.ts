@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Contenido, CreateContenidoData } from "../types/contenido";
+import type { Contenido } from "../types/contenido";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
