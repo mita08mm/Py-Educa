@@ -1,12 +1,15 @@
 from flask_restx import Namespace, Resource, fields
-from app.controllers.evaluacionController import crear_evaluacion_controller, obtener_evaluacion_completa_controller
+from app.controllers.evaluacionController import (
+    crear_evaluacion_controller,
+    obtener_evaluacion_por_modulo_controller
+)
 
 api = Namespace('evaluacion', description='Operaciones relacionadas con evaluacion')
 
 evaluacion_model = api.model('Evaluacion', {
-    'cod_modulo': fields.Integer(required=True, description='Codigo modulo'),
-    'titulo_seccion': fields.String(required=True, description='Título de la sección'),
-    'descripcion_seccion': fields.String(required=True, description='Descripción de la sección')
+    'cod_modulo': fields.Integer(required=True, description='Codigo del módulo'),
+    'titulo_evaluacion': fields.String(required=True, description='Título de la evaluación'),
+    'descripcion_evaluacion': fields.String(required=False, description='Descripción de la evaluación')
 })
 
 @api.route('/')
@@ -15,8 +18,8 @@ class EvaluacionResource(Resource):
     def post(self):
         return crear_evaluacion_controller()
 
-@api.route('/<int:cod_evaluacion>')
-@api.param('cod_evaluacion', 'ID de la evaluación')
-class EvaluacionGetResource(Resource):
-    def get(self, cod_evaluacion):
-        return obtener_evaluacion_completa_controller(cod_evaluacion)
+@api.route('/modulo/<int:cod_modulo>')
+@api.param('cod_modulo', 'ID del módulo')
+class EvaluacionPorModuloResource(Resource):
+    def get(self, cod_modulo):
+        return obtener_evaluacion_por_modulo_controller(cod_modulo)
