@@ -10,5 +10,6 @@ class Problema(db.Model):
     descripcion_problema = db.Column(db.Text, nullable=False)
     input = db.Column(db.Text)
     output = db.Column(db.Text)
+    editor= db.Column(db.Text)
     input_ejemplo = db.Column(db.Text, nullable=False)
     output_ejemplo = db.Column(db.Text, nullable=False)

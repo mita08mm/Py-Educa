@@ -8,14 +8,15 @@ class ProblemaCreateSchema(Schema):
     output = fields.Str(required=False, allow_none=True)
     input_ejemplo = fields.Str(required=True)
     output_ejemplo = fields.Str(required=True)
+    editor = fields.Str(required=False, allow_none=True)
 
 class ProblemaUpdateSchema(Schema):
     titulo_problema = fields.Str(required=False)
     descripcion_problema = fields.Str(required=False)
     input = fields.Str(required=False, allow_none=True)
     output = fields.Str(required=False, allow_none=True)
-    input_ejemplo = fields.Str(required=False)
-    output_ejemplo = fields.Str(required=False)
+    input_ejemplo = fields.Str(required=True)
+    output_ejemplo = fields.Str(required=True)
 
 class ProblemaResponseSchema(Schema):
     cod_problema = fields.Int()
@@ -26,3 +27,4 @@ class ProblemaResponseSchema(Schema):
     output = fields.Str(allow_none=True)
     input_ejemplo = fields.Str()
     output_ejemplo = fields.Str()
+    editor = fields.Str(allow_none=True)
