@@ -1,6 +1,7 @@
 from app.extensions import db
 from app.models.evaluacion import Evaluacion
 from app.models.problema import Problema
+from app.models.modulo import Modulo
 from app.schemas.evaluacionSchema import (
     EvaluacionCreateSchema, 
     EvaluacionResponseSchema,
@@ -14,6 +15,13 @@ def crear_evaluacion(data):
         schema = EvaluacionCreateSchema()
         validated_data = schema.load(data)
         
+        # Verificar si el módulo existe
+        modulo = Modulo.query.get(validated_data['cod_modulo'])
+        if not modulo:
+            return {
+                "error": "El módulo no existe"
+            }, 404
+
         # Crear la nueva evaluación
         nueva_evaluacion = Evaluacion(
             cod_modulo=validated_data['cod_modulo'],
