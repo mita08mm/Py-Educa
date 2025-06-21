@@ -1,17 +1,11 @@
-from flask import request
-from app.services.evaluacionService import crear_seccion_y_evaluacion, obtener_evaluacion_completa
+from flask import request, jsonify
+from app.services.evaluacionService import crear_evaluacion, obtener_evaluacion_por_modulo
 
 def crear_evaluacion_controller():
-    try:
-        data = request.get_json()
-        evaluacion = crear_seccion_y_evaluacion(data)
-        return evaluacion, 201
-    except Exception as e:
-        return {"error": str(e)}, 400
+    data = request.get_json()
+    resultado, status_code = crear_evaluacion(data)
+    return jsonify(resultado), status_code
 
-def obtener_evaluacion_completa_controller(cod_evaluacion):
-    try:
-        data = obtener_evaluacion_completa(cod_evaluacion)
-        return data, 200
-    except Exception as e:
-        return {"error": str(e)}, 500
+def obtener_evaluacion_por_modulo_controller(cod_modulo):
+    resultado, status_code = obtener_evaluacion_por_modulo(cod_modulo)
+    return jsonify(resultado), status_code
