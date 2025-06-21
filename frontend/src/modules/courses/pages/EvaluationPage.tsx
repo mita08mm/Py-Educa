@@ -75,8 +75,8 @@ export const EvaluationPage: React.FC = () => {
       setTimeout(() => {
         setLoading(false);
         alert('Evaluación creada exitosamente');
-        // Redirigir de vuelta al módulo
-        navigate(`/modulos/${moduloId}?curso=${cursoId}`);
+        // Redirigir a la página de módulos con el curso correcto
+        navigate(`/modules?curso=${cursoId}`);
       }, 1000);
 
     } catch (err) {
@@ -87,8 +87,8 @@ export const EvaluationPage: React.FC = () => {
   };
 
   const handleCancel = (): void => {
-    // Redirigir de vuelta al módulo sin guardar
-    navigate(`/modulos/${moduloId}?curso=${cursoId}`);
+    // Redirigir a la página de módulos
+    navigate(`/modules?curso=${cursoId}`);
   };
 
   if (error) {

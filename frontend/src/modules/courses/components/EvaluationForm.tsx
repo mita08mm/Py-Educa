@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import TemplateEditorWindow from '../../codeEditor/components/TemplateEditorWindow';
+import { evaluacionService } from '../../../services/api';
 
 interface Problem {
   id: number;
@@ -16,12 +18,27 @@ interface EvaluationData {
   problems?: Problem[];
 }
 
+// Interfaz para la API (según el formato requerido)
+interface Evaluacion {
+  cod_modulo: number;
+  titulo_seccion: string;
+  descripcion_seccion: string;
+}
+
 interface EvaluationFormProps {
   onSubmit: (data: EvaluationData & { problems: Problem[] }) => void;
   onCancel: () => void;
 }
 
 export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCancel }) => {
+  const [searchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Obtener parámetros del URL
+  const moduloId = searchParams.get('modulo');
+  const cursoId = searchParams.get('curso');
+
   const [evaluationData, setEvaluationData] = useState<EvaluationData>({
     title: '',
     description: ''
@@ -37,6 +54,13 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
   });
 
   const [showProblemForm, setShowProblemForm] = useState<boolean>(false);
+
+  // Verificar que tenemos los parámetros necesarios
+  useEffect(() => {
+    if (!moduloId) {
+      setError('Falta el parámetro requerido: modulo');
+    }
+  }, [moduloId]);
 
   const handleEvaluationChange = (field: keyof EvaluationData, value: string): void => {
     setEvaluationData(prev => ({
@@ -77,16 +101,55 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
     setProblems(prev => prev.filter(p => p.id !== problemId));
   };
 
-  const handleSubmit = (): void => {
-    const evaluationComplete = {
-      ...evaluationData,
-      problems: problems
-    };
-    console.log(problems)
-    //onSubmit(evaluationComplete);
+  const handleSubmit = async (): Promise<void> => {
+    if (!moduloId) {
+      setError('Falta el parámetro módulo requerido');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Transformar los datos al formato esperado por la API
+      const evaluacionData: Evaluacion = {
+        cod_modulo: parseInt(moduloId),
+        titulo_seccion: evaluationData.title,
+        descripcion_seccion: evaluationData.description
+      };
+
+       console.log('DATOS EVALUACIÓN');
+       console.log('Datos de la evaluación:', evaluacionData);
+       console.log('Problemas asociados:', problems);
+       console.log('Número total de problemas:', problems.length);
+       console.log('Datos evaluación juntos:', {
+       evaluacion: evaluacionData,
+       problems: problems,
+       totalProblems: problems.length
+    });
+    
+    const response = await evaluacionService.create(evaluacionData);
+      
+      // Llamar al callback con los datos completos
+      const evaluationComplete = {
+        ...evaluationData,
+        problems: problems
+      };
+      
+      console.log('Evaluación creada exitosamente:', response);
+      
+      // Solo llamar al callback, no navegar aquí
+      onSubmit(evaluationComplete);
+      
+    } catch (err) {
+      console.error('Error al crear la evaluación:', err);
+      setError('Error al crear la evaluación. Por favor, intenta nuevamente.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const canSubmit: boolean = evaluationData.title !== '' && evaluationData.description !== '' && problems.length > 0;
+  const canSubmit: boolean = evaluationData.title !== '' && evaluationData.description !== '' && problems.length > 0 && !isLoading;
 
   // Clases de estilos reutilizables actualizadas con los colores del ModuleForm
   const inputClasses = "w-full p-2 border border-brand-500 rounded-md bg-brand-600 text-brand-100 focus:border-brand-300 focus:outline-none";
@@ -97,12 +160,46 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
   const buttonDangerClasses = "text-red-400 hover:text-red-300 text-sm transition-colors";
   const labelClasses = "block text-sm font-medium mb-1 text-brand-100";
 
+  // Mostrar error si faltan parámetros
+  if (error && !moduloId) {
+    return (
+      <div className="bg-brand-800 min-h-screen p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className={cardClasses}>
+            <div className="text-center py-8">
+              <div className="text-red-400 text-lg font-semibold mb-4">Error</div>
+              <p className="text-brand-200 mb-4">{error}</p>
+              <button
+                onClick={onCancel}
+                className={buttonSecondaryClasses}
+              >
+                Volver
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-brand-800 min-h-screen p-6">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className={cardClasses}>
-          <h1 className="text-2xl font-bold text-brand-100 mb-6">Crear nueva evaluación</h1>
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-brand-100">Crear nueva evaluación</h1>
+            <div className="text-sm text-brand-300">
+              Módulo: {moduloId}
+            </div>
+          </div>
+          
+          {/* Mostrar error si existe */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-900/50 border border-red-500 rounded-md">
+              <p className="text-red-300 text-sm">{error}</p>
+            </div>
+          )}
           
           {/* Título */}
           <div className="mb-4">
@@ -114,6 +211,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
               onChange={(e) => handleEvaluationChange('title', e.target.value)}
               className={inputClasses}
               placeholder="Ingrese el título de la evaluación"
+              disabled={isLoading}
             />
           </div>
 
@@ -127,6 +225,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
               className={textareaClasses}
               placeholder="Ingrese la descripción de la evaluación"
               rows={3}
+              disabled={isLoading}
             />
           </div>
 
@@ -136,6 +235,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
               type="button"
               onClick={onCancel}
               className={buttonSecondaryClasses}
+              disabled={isLoading}
             >
               Cancelar
             </button>
@@ -145,29 +245,10 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
               disabled={!canSubmit}
               className={buttonPrimaryClasses}
             >
-              Guardar Evaluación
+              {isLoading ? 'Guardando...' : 'Guardar Evaluación'}
             </button>
           </div>
         </div>
-
-        {/* Vista previa de la evaluación */}
-        {evaluationData.title && (
-          <div className={cardClasses}>
-            <h2 className="text-xl font-bold text-brand-100 mb-4">Evaluación de Programación</h2>
-            <div className="mb-4">
-              <label className={labelClasses}>Título</label>
-              <div className="w-full p-2 rounded-md bg-brand-600 border border-brand-500 text-brand-100">
-                {evaluationData.title}
-              </div>
-            </div>
-            <div>
-              <label className={labelClasses}>Descripción</label>
-              <div className="w-full p-2 rounded-md bg-brand-600 border border-brand-500 text-brand-100 min-h-[60px] whitespace-pre-wrap">
-                {evaluationData.description}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Problemas de la Evaluación */}
         <div className={cardClasses}>
@@ -176,7 +257,8 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
             <button
               type="button"
               onClick={() => setShowProblemForm(true)}
-              className="bg-brand-400 hover:bg-brand-500 text-white px-3 py-1 rounded-md text-sm transition-colors flex items-center"
+              className="bg-brand-400 hover:bg-brand-500 text-white px-3 py-1 rounded-md text-sm transition-colors flex items-center disabled:opacity-50"
+              disabled={isLoading}
             >
               <span className="mr-1">+</span> Añadir Problema
             </button>
@@ -191,11 +273,12 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
                   type="button"
                   onClick={() => removeProblem(problem.id)}
                   className={buttonDangerClasses}
+                  disabled={isLoading}
                 >
                   ✕
                 </button>
               </div>
-              <p className="text-brand-200 text-sm mb-3">{problem.description}</p>
+              <p className="text-brand-100 text-sm mb-3">{problem.description}</p>
               
               {/* Input y Output opcionales */}
               {(problem.input || problem.output) && (
@@ -221,7 +304,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
 
               {/* Plantilla de código */}
               <div>
-                <label className="block text-brand-200 text-xs mb-2">Plantilla de Código</label>
+                <label className="block text-brand-100 mb-2">Plantilla de Código</label>
                 <div className="border border-brand-500 rounded-md overflow-hidden">
                   <TemplateEditorWindow
                     value={problem.template}
@@ -248,6 +331,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
                     onChange={(e) => handleProblemChange('title', e.target.value)}
                     className={inputClasses}
                     placeholder="Ej: Suma de Arrays"
+                    disabled={isLoading}
                   />
                 </div>
 
@@ -260,6 +344,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
                     className={textareaClasses}
                     placeholder="Descripción detallada del problema"
                     rows={3}
+                    disabled={isLoading}
                   />
                 </div>
 
@@ -272,6 +357,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
                       onChange={(e) => handleProblemChange('input', e.target.value)}
                       className="w-full p-2 border border-brand-500 rounded-md bg-brand-600 text-brand-100 focus:border-brand-300 focus:outline-none min-h-20 resize-none"
                       placeholder="Formato de entrada esperado (opcional)"
+                      disabled={isLoading}
                     />
                   </div>
                   <div>
@@ -282,6 +368,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
                       onChange={(e) => handleProblemChange('output', e.target.value)}
                       className="w-full p-2 border border-brand-500 rounded-md bg-brand-600 text-brand-100 focus:border-brand-300 focus:outline-none min-h-20 resize-none"
                       placeholder="Formato de salida esperado (opcional)"
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -316,13 +403,14 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
                     });
                   }}
                   className={buttonSecondaryClasses}
+                  disabled={isLoading}
                 >
                   Cancelar
                 </button>
                 <button
                   type="button"
                   onClick={addProblem}
-                  disabled={!currentProblem.title || !currentProblem.description || !currentProblem.template}
+                  disabled={!currentProblem.title || !currentProblem.description || !currentProblem.template || isLoading}
                   className={buttonPrimaryClasses}
                 >
                   Guardar Problema
@@ -333,7 +421,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({ onSubmit, onCanc
 
           {problems.length === 0 && !showProblemForm && (
             <div className="text-center py-8">
-              <p className="text-brand-200">No hay problemas agregados aún</p>
+              <p className="text-brand-100">No hay problemas agregados aún</p>
               <p className="text-brand-300 text-sm">Haz clic en "Añadir Problema" para comenzar</p>
             </div>
           )}

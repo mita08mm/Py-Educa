@@ -47,16 +47,10 @@ export interface Contenido {
   imagen?: string;
 }
 
-export interface Evaluacion {
-  cod_evaluacion?: number; // Cambiado a opcional para creación
+interface Evaluacion {
   cod_modulo: number;
-  titulo_evaluacion: string;
-  descripcion_evaluacion: string;
-  input: string;
-  output: string;
-  input_ejemplo: string;
-  output_ejemplo: string;
-  codigo: string;
+  titulo_seccion: string;
+  descripcion_seccion: string;
 }
 
 export interface Nota {
@@ -152,12 +146,12 @@ export const contenidoService = {
 
 // Servicios para Evaluaciones
 export const evaluacionService = {
-  create: async (data: any): Promise<Evaluacion> => {
-    const response = await api.post('/evaluaciones/', data);
+  create: async (data: Evaluacion): Promise<Evaluacion> => {
+    const response = await api.post('/evaluacion/', data);
     return response.data;
   },
   getAll: async (): Promise<Evaluacion[]> => {
-    const response = await api.get('/evaluaciones/');
+    const response = await api.get('/evaluacion/');
     return response.data;
   },
 };
