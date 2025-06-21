@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields
+from app.schemas.problemaSchema import ProblemaResponseSchema
 
 # Schema para crear Evaluacion
 class EvaluacionCreateSchema(Schema):
@@ -17,3 +18,10 @@ class EvaluacionResponseSchema(Schema):
     cod_modulo = fields.Int()
     titulo_evaluacion = fields.Str()
     descripcion_evaluacion = fields.Str(allow_none=True)
+
+class EvaluacionConProblemasSchema(Schema):
+    cod_evaluacion = fields.Int()
+    cod_modulo = fields.Int()
+    titulo_evaluacion = fields.Str()
+    descripcion_evaluacion = fields.Str(allow_none=True)
+    problemas = fields.List(fields.Nested(ProblemaResponseSchema), required=False)
