@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCursoDetalle } from "../hooks/useCursoDetalle";
 import ModuloCard from "../components/ui/ModuloCard";
