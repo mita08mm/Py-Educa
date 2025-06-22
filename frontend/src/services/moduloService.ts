@@ -1,7 +1,7 @@
 import type { Modulo, CreateModuloData } from "../types/modulo";
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "../config"; 
 
 const api = axios.create({
   baseURL: API_BASE_URL,
