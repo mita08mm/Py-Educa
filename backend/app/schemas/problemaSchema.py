@@ -6,8 +6,8 @@ class ProblemaCreateSchema(Schema):
     descripcion_problema = fields.Str(required=True)
     input = fields.Str(required=False, allow_none=True)
     output = fields.Str(required=False, allow_none=True)
-    input_ejemplo = fields.Str(required=True)
-    output_ejemplo = fields.Str(required=True)
+    input_ejemplo = fields.Str(required=False, allow_none=True)
+    output_ejemplo = fields.Str(required=False, allow_none=True)
     editor = fields.Str(required=False, allow_none=True)
 
 class ProblemaUpdateSchema(Schema):
@@ -15,8 +15,8 @@ class ProblemaUpdateSchema(Schema):
     descripcion_problema = fields.Str(required=False)
     input = fields.Str(required=False, allow_none=True)
     output = fields.Str(required=False, allow_none=True)
-    input_ejemplo = fields.Str(required=True)
-    output_ejemplo = fields.Str(required=True)
+    input_ejemplo = fields.Str(required=False, allow_none=True)
+    output_ejemplo = fields.Str(required=False, allow_none=True)
 
 class ProblemaResponseSchema(Schema):
     cod_problema = fields.Int()
@@ -25,6 +25,6 @@ class ProblemaResponseSchema(Schema):
     descripcion_problema = fields.Str()
     input = fields.Str(allow_none=True)
     output = fields.Str(allow_none=True)
-    input_ejemplo = fields.Str()
-    output_ejemplo = fields.Str()
+    input_ejemplo = fields.Str(allow_none=True)
+    output_ejemplo = fields.Str(allow_none=True)
     editor = fields.Str(allow_none=True)

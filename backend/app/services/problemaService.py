@@ -36,8 +36,8 @@ def crear_problema(data):
             descripcion_problema=validated_data['descripcion_problema'],
             input=validated_data.get('input'),
             output=validated_data.get('output'),
-            input_ejemplo=validated_data['input_ejemplo'],
-            output_ejemplo=validated_data['output_ejemplo'],
+            input_ejemplo=validated_data.get('input_ejemplo'),
+            output_ejemplo=validated_data.get('output_ejemplo'),
             editor=validated_data.get('editor')
         )
         

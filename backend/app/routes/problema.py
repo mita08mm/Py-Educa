@@ -9,8 +9,8 @@ problema_model = api.model('Problema', {
     'descripcion_problema': fields.String(required=True, description='Descripción del problema'),
     'input': fields.String(required=False, description='Entrada de prueba para el problema'),
     'output': fields.String(required=False, description='Salida esperada de la entrada de prueba'),
-    'input_ejemplo': fields.String(required=True),
-    'output_ejemplo': fields.String(required=True),
+    'input_ejemplo': fields.String(required=False),
+    'output_ejemplo': fields.String(required=False),
     'editor': fields.String(required=False, description='Plantilla de codigo del problema'),
 })
 
