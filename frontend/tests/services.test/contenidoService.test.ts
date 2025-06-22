@@ -1,9 +1,24 @@
-import axios from 'axios';
-import { contenidoService } from '../../src/services/contenidoService';
-import type { Contenido } from '../../src/types/contenido';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+jest.mock('../../src/config', () => ({
+  API_BASE_URL: 'https://fake-api.com',
+}));
+
+// 👇 Mock de axios con setup manual de instancia
+const mockedAxiosInstance = {
+  get: jest.fn(),
+  post: jest.fn()
+};
+
+jest.mock('axios', () => {
+  return {
+    __esModule: true,
+    default: {
+      create: jest.fn(() => mockedAxiosInstance)
+    }
+  };
+});
+
+import { contenidoService } from '../../src/services/contenidoService';
 
 describe('contenidoService', () => {
   afterEach(() => {
@@ -22,11 +37,11 @@ describe('contenidoService', () => {
       }
     ];
 
-    mockedAxios.get.mockResolvedValueOnce({ data: mockData });
+    mockedAxiosInstance.get.mockResolvedValueOnce({ data: mockData });
 
     const result = await contenidoService.getBySubseccion(3);
 
-    expect(mockedAxios.get).toHaveBeenCalledWith('/contenido/3');
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith('/contenido/3');
     expect(result).toEqual(mockData);
   });
 
@@ -47,13 +62,15 @@ describe('contenidoService', () => {
       imagen: 'data:image/png;base64,...'
     };
 
-    mockedAxios.post.mockResolvedValueOnce({ data: mockResponse });
+    mockedAxiosInstance.post.mockResolvedValueOnce({ data: mockResponse });
 
     const result = await contenidoService.create(4, formData);
 
-    expect(mockedAxios.post).toHaveBeenCalledWith('/contenido/4', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    expect(mockedAxiosInstance.post).toHaveBeenCalledWith(
+      '/contenido/4',
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
 
     expect(result).toEqual(mockResponse);
   });
