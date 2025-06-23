@@ -22,3 +22,13 @@ export interface CreateEvaluacionData {
   titulo_evaluacion: string;
   descripcion_evaluacion: string;
 }
+export interface CreateProblemaData {
+  cod_evaluacion: number;
+  titulo_problema: string;
+  descripcion_problema: string;
+  input: string;
+  output: string;
+  input_ejemplo: string;
+  output_ejemplo: string;
+  editor: string;
+}

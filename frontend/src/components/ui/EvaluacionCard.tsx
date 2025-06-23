@@ -21,6 +21,7 @@ const EvaluacionCard = ({ evaluacion, index }: EvaluacionCardProps) => {
   const bgColor = cardColors[index % cardColors.length];
 
   const handleVerEvaluacion = () => {
+    localStorage.setItem("currentModuloId", evaluacion.cod_modulo.toString());
     navigate(`/evaluacion/${evaluacion.cod_evaluacion}`);
   };
 
