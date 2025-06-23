@@ -148,7 +148,7 @@ const ContenidoPage = () => {
 
       {/* Grid de contenido */}
       {contenido.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {contenido.map((item, index) => (
             <ContenidoCard
               key={item.cod_contenido}
