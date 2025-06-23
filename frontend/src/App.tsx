@@ -7,6 +7,7 @@ import CursoDetallePage from "./pages/CursoDetallePage";
 import ModuloDetallePage from "./pages/ModuloDetallePage";
 import ContenidoPage from "./pages/ContenidoPage";
 import EvaluacionDetallePage from "./pages/EvaluacionDetallePage";
+import CodeSandboxPage from "./pages/CodeSandboxPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             path="/evaluacion/:evaluacionId"
             element={<EvaluacionDetallePage />}
           />
+          <Route path="/sandbox" element={<CodeSandboxPage />} />
         </Routes>
       </MainLayout>
     </Router>

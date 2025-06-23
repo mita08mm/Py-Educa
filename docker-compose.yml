@@ -50,17 +50,17 @@ services:
           cpus: '0.25'
           memory: 256M
 
-#  code-sandbox:
-#    build: ./code-sandbox
-#    ports:
-#      - "5001:5001"
-#    environment:
-#      - PYTHONUNBUFFERED=1
-#    volumes:
-#      - ./code-sandbox:/app
-#    networks:
-#      - app-network
-#    # Add security options
+  code-sandbox:
+    build: ./code-sandbox
+    ports:
+      - "5001:5001"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./code-sandbox:/app
+    networks:
+      - app-network
+    # Add security options
 #    cap_drop:
 #      - ALL
 #    cap_add:
@@ -89,16 +89,16 @@ services:
           cpus: '0.25'
           memory: 256M
 
-  pgadmin:
-    image: dpage/pgadmin4:8.1
-    container_name: pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - 8080:80
-    networks:
-      - app-network 
+#  pgadmin:
+#    image: dpage/pgadmin4:8.1
+#    container_name: pgadmin
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: admin@example.com
+#      PGADMIN_DEFAULT_PASSWORD: admin
+#    ports:
+#      - 8080:80
+#    networks:
+#      - app-network 
 
 volumes:
   postgres_data:
