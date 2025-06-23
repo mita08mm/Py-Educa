@@ -1,17 +1,25 @@
 import { useState } from "react";
 import { evaluacionService } from "../services/evaluacionService";
-import type { Evaluacion } from "../types/evaluacion";
+
+interface CreateEvaluacionData {
+  cod_modulo: number;
+  titulo_evaluacion: string;
+  descripcion_evaluacion: string;
+}
 
 export const useCreateEvaluacion = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const createEvaluacion = async (data: Evaluacion) => {
+  const createEvaluacion = async (data: CreateEvaluacionData) => {
     try {
       setLoading(true);
       setError(null);
       setSuccess(false);
+
+      console.log("=== CREANDO EVALUACIÓN ===");
+      console.log("Datos a enviar:", data);
 
       await evaluacionService.create(data);
       setSuccess(true);

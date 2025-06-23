@@ -22,11 +22,6 @@ const CrearEvaluacionModal = ({
   const [formData, setFormData] = useState({
     titulo_evaluacion: "",
     descripcion_evaluacion: "",
-    input: "",
-    output: "",
-    input_ejemplo: "",
-    output_ejemplo: "",
-    codigo: "",
   });
 
   useEffect(() => {
@@ -36,7 +31,7 @@ const CrearEvaluacionModal = ({
         onEvaluacionCreated();
       }, 1500);
     }
-  }, [success]);
+  }, [success, onEvaluacionCreated]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -55,12 +50,10 @@ const CrearEvaluacionModal = ({
       cod_modulo: moduloId,
       titulo_evaluacion: formData.titulo_evaluacion,
       descripcion_evaluacion: formData.descripcion_evaluacion,
-      input: formData.input,
-      output: formData.output,
-      input_ejemplo: formData.input_ejemplo,
-      output_ejemplo: formData.output_ejemplo,
-      codigo: formData.codigo,
     };
+
+    console.log("=== ENVIANDO EVALUACIÓN ===");
+    console.log("Datos a enviar:", submitData);
 
     await createEvaluacion(submitData);
   };
@@ -69,11 +62,6 @@ const CrearEvaluacionModal = ({
     setFormData({
       titulo_evaluacion: "",
       descripcion_evaluacion: "",
-      input: "",
-      output: "",
-      input_ejemplo: "",
-      output_ejemplo: "",
-      codigo: "",
     });
     reset();
     onClose();
@@ -83,7 +71,7 @@ const CrearEvaluacionModal = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-neo-cream border-5 border-black shadow-brutal-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-neo-cream border-5 border-black shadow-brutal-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-neo-indigo border-b-5 border-black p-6">
           <div className="flex justify-between items-center">
@@ -116,12 +104,16 @@ const CrearEvaluacionModal = ({
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Información básica */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Información de la evaluación */}
+              <div className="bg-neo-yellow border-4 border-black shadow-brutal p-6">
+                <h3 className="font-brutal text-xl mb-4">
+                  📋 INFORMACIÓN BÁSICA
+                </h3>
+
                 {/* Título */}
-                <div className="bg-neo-yellow border-4 border-black shadow-brutal p-4">
+                <div className="mb-4">
                   <label className="block font-brutal text-lg mb-3">
-                    🏷️ TÍTULO
+                    🏷️ TÍTULO DE LA EVALUACIÓN
                   </label>
                   <input
                     type="text"
@@ -130,12 +122,12 @@ const CrearEvaluacionModal = ({
                     onChange={handleInputChange}
                     required
                     className="w-full p-3 border-3 border-black font-bold focus:shadow-brutal transition-shadow duration-100"
-                    placeholder="Ej: Algoritmo de Ordenamiento"
+                    placeholder="Ej: Evaluación de Algoritmos de Ordenamiento"
                   />
                 </div>
 
                 {/* Descripción */}
-                <div className="bg-neo-coral border-4 border-black shadow-brutal p-4">
+                <div>
                   <label className="block font-brutal text-lg mb-3">
                     📝 DESCRIPCIÓN
                   </label>
@@ -144,107 +136,70 @@ const CrearEvaluacionModal = ({
                     value={formData.descripcion_evaluacion}
                     onChange={handleInputChange}
                     required
-                    rows={3}
+                    rows={4}
                     className="w-full p-3 border-3 border-black font-bold resize-none focus:shadow-brutal transition-shadow duration-100"
-                    placeholder="Describe qué debe resolver el estudiante..."
+                    placeholder="Describe el objetivo de esta evaluación y qué temas abarca..."
                   />
                 </div>
               </div>
 
-              {/* Ejemplos para estudiantes */}
+              {/* Información adicional */}
               <div className="bg-neo-mint border-4 border-black shadow-brutal p-6">
                 <h3 className="font-brutal text-xl mb-4">
-                  👨‍🎓 EJEMPLO PARA ESTUDIANTES
+                  ℹ️ INFORMACIÓN IMPORTANTE
                 </h3>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-brutal text-sm mb-2">
-                      INPUT EJEMPLO:
-                    </label>
-                    <textarea
-                      name="input_ejemplo"
-                      value={formData.input_ejemplo}
-                      onChange={handleInputChange}
-                      required
-                      rows={3}
-                      className="w-full p-3 border-3 border-black font-mono text-sm focus:shadow-brutal transition-shadow duration-100"
-                      placeholder="5
-1 3 2 5 4"
-                    />
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <span className="font-brutal text-lg">📝</span>
+                    <span className="font-bold">
+                      Después de crear la evaluación, podrás agregar problemas
+                      específicos
+                    </span>
                   </div>
-                  <div>
-                    <label className="block font-brutal text-sm mb-2">
-                      OUTPUT EJEMPLO:
-                    </label>
-                    <textarea
-                      name="output_ejemplo"
-                      value={formData.output_ejemplo}
-                      onChange={handleInputChange}
-                      required
-                      rows={3}
-                      className="w-full p-3 border-3 border-black font-mono text-sm focus:shadow-brutal transition-shadow duration-100"
-                      placeholder="1 2 3 4 5"
-                    />
+                  <div className="flex items-center space-x-3">
+                    <span className="font-brutal text-lg">🧪</span>
+                    <span className="font-bold">
+                      Cada problema tendrá sus propios casos de prueba y
+                      ejemplos
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <span className="font-brutal text-lg">⏱️</span>
+                    <span className="font-bold">
+                      Los estudiantes podrán resolver los problemas en orden
+                    </span>
                   </div>
                 </div>
               </div>
 
-              {/* Casos de prueba reales */}
-              <div className="bg-neo-lavender border-4 border-black shadow-brutal p-6">
+              {/* Flujo de trabajo */}
+              <div className="bg-neo-coral border-4 border-black shadow-brutal p-6">
                 <h3 className="font-brutal text-xl mb-4">
-                  🧪 CASOS DE PRUEBA REALES
+                  🚀 ¿QUÉ SIGUE DESPUÉS?
                 </h3>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-brutal text-sm mb-2">
-                      INPUT REAL:
-                    </label>
-                    <textarea
-                      name="input"
-                      value={formData.input}
-                      onChange={handleInputChange}
-                      required
-                      rows={4}
-                      className="w-full p-3 border-3 border-black font-mono text-sm focus:shadow-brutal transition-shadow duration-100"
-                      placeholder="10
-9 7 5 3 1 2 4 6 8 10"
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-white border-3 border-black shadow-brutal p-4 text-center">
+                    <div className="font-brutal text-2xl mb-2">1️⃣</div>
+                    <div className="font-bold text-sm">CREAR EVALUACIÓN</div>
+                    <div className="text-xs mt-1">
+                      Establece título y descripción
+                    </div>
                   </div>
-                  <div>
-                    <label className="block font-brutal text-sm mb-2">
-                      OUTPUT ESPERADO:
-                    </label>
-                    <textarea
-                      name="output"
-                      value={formData.output}
-                      onChange={handleInputChange}
-                      required
-                      rows={4}
-                      className="w-full p-3 border-3 border-black font-mono text-sm focus:shadow-brutal transition-shadow duration-100"
-                      placeholder="1 2 3 4 5 6 7 8 9 10"
-                    />
+                  <div className="bg-white border-3 border-black shadow-brutal p-4 text-center">
+                    <div className="font-brutal text-2xl mb-2">2️⃣</div>
+                    <div className="font-bold text-sm">AGREGAR PROBLEMAS</div>
+                    <div className="text-xs mt-1">
+                      Define casos de prueba y ejemplos
+                    </div>
+                  </div>
+                  <div className="bg-white border-3 border-black shadow-brutal p-4 text-center">
+                    <div className="font-brutal text-2xl mb-2">3️⃣</div>
+                    <div className="font-bold text-sm">
+                      ESTUDIANTES RESUELVEN
+                    </div>
+                    <div className="text-xs mt-1">Completan los problemas</div>
                   </div>
                 </div>
-              </div>
-
-              {/* Código base */}
-              <div className="bg-neo-sage border-4 border-black shadow-brutal p-6">
-                <label className="block font-brutal text-lg mb-3">
-                  💻 CÓDIGO BASE (OPCIONAL)
-                </label>
-                <textarea
-                  name="codigo"
-                  value={formData.codigo}
-                  onChange={handleInputChange}
-                  rows={6}
-                  className="w-full p-3 border-3 border-black font-mono text-sm bg-gray-900 text-green-400 focus:shadow-brutal transition-shadow duration-100"
-                  placeholder="def resolver_problema():
-    # Tu código aquí
-    pass
-
-# Llamar a la función
-resolver_problema()"
-                />
               </div>
 
               {/* Error */}
