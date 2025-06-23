@@ -96,12 +96,6 @@ const EvaluacionCard = ({ evaluacion, index }: EvaluacionCardProps) => {
           >
             📋 VER EVALUACIÓN
           </button>
-
-          {evaluacion.problemas && evaluacion.problemas.length > 0 && (
-            <button className="w-full bg-neo-lime border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100">
-              🚀 COMENZAR EVALUACIÓN
-            </button>
-          )}
         </div>
       </div>
     </div>
