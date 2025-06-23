@@ -10,7 +10,7 @@ export const useEvaluaciones = (moduloId: number) => {
   const fetchEvaluaciones = useCallback(async () => {
     try {
       setLoading(true);
-      console.log("Obteniendo evaluaciones para módulo:", moduloId);
+
       const data = await evaluacionService.getByModulo(moduloId);
       setEvaluaciones(data);
     } catch (err) {

@@ -22,7 +22,6 @@ export const moduloService = {
   },
   async createModulo(data: CreateModuloData): Promise<Modulo> {
     try {
-      console.log("Datos del módulo a crear:", data);
       const response = await api.post("/modulos/", data);
       return response.data as Modulo;
     } catch (error) {

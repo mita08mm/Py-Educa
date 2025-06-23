@@ -29,7 +29,6 @@ const ModuloDetallePage = () => {
   const [isSeccionModalOpen, setIsSeccionModalOpen] = useState(false);
   const [isEvaluacionModalOpen, setIsEvaluacionModalOpen] = useState(false);
 
-  console.log("evaluaciones page:", evaluaciones);
   const handleContentCreated = () => {
     // Refrescar la página para mostrar el nuevo contenido
     window.location.reload();

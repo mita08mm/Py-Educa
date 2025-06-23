@@ -12,7 +12,6 @@ const api = axios.create({
 
 export const evaluacionService = {
   create: async (data: CreateEvaluacionData): Promise<Evaluacion> => {
-    console.log(data);
     const response = await api.post("/evaluacion/", data);
     return response.data as Evaluacion;
   },

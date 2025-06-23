@@ -52,9 +52,6 @@ const CrearEvaluacionModal = ({
       descripcion_evaluacion: formData.descripcion_evaluacion,
     };
 
-    console.log("=== ENVIANDO EVALUACIÓN ===");
-    console.log("Datos a enviar:", submitData);
-
     await createEvaluacion(submitData);
   };
 

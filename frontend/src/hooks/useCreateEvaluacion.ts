@@ -18,9 +18,6 @@ export const useCreateEvaluacion = () => {
       setError(null);
       setSuccess(false);
 
-      console.log("=== CREANDO EVALUACIÓN ===");
-      console.log("Datos a enviar:", data);
-
       await evaluacionService.create(data);
       setSuccess(true);
     } catch (err) {
