@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { Evaluacion } from "../../types/evaluacion";
 
 interface EvaluacionCardProps {
@@ -7,7 +7,7 @@ interface EvaluacionCardProps {
 }
 
 const EvaluacionCard = ({ evaluacion, index }: EvaluacionCardProps) => {
-  const [showDetails, setShowDetails] = useState(false);
+  const navigate = useNavigate();
 
   const cardColors = [
     "bg-neo-purple",
@@ -19,6 +19,11 @@ const EvaluacionCard = ({ evaluacion, index }: EvaluacionCardProps) => {
   ];
 
   const bgColor = cardColors[index % cardColors.length];
+
+  const handleVerEvaluacion = () => {
+    localStorage.setItem("currentModuloId", evaluacion.cod_modulo.toString());
+    navigate(`/evaluacion/${evaluacion.cod_evaluacion}`);
+  };
 
   return (
     <div
@@ -34,85 +39,63 @@ const EvaluacionCard = ({ evaluacion, index }: EvaluacionCardProps) => {
           </div>
           <div className="bg-neo-yellow border-2 border-white px-3 py-1">
             <span className="font-brutal text-xs text-black">
-              MÓDULO {evaluacion.cod_modulo}
+              {evaluacion.problemas?.length || 0} PROBLEMAS
             </span>
           </div>
         </div>
       </div>
 
+      {/* Contenido principal */}
       <div className="p-6">
         <h3 className="font-brutal text-xl mb-3 text-white">
           {evaluacion.titulo_evaluacion.toUpperCase()}
         </h3>
 
-        <p className="text-gray-200 mb-4 font-medium">
+        <p className="text-gray-200 mb-6 font-medium">
           {evaluacion.descripcion_evaluacion}
         </p>
 
-        <div className="bg-white border-3 border-black shadow-brutal p-4 mb-4">
-          <h4 className="font-brutal text-sm mb-2">📝 EJEMPLO:</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
-              <span className="font-bold text-xs text-gray-600">INPUT:</span>
-              <div className="bg-neo-cream border-2 border-black p-2 text-sm font-mono">
-                {evaluacion.input_ejemplo}
-              </div>
+        {/* Stats de la evaluación */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="bg-white border-2 border-black p-3 text-center">
+            <div className="font-brutal text-lg">
+              {evaluacion.problemas?.length || 0}
             </div>
-            <div>
-              <span className="font-bold text-xs text-gray-600">OUTPUT:</span>
-              <div className="bg-neo-lime border-2 border-black p-2 text-sm font-mono">
-                {evaluacion.output_ejemplo}
-              </div>
-            </div>
+            <div className="text-xs font-bold">PROBLEMAS</div>
+          </div>
+          <div className="bg-neo-lime border-2 border-black p-3 text-center">
+            <div className="font-brutal text-lg">⏱️</div>
+            <div className="text-xs font-bold">DISPONIBLE</div>
           </div>
         </div>
 
-        <button
-          onClick={() => setShowDetails(!showDetails)}
-          className="bg-neo-cyan border-3 border-black shadow-brutal px-4 py-2 font-brutal text-sm hover:shadow-brutal-lg transition-shadow duration-100 mb-4"
-        >
-          {showDetails ? "👁️ OCULTAR DETALLES" : "🔍 VER DETALLES"}
-        </button>
-        {showDetails && (
-          <div className="space-y-4">
-            <div className="bg-white border-3 border-black shadow-brutal p-4">
-              <h4 className="font-brutal text-sm mb-3">🧪 CASOS DE PRUEBA:</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <span className="font-bold text-xs text-gray-600">
-                    INPUT REAL:
-                  </span>
-                  <div className="bg-neo-coral border-2 border-black p-2 text-sm font-mono max-h-20 overflow-y-auto">
-                    {evaluacion.input}
-                  </div>
+        {/* Lista de problemas (preview) */}
+        {evaluacion.problemas && evaluacion.problemas.length > 0 && (
+          <div className="bg-white border-3 border-black shadow-brutal p-4 mb-4">
+            <h4 className="font-brutal text-sm mb-2">📝 PROBLEMAS:</h4>
+            <div className="space-y-2">
+              {evaluacion.problemas.slice(0, 3).map((problema, idx) => (
+                <div key={problema.cod_problema} className="text-sm">
+                  <span className="font-bold">{idx + 1}.</span>{" "}
+                  {problema.titulo_problema}
                 </div>
-                <div>
-                  <span className="font-bold text-xs text-gray-600">
-                    OUTPUT ESPERADO:
-                  </span>
-                  <div className="bg-neo-mint border-2 border-black p-2 text-sm font-mono max-h-20 overflow-y-auto">
-                    {evaluacion.output}
-                  </div>
+              ))}
+              {evaluacion.problemas.length > 3 && (
+                <div className="text-xs text-gray-600">
+                  +{evaluacion.problemas.length - 3} problemas más...
                 </div>
-              </div>
+              )}
             </div>
-
-            {/* Código base */}
-            {evaluacion.codigo && (
-              <div className="bg-white border-3 border-black shadow-brutal p-4">
-                <h4 className="font-brutal text-sm mb-3">💻 CÓDIGO BASE:</h4>
-                <div className="bg-gray-900 border-2 border-black p-3 text-sm font-mono text-green-400 max-h-32 overflow-y-auto">
-                  <pre>{evaluacion.codigo}</pre>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
-        {/* Botón de acción */}
-        <div className="mt-6">
-          <button className="bg-neo-red border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100">
-            🚀 RESOLVER EVALUACIÓN
+        {/* Botones de acción */}
+        <div className="space-y-3">
+          <button
+            onClick={handleVerEvaluacion}
+            className="w-full bg-neo-red border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+          >
+            📋 VER EVALUACIÓN
           </button>
         </div>
       </div>

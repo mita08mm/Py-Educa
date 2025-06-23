@@ -6,6 +6,7 @@ import CrearCursoPage from "./pages/CrearCursoPage";
 import CursoDetallePage from "./pages/CursoDetallePage";
 import ModuloDetallePage from "./pages/ModuloDetallePage";
 import ContenidoPage from "./pages/ContenidoPage";
+import EvaluacionDetallePage from "./pages/EvaluacionDetallePage";
 
 function App() {
   return (
@@ -18,6 +19,10 @@ function App() {
           <Route path="/curso/:id" element={<CursoDetallePage />} />
           <Route path="/modulo/:moduloId" element={<ModuloDetallePage />} />
           <Route path="/contenido/:subseccionId" element={<ContenidoPage />} />
+          <Route
+            path="/evaluacion/:evaluacionId"
+            element={<EvaluacionDetallePage />}
+          />
         </Routes>
       </MainLayout>
     </Router>

@@ -14,10 +14,17 @@ const ModuloDetallePage = () => {
 
   const { modulo, secciones, loading, error } = useModuloDetalle(moduloIdNum);
   const {
-    evaluaciones,
+    evaluaciones: rawEvaluaciones,
     loading: loadingEvaluaciones,
     refetch: refetchEvaluaciones,
   } = useEvaluaciones(moduloIdNum);
+
+  // Normalizar evaluaciones a array
+  const evaluaciones = Array.isArray(rawEvaluaciones)
+    ? rawEvaluaciones
+    : rawEvaluaciones
+    ? [rawEvaluaciones]
+    : [];
   const [openSections, setOpenSections] = useState<number[]>([0]);
   const [isSeccionModalOpen, setIsSeccionModalOpen] = useState(false);
   const [isEvaluacionModalOpen, setIsEvaluacionModalOpen] = useState(false);
@@ -229,7 +236,7 @@ const ModuloDetallePage = () => {
             </div>
           </div>
         ) : evaluaciones.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             {evaluaciones.map((evaluacion, index) => (
               <EvaluacionCard
                 key={evaluacion.cod_evaluacion}
