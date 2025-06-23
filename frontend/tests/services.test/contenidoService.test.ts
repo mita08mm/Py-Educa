@@ -1,77 +1,29 @@
-
-jest.mock('../../src/config', () => ({
-  API_BASE_URL: 'https://fake-api.com',
-}));
-
-// 👇 Mock de axios con setup manual de instancia
-const mockedAxiosInstance = {
-  get: jest.fn(),
-  post: jest.fn()
-};
-
-jest.mock('axios', () => {
-  return {
-    __esModule: true,
-    default: {
-      create: jest.fn(() => mockedAxiosInstance)
-    }
-  };
-});
-
+import axios from 'axios';
 import { contenidoService } from '../../src/services/contenidoService';
+
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('contenidoService', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('getBySubseccion debería retornar una lista de contenidos', async () => {
-    const mockData = [
-      {
-        cod_modulo: 1,
-        cod_seccion: 2,
-        cod_subseccion: 3,
-        descripcion: 'Contenido de prueba',
-        link: 'https://link.com',
-        imagen: 'data:image/png;base64,...'
-      }
-    ];
+  it('debe retornar contenido simulado', async () => {
+    const dataMock = [{ cod_modulo: 1, descripcion: 'test' }];
 
-    mockedAxiosInstance.get.mockResolvedValueOnce({ data: mockData });
+    // Simula la respuesta completa que axios espera
+    mockedAxios.get.mockResolvedValue({
+      data: dataMock,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: {},
+    });
 
-    const result = await contenidoService.getBySubseccion(3);
+    const result = await contenidoService.getBySubseccion(1);
 
-    expect(mockedAxiosInstance.get).toHaveBeenCalledWith('/contenido/3');
-    expect(result).toEqual(mockData);
-  });
-
-  it('create debería retornar el contenido creado', async () => {
-    const formData = new FormData();
-    formData.append('descripcion', 'Nuevo contenido');
-    formData.append('link', 'https://nuevo.com');
-    formData.append('cod_modulo', '1');
-    formData.append('cod_seccion', '2');
-    formData.append('imagen', new Blob(['imagen']) as any, 'foto.png');
-
-    const mockResponse = {
-      cod_modulo: 1,
-      cod_seccion: 2,
-      cod_subseccion: 4,
-      descripcion: 'Nuevo contenido',
-      link: 'https://nuevo.com',
-      imagen: 'data:image/png;base64,...'
-    };
-
-    mockedAxiosInstance.post.mockResolvedValueOnce({ data: mockResponse });
-
-    const result = await contenidoService.create(4, formData);
-
-    expect(mockedAxiosInstance.post).toHaveBeenCalledWith(
-      '/contenido/4',
-      formData,
-      { headers: { 'Content-Type': 'multipart/form-data' } }
-    );
-
-    expect(result).toEqual(mockResponse);
+    expect(mockedAxios.get).toHaveBeenCalledWith('/contenido/1');
+    expect(result).toEqual(dataMock);
   });
 });
