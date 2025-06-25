@@ -27,38 +27,31 @@ const SeccionAccordion = ({
   const [isSubseccionModalOpen, setIsSubseccionModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const sectionColors = [
-    "bg-neo-mint",
-    "bg-neo-coral",
-    "bg-neo-lavender",
-    "bg-neo-yellow",
-    "bg-neo-aqua",
-    "bg-neo-sage",
-  ];
-
-  const bgColor = sectionColors[index % sectionColors.length];
+  // Usar solo dos colores modernos
+  const bgColor = "bg-neo-periwinkle";
+  const headerColor = "bg-neo-lavender";
 
   const handleEstudiar = (subseccionId: number) => {
     navigate(`/contenido/${subseccionId}`);
   };
 
   return (
-    <div className={`${bgColor} border-4 border-black shadow-brutal-lg`}>
+    <div className={`${bgColor}  rounded-xl shadow-lg mb-4`}>
       {/* Header de la sección */}
       <button
         onClick={onToggle}
-        className="w-full p-6 text-left hover:bg-opacity-80 transition-all duration-100 flex items-center justify-between"
+        className={`${headerColor} w-full p-6 text-left bg-neo-lavender rounded-t-xl flex items-center justify-between hover:bg-neo-periwinkle/90 transition-all duration-100`}
       >
         <div className="flex items-center space-x-4">
-          <div className="bg-black text-white border-3 border-black shadow-brutal px-4 py-2">
-            <span className="font-brutal text-lg">{index + 1}</span>
+          <div className="text-neo-cream rounded-lg px-4 py-2 font-brutal text-lg">
+            {index + 1}
           </div>
           <div>
-            <h3 className="font-brutal text-xl text-black mb-1">
+            <h3 className="font-brutal text-xl text-neo-cream mb-1">
               {seccion.titulo_seccion.toUpperCase()}
             </h3>
             {seccion.descripcion_seccion && (
-              <p className="text-gray-800 font-medium">
+              <p className="text-neo-mint font-medium">
                 {seccion.descripcion_seccion}
               </p>
             )}
@@ -66,13 +59,11 @@ const SeccionAccordion = ({
         </div>
 
         <div className="flex items-center space-x-3">
-          <div className="bg-neo-red border-2 border-black shadow-brutal px-3 py-1">
-            <span className="font-brutal text-sm">
-              {seccion.subsecciones.length} SUB-SECCIONES
-            </span>
+          <div className="text-neo-cream rounded-lg px-3 py-1 font-brutal text-sm">
+            {seccion.subsecciones.length} SUB-SECCIONES
           </div>
           <span
-            className={`font-brutal text-2xl transition-transform duration-200 ${
+            className={`font-brutal text-2xl text-neo-cream transition-transform duration-200 ${
               isOpen ? "rotate-180" : ""
             }`}
           >
@@ -83,59 +74,55 @@ const SeccionAccordion = ({
 
       {/* Contenido expandible - Subsecciones */}
       {isOpen && (
-        <div className="border-t-4 border-black bg-white">
+        <div className="bg-neo-lavender rounded-b-xl">
           {seccion.subsecciones.length > 0 ? (
             <div className="p-4 space-y-3">
               {seccion.subsecciones.map((subseccion, subIndex) => (
                 <div
                   key={subseccion.cod_subseccion}
-                  className="bg-neo-cream border-3 border-black shadow-brutal hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1"
+                  className="bg-neo-periwinkle rounded-lg p-4 flex items-center justify-between hover:bg-neo-periwinkle/80 transition-all duration-100"
                 >
-                  <div className="p-4 flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="bg-neo-orange border-2 border-black px-3 py-1">
-                        <span className="font-brutal text-sm">
-                          {index + 1}.{subIndex + 1}
-                        </span>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-lg text-black">
-                          {subseccion.titulo_subseccion}
-                        </h4>
-                        {subseccion.descripcion_subseccion && (
-                          <p className="text-gray-700 text-sm mt-1">
-                            {subseccion.descripcion_subseccion}
-                          </p>
-                        )}
-                      </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="text-neo-cream rounded-lg px-3 py-1 font-brutal text-sm">
+                      {index + 1}.{subIndex + 1}
                     </div>
-
-                    <button
-                      onClick={() => handleEstudiar(subseccion.cod_subseccion!)}
-                      className="bg-neo-lime border-3 border-black shadow-brutal px-4 py-2 font-brutal text-sm hover:shadow-brutal-lg transition-shadow duration-100"
-                    >
-                      ESTUDIAR
-                    </button>
+                    <div>
+                      <h4 className="font-bold text-lg text-neo-cream">
+                        {subseccion.titulo_subseccion}
+                      </h4>
+                      {subseccion.descripcion_subseccion && (
+                        <p className="text-neo-mint text-sm mt-1">
+                          {subseccion.descripcion_subseccion}
+                        </p>
+                      )}
+                    </div>
                   </div>
+
+                  <button
+                    onClick={() => handleEstudiar(subseccion.cod_subseccion!)}
+                    className="bg-neo-lime rounded-lg px-6 py-3 font-brutal text-neo-cream text-sm transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg hover:bg-neo-green"
+                  >
+                    ESTUDIAR
+                  </button>
                 </div>
               ))}
 
               {/* Botón para agregar nuevo tema */}
-              <div className="pt-3 border-t-2 border-gray-300">
+              <div className="pt-3 border-t border-neo-mint">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsSubseccionModalOpen(true);
                   }}
-                  className="w-full bg-neo-cyan border-3 border-black shadow-brutal p-4 font-brutal hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1"
+                  className="w-full bg-neo-lime rounded-lg px-6 py-3 font-brutal text-neo-cream transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg hover:bg-neo-green"
                 >
-                  ➕ AÑADIR NUEVO TEMA A ESTA SECCIÓN
+                  + AÑADIR NUEVO TEMA A ESTA SECCIÓN
                 </button>
               </div>
             </div>
           ) : (
             <div className="p-6 text-center">
-              <div className="bg-neo-orange border-3 border-black shadow-brutal p-4 mb-4">
+              <div className="text-neo-cream rounded-lg p-4 mb-4">
                 <span className="font-brutal text-lg">
                   NO HAY SUB-SECCIONES DISPONIBLES
                 </span>
@@ -145,9 +132,9 @@ const SeccionAccordion = ({
                   e.stopPropagation();
                   setIsSubseccionModalOpen(true);
                 }}
-                className="bg-neo-lime border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+                className="bg-neo-lime rounded-lg px-6 py-3 font-brutal text-neo-cream transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg hover:bg-neo-green"
               >
-                ➕ CREAR EL PRIMER TEMA
+                + CREAR EL PRIMER TEMA
               </button>
             </div>
           )}

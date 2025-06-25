@@ -43,7 +43,7 @@ const CursosPage = () => {
             onClick={() => navigate("/crear-curso")}
             className="bg-neo-peach rounded-lg shadow-brutal-lg px-6 py-4 font-brutal text-xl text-neo-cream hover:bg-neo-lime hover:text-neo-cream hover:shadow-brutal-xl transition-all duration-200 transform hover:scale-105 hover:-translate-y-1 hover:translate-x-1"
           >
-            ➕ CREAR CURSO
+            + CREAR CURSO
           </button>
         </div>
       </div>

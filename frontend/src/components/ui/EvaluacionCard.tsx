@@ -27,18 +27,18 @@ const EvaluacionCard = ({ evaluacion, index }: EvaluacionCardProps) => {
 
   return (
     <div
-      className={`${bgColor} border-4 border-black shadow-brutal-lg hover:shadow-brutal-xl transition-all duration-100`}
+      className={`${bgColor} rounded-lg border-2 border-black hover:shadow-brutal-xl transition-all duration-100`}
     >
       {/* Header */}
-      <div className="p-4 border-b-4 border-black bg-black text-white">
+      <div className="p-4 bg-neo-periwinkle text-white">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <span className="font-brutal text-lg">
               🧪 EVALUACIÓN #{index + 1}
             </span>
           </div>
-          <div className="bg-neo-yellow border-2 border-white px-3 py-1">
-            <span className="font-brutal text-xs text-black">
+          <div className="bg-neo-periwinkle rounded-lg px-3 py-1">
+            <span className="font-brutal text-xs text-white">
               {evaluacion.problemas?.length || 0} PROBLEMAS
             </span>
           </div>
@@ -57,13 +57,13 @@ const EvaluacionCard = ({ evaluacion, index }: EvaluacionCardProps) => {
 
         {/* Stats de la evaluación */}
         <div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="bg-white border-2 border-black p-3 text-center">
+          <div className="bg-neo-lavender rounded-lg p-3 text-center">
             <div className="font-brutal text-lg">
               {evaluacion.problemas?.length || 0}
             </div>
             <div className="text-xs font-bold">PROBLEMAS</div>
           </div>
-          <div className="bg-neo-lime border-2 border-black p-3 text-center">
+          <div className="bg-neo-lavender rounded-lg p-3 text-center">
             <div className="font-brutal text-lg">⏱️</div>
             <div className="text-xs font-bold">DISPONIBLE</div>
           </div>
@@ -71,7 +71,7 @@ const EvaluacionCard = ({ evaluacion, index }: EvaluacionCardProps) => {
 
         {/* Lista de problemas (preview) */}
         {evaluacion.problemas && evaluacion.problemas.length > 0 && (
-          <div className="bg-white border-3 border-black shadow-brutal p-4 mb-4">
+          <div className="bg-neo-periwinkle rounded-lg shadow-brutal p-4 mb-4">
             <h4 className="font-brutal text-sm mb-2">📝 PROBLEMAS:</h4>
             <div className="space-y-2">
               {evaluacion.problemas.slice(0, 3).map((problema, idx) => (
@@ -93,7 +93,7 @@ const EvaluacionCard = ({ evaluacion, index }: EvaluacionCardProps) => {
         <div className="space-y-3">
           <button
             onClick={handleVerEvaluacion}
-            className="w-full bg-neo-red border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+            className="w-full bg-neo-lime shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
           >
             📋 VER EVALUACIÓN
           </button>

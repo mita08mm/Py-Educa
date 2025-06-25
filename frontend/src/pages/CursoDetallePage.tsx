@@ -53,12 +53,12 @@ const CursoDetallePage = () => {
         <div className="flex items-center space-x-2 bg-neo-periwinkle rounded-lg p-4">
           <button
             onClick={() => navigate("/cursos")}
-            className="font-bold text-neo-cream hover:text-neo-warning transition-colors"
+            className="font-bold text-neo-cream hover:text-neo-lime transition-colors"
           >
             📍 Cursos
           </button>
           <span className="font-brutal text-xl text-neo-cream">→</span>
-          <span className="font-bold text-neo-warning">{curso.titulo_curso}</span>
+          <span className="font-bold text-neo-lime">{curso.titulo_curso}</span>
         </div>
       </nav>
 
@@ -91,11 +91,12 @@ const CursoDetallePage = () => {
 
             {/* Stats del curso */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-neo-lime rounded-lg p-4 text-center">
+              <div className="bg-neo-coral rounded-lg p-4 text-center">
                 <div className="font-brutal text-2xl mb-1">
                   {modulos.length}
                 </div>
-                <div className="font-bold">MÓDULOS</div>
+                <div className="font-bold">MÓDULOS
+                </div>
               </div>
               <div className="bg-neo-coral rounded-lg p-4 text-center">
                 <div className="font-brutal text-2xl mb-1">0%</div>
@@ -105,7 +106,7 @@ const CursoDetallePage = () => {
                 onClick={() => setIsModalOpen(true)}
                 className="bg-neo-peach rounded-lg p-4 text-center hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
               >
-                <div className="font-brutal text-2xl mb-1">➕</div>
+                <div className="font-brutal text-2xl mb-1">+</div>
                 <div className="font-bold">CREAR MÓDULO</div>
               </button>
             </div>
