@@ -81,77 +81,77 @@ const ModuloDetallePage = () => {
     <div>
       {/* Breadcrumb */}
       <nav className="mb-6">
-        <div className="flex items-center space-x-2 bg-white border-3 border-black shadow-brutal p-4">
+        <div className="flex items-center space-x-2 bg-neo-lavender rounded-lg p-4">
           <button
             onClick={() => navigate("/cursos")}
-            className="font-bold hover:text-neo-red transition-colors"
+            className="font-bold text-neo-cream hover:text-neo-lime transition-colors"
           >
             📍 Cursos
           </button>
-          <span className="font-brutal text-xl">→</span>
+          <span className="font-brutal text-xl text-neo-cream">→</span>
           <button
             onClick={() => navigate(`/curso/${modulo.cod_curso}`)}
-            className="font-bold hover:text-neo-red transition-colors"
+            className="font-bold text-neo-cream hover:text-neo-lime transition-colors"
           >
             Curso
           </button>
-          <span className="font-brutal text-xl">→</span>
-          <span className="font-bold text-neo-red">{modulo.titulo_modulo}</span>
+          <span className="font-brutal text-xl text-neo-cream">→</span>
+          <span className="font-bold text-neo-lime">{modulo.titulo_modulo}</span>
         </div>
       </nav>
 
       {/* Header del módulo */}
-      <div className="bg-neo-magenta border-5 border-black shadow-brutal-xl p-8 mb-8">
+      <div className="bg-neo-lavender rounded-xl shadow-xl p-8 mb-8">
         <div className="flex flex-col lg:flex-row gap-8 items-center">
           {/* Icono grande */}
           <div className="lg:w-1/4">
-            <div className="bg-neo-yellow border-4 border-black shadow-brutal-lg h-32 w-32 flex items-center justify-center mx-auto">
+            <div className="bg-neo-lime rounded-lg h-32 w-32 flex items-center justify-center mx-auto">
               <span className="font-brutal text-6xl">📚</span>
             </div>
           </div>
 
           {/* Información */}
           <div className="lg:w-3/4 text-center lg:text-left">
-            <h1 className="font-brutal text-4xl text-white mb-4">
+            <h1 className="font-brutal text-4xl text-neo-cream mb-4">
               {modulo.titulo_modulo.toUpperCase()}
             </h1>
-            <p className="text-xl font-bold text-black mb-6">
+            <p className="text-xl font-bold text-neo-cream/80 mb-6">
               {modulo.descripcion_modulo}
             </p>
 
             {/* Stats del módulo */}
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div className="bg-neo-lime border-3 border-black shadow-brutal p-4 text-center">
-                <div className="font-brutal text-2xl mb-1">
+              <div className=" rounded-lg p-4 text-center">
+                <div className="font-brutal text-2xl mb-1 text-neo-cream">
                   {secciones.length}
                 </div>
-                <div className="font-bold">SECCIONES</div>
+                <div className="font-bold text-neo-cream/80">SECCIONES</div>
               </div>
-              <div className="bg-neo-coral border-3 border-black shadow-brutal p-4 text-center">
-                <div className="font-brutal text-2xl mb-1">
+              <div className=" rounded-lg p-4 text-center">
+                <div className="font-brutal text-2xl mb-1 text-neo-cream">
                   {totalSubsecciones}
                 </div>
-                <div className="font-bold">TEMAS</div>
+                <div className="font-bold text-neo-cream/80">TEMAS</div>
               </div>
-              <div className="bg-neo-cyan border-3 border-black shadow-brutal p-4 text-center">
-                <div className="font-brutal text-2xl mb-1">
+              <div className="rounded-lg p-4 text-center">
+                <div className="font-brutal text-2xl mb-1 text-neo-cream">
                   {evaluaciones.length}
                 </div>
-                <div className="font-bold">EVALUACIONES</div>
+                <div className="font-bold text-neo-cream/80">EVALUACIONES</div>
               </div>
               <button
                 onClick={() => setIsSeccionModalOpen(true)}
-                className="bg-neo-orange border-3 border-black shadow-brutal p-4 text-center hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+                className="bg-neo-orange rounded-lg p-4 text-center font-bold text-neo-cream transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg"
               >
                 <div className="font-brutal text-2xl mb-1">➕</div>
-                <div className="font-bold">CREAR SECCIÓN</div>
+                <div>CREAR SECCIÓN</div>
               </button>
               <button
                 onClick={() => setIsEvaluacionModalOpen(true)}
-                className="bg-neo-purple border-3 border-black shadow-brutal p-4 text-center hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+                className="bg-neo-orange rounded-lg p-4 text-center font-bold text-neo-cream transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg"
               >
-                <div className="font-brutal text-2xl mb-1">🧪</div>
-                <div className="font-bold">CREAR EVALUACIÓN</div>
+                <div className="font-brutal text-2xl mb-1">➕</div>
+                <div>CREAR EVALUACIÓN</div>
               </button>
             </div>
           </div>
@@ -160,8 +160,8 @@ const ModuloDetallePage = () => {
 
       {/* Controles */}
       <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
-        <div className="bg-neo-yellow border-4 border-black shadow-brutal p-4">
-          <h2 className="font-brutal text-2xl text-black">
+        <div className="bg-neo-lavender rounded-lg p-4">
+          <h2 className="font-brutal text-2xl text-neo-cream">
             📋 CONTENIDO DEL MÓDULO
           </h2>
         </div>
@@ -169,13 +169,13 @@ const ModuloDetallePage = () => {
         <div className="flex space-x-3 flex-wrap gap-2">
           <button
             onClick={() => setOpenSections(secciones.map((_, i) => i))}
-            className="bg-neo-lime border-3 border-black shadow-brutal px-4 py-2 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+            className="bg-neo-lime rounded-lg px-4 py-2 font-brutal text-neo-cream transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg"
           >
             EXPANDIR TODO
           </button>
           <button
             onClick={() => setOpenSections([])}
-            className="bg-neo-sage border-3 border-black shadow-brutal px-4 py-2 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+            className="bg-neo-sage rounded-lg px-4 py-2 font-brutal text-neo-cream transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg"
           >
             CONTRAER TODO
           </button>

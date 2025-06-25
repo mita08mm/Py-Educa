@@ -63,18 +63,18 @@ const CrearModuloModal = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-neo-cream border-5 border-black shadow-brutal-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="bg-neo-magenta border-b-5 border-black p-6">
+      <div className="bg-neo-periwinkle rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="bg-neo-lavender rounded-t-xl p-6">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="font-brutal text-2xl text-white mb-1">
+              <h2 className="font-brutal text-2xl text-neo-cream mb-1">
                 CREAR NUEVO MÓDULO
               </h2>
-              <p className="font-bold text-black">Para: {cursoTitulo}</p>
+              <p className="font-bold text-neo-mint">Para: {cursoTitulo}</p>
             </div>
             <button
               onClick={handleClose}
-              className="bg-neo-red border-3 border-black shadow-brutal px-4 py-2 font-brutal text-xl hover:shadow-brutal-lg transition-shadow duration-100"
+              className="bg-neo-peach rounded-lg px-4 py-2 font-brutal text-xl text-neo-cream hover:bg-neo-lime hover:text-neo-cream transition-all duration-100"
             >
               ✕
             </button>
@@ -84,8 +84,8 @@ const CrearModuloModal = ({
         <div className="p-6">
           {success ? (
             <div className="text-center py-8">
-              <div className="bg-neo-lime border-4 border-black shadow-brutal p-6 animate-bounce">
-                <span className="font-brutal text-2xl">
+              <div className="bg-neo-lime rounded-lg p-6 animate-bounce">
+                <span className="font-brutal text-2xl text-neo-aqua">
                   ✅ MÓDULO CREADO EXITOSAMENTE!
                 </span>
               </div>
@@ -93,8 +93,8 @@ const CrearModuloModal = ({
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Título del módulo */}
-              <div className="bg-neo-yellow border-4 border-black shadow-brutal p-4">
-                <label className="block font-brutal text-lg mb-3">
+              <div className="bg-neo-lavender rounded-lg p-4">
+                <label className="block font-brutal text-lg mb-3 text-neo-cream">
                   📚 TÍTULO DEL MÓDULO
                 </label>
                 <input
@@ -103,28 +103,29 @@ const CrearModuloModal = ({
                   value={formData.titulo_modulo}
                   onChange={handleInputChange}
                   required
-                  className="w-full p-3 border-3 border-black font-bold focus:shadow-brutal transition-shadow duration-100"
+                  className="w-full p-3 rounded-lg font-bold bg-neo-lavender text-neo-cream placeholder:text-neo-cream/60 focus:ring-2 focus:ring-neo-lime transition-shadow duration-100 border border-neo-cream/30"
                   placeholder="Ej: Módulo 1: Introducción"
                 />
               </div>
 
-              <div className="bg-neo-mint border-4 border-black shadow-brutal p-4">
-                <label className="block font-brutal text-lg mb-3">
-                  📝 DESCRIPCIÓN (OPCIONAL)
+              {/* Descripción del módulo */}
+              <div className="bg-neo-lavender rounded-lg p-4 mt-4">
+                <label className="block font-brutal text-lg mb-3 text-neo-cream">
+                  📝 DESCRIPCIÓN DEL MÓDULO
                 </label>
                 <textarea
                   name="descripcion_modulo"
                   value={formData.descripcion_modulo}
                   onChange={handleInputChange}
-                  rows={3}
-                  className="w-full p-3 border-3 border-black font-bold resize-none focus:shadow-brutal transition-shadow duration-100"
-                  placeholder="Describe el contenido del módulo..."
+                  required
+                  className="w-full p-3 rounded-lg font-bold bg-neo-lavender text-neo-cream placeholder:text-neo-cream/60 focus:ring-2 focus:ring-neo-lime transition-shadow duration-100 min-h-[100px] border border-neo-cream/30"
+                  placeholder="Ej: En este módulo aprenderás los conceptos básicos de Python."
                 />
               </div>
 
               {error && (
-                <div className="bg-neo-red border-4 border-black shadow-brutal p-4">
-                  <span className="font-brutal text-lg text-white">
+                <div className="bg-neo-error rounded-lg p-4">
+                  <span className="font-brutal text-lg text-neo-cream">
                     ❌ ERROR: {error}
                   </span>
                 </div>
@@ -134,7 +135,7 @@ const CrearModuloModal = ({
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="bg-neo-sage border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+                  className="bg-neo-sage rounded-lg px-6 py-3 font-brutal text-neo-cream transition-all duration-100 hover:bg-neo-mint hover:text-neo-aqua hover:scale-105 hover:-translate-y-1 hover:shadow-lg"
                 >
                   CANCELAR
                 </button>
@@ -142,13 +143,13 @@ const CrearModuloModal = ({
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`border-3 border-black shadow-brutal px-6 py-3 font-brutal transition-shadow duration-100 hover:shadow-brutal-lg ${
+                  className={`rounded-lg px-6 py-3 font-brutal text-neo-cream transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg ${
                     loading
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-neo-lime hover:bg-neo-green"
                   }`}
                 >
-                  {loading ? "⏳ CREANDO..." : "✅ CREAR MÓDULO"}
+                  {loading ? "⏳ CREANDO..." : "CREAR MÓDULO"}
                 </button>
               </div>
             </form>

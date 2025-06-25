@@ -1,6 +1,6 @@
 const Navbar = () => {
   return (
-    <header className="bg-neo-magenta border-b-5 border-black shadow-brutal-lg">
+    <header className="bg-neo-periwinkle border-b-5 border-black shadow-brutal-lg">
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 ">
@@ -9,7 +9,7 @@ const Navbar = () => {
             </h1>
             <a
               href="/sandbox"
-              className="ml-6 bg-neo-yellow border-3 border-black shadow-brutal px-4 py-2 font-brutal text-lg rounded hover:bg-neo-cyan hover:text-white transition-all duration-100"
+              className="ml-6 bg-neo-peach border-3 border-black rounded-lg px-4 py-2 font-brutal text-lg text-neo-cream hover:bg-neo-lime hover:text-neo-cream transition-all duration-100"
             >
               Editor Python
             </a>

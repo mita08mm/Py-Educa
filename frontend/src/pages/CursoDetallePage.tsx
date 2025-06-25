@@ -38,7 +38,7 @@ const CursoDetallePage = () => {
         </div>
         <button
           onClick={() => navigate("/cursos")}
-          className="bg-neo-cyan border-4 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+          className="bg-neo-cyan rounded-lg shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
         >
           ← VOLVER A CURSOS
         </button>
@@ -50,29 +50,29 @@ const CursoDetallePage = () => {
     <div>
       {/* Breadcrumb */}
       <nav className="mb-6">
-        <div className="flex items-center space-x-2 bg-white border-3 border-black shadow-brutal p-4">
+        <div className="flex items-center space-x-2 bg-neo-periwinkle rounded-lg p-4">
           <button
             onClick={() => navigate("/cursos")}
-            className="font-bold hover:text-neo-red transition-colors"
+            className="font-bold text-neo-cream hover:text-neo-warning transition-colors"
           >
             📍 Cursos
           </button>
-          <span className="font-brutal text-xl">→</span>
-          <span className="font-bold text-neo-red">{curso.titulo_curso}</span>
+          <span className="font-brutal text-xl text-neo-cream">→</span>
+          <span className="font-bold text-neo-warning">{curso.titulo_curso}</span>
         </div>
       </nav>
 
       {/* Información del curso */}
-      <div className="bg-neo-magenta border-5 border-black shadow-brutal-xl p-8 mb-8">
+      <div className="bg-neo-periwinkle rounded-xl p-8 mb-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Imagen del curso */}
           <div className="lg:w-1/3">
-            <div className="bg-neo-yellow border-4 border-black shadow-brutal-lg h-64 flex items-center justify-center">
+            <div className="bg-neo-mint rounded-xl h-64 flex items-center justify-center">
               {curso.imagen_curso ? (
                 <img
                   src={curso.imagen_curso}
                   alt={curso.titulo_curso}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-xl"
                 />
               ) : (
                 <span className="font-brutal text-6xl">📚</span>
@@ -82,28 +82,28 @@ const CursoDetallePage = () => {
 
           {/* Información */}
           <div className="lg:w-2/3">
-            <h1 className="font-brutal text-4xl text-white mb-4">
+            <h1 className="font-brutal text-4xl text-neo-cream mb-4">
               {curso.titulo_curso.toUpperCase()}
             </h1>
-            <p className="text-xl font-bold text-black mb-6">
+            <p className="text-xl font-bold text-neo-mint mb-6">
               {curso.descripcion_curso}
             </p>
 
             {/* Stats del curso */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-neo-lime border-3 border-black shadow-brutal p-4 text-center">
+              <div className="bg-neo-lime rounded-lg p-4 text-center">
                 <div className="font-brutal text-2xl mb-1">
                   {modulos.length}
                 </div>
                 <div className="font-bold">MÓDULOS</div>
               </div>
-              <div className="bg-neo-coral border-3 border-black shadow-brutal p-4 text-center">
+              <div className="bg-neo-coral rounded-lg p-4 text-center">
                 <div className="font-brutal text-2xl mb-1">0%</div>
                 <div className="font-bold">PROGRESO</div>
               </div>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="bg-neo-cyan border-3 border-black shadow-brutal p-4 text-center hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+                className="bg-neo-peach rounded-lg p-4 text-center hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
               >
                 <div className="font-brutal text-2xl mb-1">➕</div>
                 <div className="font-bold">CREAR MÓDULO</div>
@@ -114,9 +114,9 @@ const CursoDetallePage = () => {
       </div>
 
       {/* Título de módulos */}
-      <div className="bg-neo-yellow border-4 border-black shadow-brutal-lg p-6 mb-8">
+      <div className="bg-neo-periwinkle rounded-lg p-6 mb-8">
         <div className="flex justify-between items-center">
-          <h2 className="font-brutal text-3xl text-black">
+          <h2 className="font-brutal text-3xl text-neo-cream">
             📋 MÓDULOS DEL CURSO ({modulos.length})
           </h2>
         </div>
@@ -131,8 +131,8 @@ const CursoDetallePage = () => {
         </div>
       ) : (
         <div className="text-center">
-          <div className="bg-neo-orange border-4 border-black shadow-brutal p-8 inline-block">
-            <span className="font-brutal text-2xl">
+          <div className="bg-neo-warning rounded-lg p-8 inline-block">
+            <span className="font-brutal text-2xl text-neo-aqua">
               NO HAY MÓDULOS DISPONIBLES
             </span>
             <br />
@@ -144,7 +144,7 @@ const CursoDetallePage = () => {
       <div className="fixed bottom-8 left-8">
         <button
           onClick={() => navigate("/cursos")}
-          className="bg-neo-red border-4 border-black shadow-brutal-lg px-6 py-4 font-brutal text-lg hover:shadow-brutal-xl transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+          className="bg-neo-peach rounded-lg px-6 py-4 font-brutal text-lg text-neo-cream hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
         >
           ← VOLVER
         </button>
