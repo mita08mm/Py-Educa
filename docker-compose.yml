@@ -78,6 +78,7 @@ services:
       - POSTGRES_DB=python_learning_platform
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./backend/backup:/docker-entrypoint-initdb.d
     networks:
       - app-network
     deploy:
@@ -89,16 +90,16 @@ services:
           cpus: '0.25'
           memory: 256M
 
-#  pgadmin:
-#    image: dpage/pgadmin4:8.1
-#    container_name: pgadmin
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: admin@example.com
-#      PGADMIN_DEFAULT_PASSWORD: admin
-#    ports:
-#      - 8080:80
-#    networks:
-#      - app-network 
+  pgadmin:
+    image: dpage/pgadmin4:8.1
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - 8080:80
+    networks:
+      - app-network 
 
 volumes:
   postgres_data:
