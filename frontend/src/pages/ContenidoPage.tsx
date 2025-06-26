@@ -90,14 +90,6 @@ const ContenidoPage = () => {
         </div>
       </nav>
 
-      <div className="bg-neo-periwinkle rounded-lg p-6 mb-8">
-        <div className="flex justify-between items-center">
-          <h2 className="font-brutal text-3xl text-neo-cream">
-            📚 VISUALIZANDO TEMA
-          </h2>
-        </div>
-      </div>
-
       {/* Header de la subsección */}
       <div className="bg-neo-periwinkle rounded-xl p-8 mb-8">
         <div className="flex flex-col lg:flex-row gap-8 items-center">

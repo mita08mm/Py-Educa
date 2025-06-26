@@ -42,8 +42,8 @@ const EvaluacionDetallePage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-96">
-        <div className="bg-neo-periwinkle border-4 border-black shadow-brutal p-8 animate-pulse">
-          <span className="font-brutal text-2xl">CARGANDO EVALUACIÓN...</span>
+        <div className="bg-neo-yellow rounded-xl p-8 animate-pulse">
+          <span className="font-brutal text-2xl text-neo-periwinkle">CARGANDO EVALUACIÓN...</span>
         </div>
       </div>
     );
@@ -52,14 +52,14 @@ const EvaluacionDetallePage = () => {
   if (error || !evaluacion) {
     return (
       <div className="flex flex-col items-center justify-center min-h-96 space-y-6">
-        <div className="bg-neo-red border-4 border-black shadow-brutal p-8">
-          <span className="font-brutal text-2xl text-white">
+        <div className="bg-neo-coral rounded-xl p-8">
+          <span className="font-brutal text-2xl text-neo-cream">
             ERROR: {error || "Evaluación no encontrada"}
           </span>
         </div>
         <button
           onClick={() => navigate(-1)}
-          className="bg-neo-cyan border-4 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+          className="bg-neo-cyan rounded-lg px-6 py-3 font-brutal text-neo-cream hover:scale-105 transition-all duration-200"
         >
           ← VOLVER
         </button>
@@ -71,118 +71,152 @@ const EvaluacionDetallePage = () => {
     <div>
       {/* Breadcrumb */}
       <nav className="mb-6">
-        <div className="flex items-center space-x-2 bg-white border-3 border-black shadow-brutal p-4">
+        <div className="flex items-center space-x-2 bg-neo-periwinkle rounded-lg p-4">
           <button
             onClick={() => navigate("/cursos")}
-            className="font-bold hover:text-neo-red transition-colors"
+            className="font-bold text-neo-cream hover:text-neo-lime transition-colors"
           >
             📍 Cursos
           </button>
-          <span className="font-brutal text-xl">→</span>
+          <span className="font-brutal text-xl text-neo-cream">→</span>
           <button
             onClick={() => navigate(-1)}
-            className="font-bold hover:text-neo-red transition-colors"
+            className="font-bold text-neo-cream hover:text-neo-lime transition-colors"
           >
             Módulo
           </button>
-          <span className="font-brutal text-xl">→</span>
-          <span className="font-bold text-neo-red">
+          <span className="font-brutal text-xl text-neo-cream">→</span>
+          <span className="font-bold text-neo-lime">
             {evaluacion.titulo_evaluacion}
           </span>
         </div>
       </nav>
 
+      <div className="bg-neo-periwinkle rounded-lg p-6 mb-8">
+        <div className="flex justify-between items-center">
+          <h2 className="font-brutal text-3xl text-neo-cream">
+            🧪 EVALUACIÓN DETALLADA
+          </h2>
+        </div>
+      </div>
+
       {/* Header de la evaluación */}
-      <div className="bg-neo-purple border-5 border-black shadow-brutal-xl p-8 mb-8">
+      <div className="bg-neo-periwinkle rounded-xl p-8 mb-8">
         <div className="flex flex-col lg:flex-row gap-8 items-center">
           {/* Icono grande */}
-          <div className="lg:w-1/4">
-            <div className="bg-neo-yellow border-4 border-black shadow-brutal-lg h-32 w-32 flex items-center justify-center mx-auto">
+          <div className="lg:w-1/3">
+            <div className="bg-neo-mint rounded-xl h-64 flex items-center justify-center">
               <span className="font-brutal text-6xl">🧪</span>
             </div>
           </div>
 
           {/* Información */}
           <div className="lg:w-3/4 text-center lg:text-left">
-            <h1 className="font-brutal text-4xl text-white mb-4">
+            <h1 className="font-brutal text-4xl text-neo-cream mb-4">
               {evaluacion.titulo_evaluacion.toUpperCase()}
             </h1>
-            <p className="text-xl font-bold text-black mb-6">
+            <p className="text-xl font-bold text-neo-mint mb-6">
               {evaluacion.descripcion_evaluacion}
             </p>
 
             {/* Stats de la evaluación */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-neo-lime border-3 border-black shadow-brutal p-4 text-center">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-neo-coral rounded-lg p-4 text-center">
                 <div className="font-brutal text-2xl mb-1">
                   {evaluacion.problemas?.length || 0}
                 </div>
                 <div className="font-bold">PROBLEMAS</div>
               </div>
-              <div className="bg-neo-coral border-3 border-black shadow-brutal p-4 text-center">
+              <div className="bg-neo-coral rounded-lg p-4 text-center">
                 <div className="font-brutal text-2xl mb-1">⏱️</div>
                 <div className="font-bold">DISPONIBLE</div>
               </div>
+              <div className="bg-neo-coral rounded-lg p-4 text-center">
+                <div className="font-brutal text-2xl mb-1">
+                  {evaluacion.problemas?.filter(p => p.tipo_problema === 'multiple_choice').length || 0}
+                </div>
+                <div className="font-bold">MÚLTIPLE</div>
+              </div>
               <button
                 onClick={() => setIsProblemaModalOpen(true)}
-                className="bg-neo-orange border-3 border-black shadow-brutal p-4 text-center hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+                className="bg-neo-peach rounded-lg p-4 text-center hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
               >
-                <div className="font-brutal text-2xl mb-1">➕</div>
-                <div className="font-bold">CREAR PROBLEMA</div>
+                <div className="font-brutal text-2xl mb-1">+</div>
+                <div className="font-bold">AGREGAR PROBLEMA</div>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Sección de Problemas */}
-      <div className="bg-neo-indigo border-4 border-black shadow-brutal-lg p-6 mb-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="font-brutal text-3xl text-white">
-            📝 PROBLEMAS DE LA EVALUACIÓN ({evaluacion.problemas?.length || 0})
+      {/* Controles */}
+      <div className="bg-neo-periwinkle rounded-xl p-4 flex justify-between items-center mb-6 flex-wrap gap-4">
+        <div className="">
+          <h2 className="font-brutal text-2xl text-neo-cream">
+            📝 PROBLEMAS DE EVALUACIÓN
           </h2>
         </div>
 
-        {/* Grid de problemas */}
-        {evaluacion.problemas && evaluacion.problemas.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6">
-            {evaluacion.problemas.map((problema, index) => (
-              <ProblemaCard
-                key={problema.cod_problema}
-                problema={problema}
-                index={index}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <div className="bg-neo-orange border-3 border-black shadow-brutal p-6 inline-block">
-              <span className="font-brutal text-xl">
-                NO HAY PROBLEMAS DISPONIBLES
-              </span>
-              <br />
-              <span className="text-lg font-bold">
-                ¡Crea problemas para que los estudiantes resuelvan!
-              </span>
-            </div>
-            <br />
-            <button
-              onClick={() => setIsProblemaModalOpen(true)}
-              className="bg-neo-lime border-3 border-black shadow-brutal px-6 py-3 font-brutal mt-4 hover:shadow-brutal-lg transition-shadow duration-100"
-            >
-              📝 CREAR EL PRIMER PROBLEMA
-            </button>
-          </div>
-        )}
+        <div className="flex space-x-3 flex-wrap gap-2">
+          <button
+            onClick={() => setIsProblemaModalOpen(true)}
+            className="bg-neo-lime rounded-lg px-4 py-2 font-brutal text-neo-cream transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg"
+          >
+            + AGREGAR PROBLEMA
+          </button>
+        </div>
       </div>
+
+      {/* Grid de problemas */}
+      {evaluacion.problemas && evaluacion.problemas.length > 0 ? (
+        <div className="space-y-4 mb-8">
+          {evaluacion.problemas.map((problema, index) => (
+            <ProblemaCard
+              key={problema.cod_problema}
+              problema={problema}
+              index={index}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-8 mb-8">
+          <div className="bg-neo-orange rounded-xl p-8 inline-block mb-6">
+            <span className="font-brutal text-2xl text-neo-periwinkle">
+              NO HAY PROBLEMAS DISPONIBLES
+            </span>
+            <br />
+            <span className="text-lg font-bold text-neo-periwinkle">
+              ¡Crea problemas para que los estudiantes resuelvan!
+            </span>
+          </div>
+          <br />
+          <button
+            onClick={() => setIsProblemaModalOpen(true)}
+            className="bg-neo-lime rounded-lg px-12 py-4 font-brutal text-lg hover:scale-105 transition-all duration-100"
+          >
+            + CREAR EL PRIMER PROBLEMA
+          </button>
+        </div>
+      )}
 
       {/* Navegación inferior */}
       <div className="flex justify-between items-center mt-12 pt-8 border-t-4 border-black">
         <button
           onClick={() => navigate(-1)}
-          className="bg-neo-red border-4 border-black shadow-brutal-lg px-8 py-4 font-brutal text-lg hover:shadow-brutal-xl transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+          className="bg-neo-lime rounded-lg px-8 py-4 font-brutal text-lg hover:scale-105 transition-all duration-100"
         >
           ← VOLVER AL MÓDULO
+        </button>
+
+        <div className="bg-neo-cream rounded-lg px-6 py-3">
+          <span className="font-brutal text-lg text-neo-periwinkle">Evaluación #{evaluacionIdNum}</span>
+        </div>
+
+        <button
+          disabled
+          className="bg-gray-400 rounded-lg px-8 py-4 font-brutal text-lg cursor-not-allowed opacity-50"
+        >
+          SIGUIENTE EVALUACIÓN →
         </button>
       </div>
 
