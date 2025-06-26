@@ -99,13 +99,20 @@ const ModuloDetallePage = () => {
           <span className="font-bold text-neo-lime">{modulo.titulo_modulo}</span>
         </div>
       </nav>
-
+      <div className="bg-neo-periwinkle rounded-lg p-6 mb-8">
+        <div className="flex justify-between items-center">
+          <h2 className="font-brutal text-3xl text-neo-cream">
+            📋 VISUALIZANDO MODULO
+          </h2>
+        </div>
+      </div>
       {/* Header del módulo */}
       <div className="bg-neo-periwinkle rounded-xl p-8 mb-8">
         <div className="flex flex-col lg:flex-row gap-8 items-center">
+
           {/* Icono grande */}
-          <div className="lg:w-1/4">
-            <div className="bg-neo-lime rounded-lg h-32 w-32 flex items-center justify-center mx-auto">
+          <div className="lg:w-1/3">
+            <div className="bg-neo-mint rounded-xl h-64 flex items-center justify-center">
               <span className="font-brutal text-6xl">📚</span>
             </div>
           </div>

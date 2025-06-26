@@ -78,7 +78,7 @@ const CrearCursoPage = () => {
       </div>
 
       {/* Formulario */}
-      <form onSubmit={handleSubmit} className="max-w-4xl space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-8">
         {/* Título del curso */}
         <div className="bg-neo-lavender rounded-lg shadow-brutal-lg p-6">
           <label className="block font-brutal text-xl mb-4">
