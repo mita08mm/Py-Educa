@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useCreateContenido } from "../../hooks/useCreateContenido";
 import { getYouTubeThumbnail } from "../../utils/youtubeUtils";
 import { useSubseccionDatos } from "../../hooks/useSubseccionDatos";
+
 interface CrearContenidoModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -24,6 +25,7 @@ const CrearContenidoModal = ({
     descripcion: "",
     link: "",
   });
+
   const { subseccionDatos } = useSubseccionDatos(subseccionId);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -36,7 +38,7 @@ const CrearContenidoModal = ({
         onContenidoCreated();
       }, 1500);
     }
-  }, [success]);
+  }, [success, onContenidoCreated]);
 
   useEffect(() => {
     // Preview de YouTube
@@ -77,6 +79,7 @@ const CrearContenidoModal = ({
     if (!subseccionDatos) {
       return;
     }
+
     const submitData = new FormData();
     submitData.append("cod_modulo", subseccionDatos.cod_modulo.toString());
     submitData.append("cod_seccion", subseccionDatos.cod_seccion.toString());
@@ -94,7 +97,10 @@ const CrearContenidoModal = ({
   };
 
   const handleClose = () => {
-    setFormData({ descripcion: "", link: "" });
+    setFormData({
+      descripcion: "",
+      link: "",
+    });
     setSelectedImage(null);
     setImagePreview(null);
     setYoutubePreview(null);
@@ -106,15 +112,17 @@ const CrearContenidoModal = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-neo-cream border-5 border-black shadow-brutal-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-neo-periwinkle rounded-lg shadow-brutal-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-neo-purple border-b-5 border-black p-6">
+        <div className="bg-neo-lavender border-b-5 border-black p-6">
           <div className="flex justify-between items-center">
             <div>
               <h2 className="font-brutal text-2xl text-white mb-1">
                 AGREGAR CONTENIDO
               </h2>
-              <p className="font-bold text-black">Para: {subseccionTitulo}</p>
+              <p className="font-bold text-white">
+                Para subsección: {subseccionTitulo}
+              </p>
             </div>
             <button
               onClick={handleClose}
@@ -138,75 +146,146 @@ const CrearContenidoModal = ({
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Descripción */}
-              <div className="bg-neo-yellow border-4 border-black shadow-brutal p-4">
-                <label className="block font-brutal text-lg mb-3">
-                  📝 DESCRIPCIÓN
-                </label>
-                <textarea
-                  name="descripcion"
-                  value={formData.descripcion}
-                  onChange={handleInputChange}
-                  rows={4}
-                  className="w-full p-3 border-3 border-black font-bold resize-none focus:shadow-brutal transition-shadow duration-100"
-                  placeholder="Explica el contenido de esta lección..."
-                />
+              <div className="bg-neo-coral rounded-lg shadow-brutal p-6">
+                <h3 className="font-brutal text-xl mb-4">
+                  📝 DESCRIPCIÓN DEL CONTENIDO
+                </h3>
+                <div>
+                  <label className="block font-brutal text-lg mb-3">
+                    ✏️ DESCRIPCIÓN
+                  </label>
+                  <textarea
+                    name="descripcion"
+                    value={formData.descripcion}
+                    onChange={handleInputChange}
+                    rows={4}
+                    className="w-full p-3 rounded-lg font-bold bg-neo-lavender text-neo-cream placeholder:text-neo-cream/60 focus:ring-2 focus:ring-neo-lime transition-shadow duration-100 border border-neo-cream/30"
+                    placeholder="Explica el contenido de esta lección y qué aprenderán los estudiantes..."
+                  />
+                </div>
               </div>
 
-              {/* Link de YouTube */}
-              <div className="bg-neo-coral border-4 border-black shadow-brutal p-4">
-                <label className="block font-brutal text-lg mb-3">
-                  📹 VIDEO DE YOUTUBE (OPCIONAL)
-                </label>
-                <input
-                  type="url"
-                  name="link"
-                  value={formData.link}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border-3 border-black font-bold focus:shadow-brutal transition-shadow duration-100"
-                  placeholder="https://www.youtube.com/watch?v=..."
-                />
-
-                {/* Preview del video de YouTube */}
-                {youtubePreview && (
-                  <div className="mt-4 border-3 border-black shadow-brutal bg-white p-4">
-                    <p className="font-brutal text-lg mb-3">
-                      PREVIEW DEL VIDEO:
-                    </p>
-                    <img
-                      src={youtubePreview}
-                      alt="YouTube Preview"
-                      className="max-w-xs max-h-32 border-3 border-black shadow-brutal"
-                    />
-                  </div>
-                )}
+              {/* Video de YouTube */}
+              <div className="bg-neo-coral rounded-lg shadow-brutal p-6">
+                <h3 className="font-brutal text-xl mb-4">
+                  📹 VIDEO EDUCATIVO
+                </h3>
+                <div>
+                  <label className="block font-brutal text-lg mb-3">
+                    🎬 ENLACE DE YOUTUBE (OPCIONAL)
+                  </label>
+                  <input
+                    type="url"
+                    name="link"
+                    value={formData.link}
+                    onChange={handleInputChange}
+                    className="w-full p-3 rounded-lg font-bold bg-neo-lavender text-neo-cream placeholder:text-neo-cream/60 focus:ring-2 focus:ring-neo-lime transition-shadow duration-100 border border-neo-cream/30"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                  />
+                  
+                  {/* Preview del video de YouTube */}
+                  {youtubePreview && (
+                    <div className="mt-4 bg-neo-sage rounded-lg shadow-brutal p-4">
+                      <p className="font-brutal text-lg mb-3">
+                        🎥 PREVIEW DEL VIDEO:
+                      </p>
+                      <img
+                        src={youtubePreview}
+                        alt="YouTube Preview"
+                        className="max-w-xs max-h-32 rounded-lg border-3 border-black shadow-brutal"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* Imagen */}
-              <div className="bg-neo-mint border-4 border-black shadow-brutal p-4">
-                <label className="block font-brutal text-lg mb-3">
-                  🖼️ IMAGEN ADICIONAL (OPCIONAL)
-                </label>
+              {/* Imagen adicional */}
+              <div className="bg-neo-coral rounded-lg shadow-brutal p-6">
+                <h3 className="font-brutal text-xl mb-4">
+                  🖼️ IMAGEN COMPLEMENTARIA
+                </h3>
+                <div>
+                  <label className="block font-brutal text-lg mb-3">
+                    📸 IMAGEN ADICIONAL (OPCIONAL)
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="w-full p-3 rounded-lg font-bold bg-neo-lavender text-neo-cream file:bg-neo-orange file:px-4 file:py-2 file:font-brutal file:border-2 file:border-black file:rounded file:shadow-brutal file:mr-4 file:text-black focus:ring-2 focus:ring-neo-lime transition-shadow duration-100 border border-neo-cream/30"
+                  />
 
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="w-full p-3 border-3 border-black bg-white font-bold  file:bg-neo-orange file:px-4 file:py-2 file:font-brutal file:border-3 file:border-black file:shadow-brutal file:mr-4"
-                />
+                  {/* Preview de la imagen */}
+                  {imagePreview && (
+                    <div className="mt-4 bg-neo-sage rounded-lg shadow-brutal p-4">
+                      <p className="font-brutal text-lg mb-3">
+                        🖼️ PREVIEW DE LA IMAGEN:
+                      </p>
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="max-w-xs max-h-48 rounded-lg border-3 border-black shadow-brutal"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
 
-                {/* Preview de la imagen */}
-                {imagePreview && (
-                  <div className="mt-4 border-3 border-black shadow-brutal bg-white p-4">
-                    <p className="font-brutal text-lg mb-3">
-                      PREVIEW DE LA IMAGEN:
-                    </p>
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="max-w-xs max-h-48 border-3 border-black shadow-brutal"
-                    />
+              {/* Información adicional */}
+              <div className="bg-neo-coral rounded-lg shadow-brutal p-6">
+                <h3 className="font-brutal text-xl mb-4">
+                  ℹ️ INFORMACIÓN IMPORTANTE
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <span className="font-brutal text-lg">📝</span>
+                    <span className="font-bold">
+                      La descripción ayuda a los estudiantes a entender el objetivo del contenido
+                    </span>
                   </div>
-                )}
+                  <div className="flex items-center space-x-3">
+                    <span className="font-brutal text-lg">📹</span>
+                    <span className="font-bold">
+                      Los videos de YouTube se reproducen directamente en la plataforma
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <span className="font-brutal text-lg">🖼️</span>
+                    <span className="font-bold">
+                      Las imágenes complementan y refuerzan el aprendizaje visual
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Flujo de contenido */}
+              <div className="bg-neo-coral rounded-lg shadow-brutal p-6">
+                <h3 className="font-brutal text-xl mb-4">
+                  🚀 TIPOS DE CONTENIDO
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-neo-sage rounded-lg shadow-brutal p-4 text-center">
+                    <div className="font-brutal text-2xl mb-2">📝</div>
+                    <div className="font-bold text-sm">TEXTO EXPLICATIVO</div>
+                    <div className="text-xs mt-1">
+                      Descripción clara del contenido
+                    </div>
+                  </div>
+                  <div className="bg-neo-sage rounded-lg shadow-brutal p-4 text-center">
+                    <div className="font-brutal text-2xl mb-2">🎬</div>
+                    <div className="font-bold text-sm">VIDEO EDUCATIVO</div>
+                    <div className="text-xs mt-1">
+                      Material audiovisual de apoyo
+                    </div>
+                  </div>
+                  <div className="bg-neo-sage rounded-lg shadow-brutal p-4 text-center">
+                    <div className="font-brutal text-2xl mb-2">🖼️</div>
+                    <div className="font-bold text-sm">IMAGEN COMPLEMENTARIA</div>
+                    <div className="text-xs mt-1">
+                      Apoyo visual adicional
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Error */}
@@ -223,7 +302,7 @@ const CrearContenidoModal = ({
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="bg-neo-sage border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+                  className="bg-neo-sage rounded-lg border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
                 >
                   CANCELAR
                 </button>
@@ -231,13 +310,13 @@ const CrearContenidoModal = ({
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`border-3 border-black shadow-brutal px-6 py-3 font-brutal transition-shadow duration-100 hover:shadow-brutal-lg ${
+                  className={`rounded-lg shadow-brutal px-6 py-3 font-brutal transition-shadow duration-100 hover:shadow-brutal-lg ${
                     loading
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-neo-lime hover:bg-neo-green"
                   }`}
                 >
-                  {loading ? "⏳ GUARDANDO..." : "✅ AGREGAR CONTENIDO"}
+                  {loading ? "⏳ GUARDANDO..." : "📚 AGREGAR CONTENIDO"}
                 </button>
               </div>
             </form>
