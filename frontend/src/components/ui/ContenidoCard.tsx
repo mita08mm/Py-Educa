@@ -115,7 +115,7 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
         )}
       </div>
 
-      <div className="p-6 space-y-4">
+      <div className="bg-neo-coral p-6 space-y-4">
         {/* Contenido basado en tabs o tipo disponible */}
         {needsTabs ? (
           // Modo con tabs
@@ -124,8 +124,8 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
               <div className="space-y-4">
                 {/* Descripción */}
                 {hasDescription && (
-                  <div className="bg-neo-cream rounded-lg p-4">
-                    <p className="font-bold text-base leading-relaxed text-neo-periwinkle">
+                  <div className="bg-neo-periwinkle rounded-lg p-4">
+                    <p className="font-bold text-base leading-relaxed text-white">
                       {contenido.descripcion}
                     </p>
                   </div>
@@ -133,14 +133,14 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
 
                 {/* Imagen */}
                 {hasImage && (
-                  <div className="bg-neo-cream rounded-lg p-3">
+                  <div className="bg-coral rounded-lg p-3">
                     <div className="relative overflow-hidden rounded-lg">
                       <img
                         src={contenido.imagen}
                         alt={
                           hasTitle ? contenido.titulo : "Imagen del contenido"
                         }
-                        className="w-full h-auto max-h-80 object-contain bg-gray-100 rounded-lg"
+                        className="w-full h-auto max-h-80 object-contain bg-neo-coral rounded-lg"
                         onError={() => setImageError(true)}
                       />
                     </div>
@@ -181,8 +181,8 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
           <div className="space-y-4">
             {/* Descripción */}
             {hasDescription && (
-              <div className="bg-neo-cream rounded-lg p-4">
-                <p className="font-bold text-base leading-relaxed text-neo-periwinkle">
+              <div className="bg-neo-periwinkle rounded-lg p-4">
+                <p className="font-bold text-base leading-relaxed text-white">
                   {contenido.descripcion}
                 </p>
               </div>
@@ -190,12 +190,12 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
 
             {/* Solo imagen */}
             {hasImage && !hasVideo && (
-              <div className="bg-neo-cream rounded-lg p-3">
+              <div className="bg-neo-coral rounded-lg p-3">
                 <div className="relative overflow-hidden rounded-lg">
                   <img
                     src={contenido.imagen}
                     alt={hasTitle ? contenido.titulo : "Imagen del contenido"}
-                    className="w-full h-auto max-h-80 object-contain bg-gray-100 rounded-lg"
+                    className="w-full h-auto max-h-80 object-contain bg-neo-coral rounded-lg"
                     onError={() => setImageError(true)}
                   />
                 </div>
