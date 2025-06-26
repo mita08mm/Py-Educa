@@ -93,7 +93,7 @@ const ContenidoPage = () => {
       <div className="bg-neo-periwinkle rounded-lg p-6 mb-8">
         <div className="flex justify-between items-center">
           <h2 className="font-brutal text-3xl text-neo-cream">
-            📚 VISUALIZANDO CONTENIDO
+            📚 VISUALIZANDO TEMA
           </h2>
         </div>
       </div>

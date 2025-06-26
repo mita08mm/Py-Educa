@@ -37,12 +37,12 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
   };
 
   const colors = [
-    "bg-neo-yellow",
-    "bg-neo-lime",
     "bg-neo-coral",
+    "bg-neo-mint",
+    "bg-neo-peach",
+    "bg-neo-lime",
+    "bg-neo-yellow",
     "bg-neo-cyan",
-    "bg-neo-magenta",
-    "bg-neo-orange",
   ];
 
   const cardColor = colors[index % colors.length];
@@ -60,30 +60,28 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
   }, [hasImage, hasVideo, needsTabs]);
 
   return (
-    <div
-      className={`${cardColor} border-4 border-black shadow-brutal-lg hover:shadow-brutal-xl transition-all duration-200 hover:translate-x-1 hover:translate-y-1 overflow-hidden`}
-    >
+    <div className={`${cardColor} rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg`}>
       {/* Header de la Card */}
-      <div className="bg-black text-white p-4 border-b-4 border-black">
-        <div className="flex justify-between items-center flex-wrap gap-2">
-          <h3 className="font-brutal text-lg">
-            {hasTitle ? contenido.titulo : `CONTENIDO #${index + 1}`}
+      <div className="bg-neo-periwinkle p-6">
+        <div className="flex justify-between items-center flex-wrap gap-3">
+          <h3 className="font-brutal text-xl text-neo-cream">
+            {hasTitle ? contenido.titulo : `📚 CONTENIDO #${index + 1}`}
           </h3>
 
           {/* Badges de tipo de contenido */}
           <div className="flex gap-2 flex-wrap">
             {hasDescription && (
-              <span className="bg-white text-black px-2 py-1 text-xs font-bold border-2 border-white">
+              <span className="bg-neo-cream text-neo-periwinkle px-3 py-1 text-xs font-bold rounded-full">
                 📝 TEXTO
               </span>
             )}
             {hasImage && (
-              <span className="bg-neo-yellow text-black px-2 py-1 text-xs font-bold border-2 border-white">
+              <span className="bg-neo-yellow text-neo-periwinkle px-3 py-1 text-xs font-bold rounded-full">
                 📷 IMAGEN
               </span>
             )}
             {hasVideo && (
-              <span className="bg-neo-red text-white px-2 py-1 text-xs font-bold border-2 border-white">
+              <span className="bg-neo-coral text-neo-cream px-3 py-1 text-xs font-bold rounded-full">
                 🎥 VIDEO
               </span>
             )}
@@ -92,23 +90,23 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
 
         {/* Tabs si hay imagen Y video */}
         {needsTabs && (
-          <div className="flex mt-3 gap-2">
+          <div className="flex mt-4 gap-2">
             <button
               onClick={() => setActiveTab("content")}
-              className={`px-3 py-1 font-brutal text-sm border-2 transition-all duration-100 ${
+              className={`px-4 py-2 font-brutal text-sm rounded-lg transition-all duration-200 ${
                 activeTab === "content"
-                  ? "bg-white text-black border-white"
-                  : "bg-transparent text-white border-white hover:bg-white hover:text-black"
+                  ? "bg-neo-cream text-neo-periwinkle"
+                  : "bg-transparent text-neo-cream border border-neo-cream hover:bg-neo-cream hover:text-neo-periwinkle"
               }`}
             >
               📝 CONTENIDO
             </button>
             <button
               onClick={() => setActiveTab("video")}
-              className={`px-3 py-1 font-brutal text-sm border-2 transition-all duration-100 ${
+              className={`px-4 py-2 font-brutal text-sm rounded-lg transition-all duration-200 ${
                 activeTab === "video"
-                  ? "bg-white text-black border-white"
-                  : "bg-transparent text-white border-white hover:bg-white hover:text-black"
+                  ? "bg-neo-cream text-neo-periwinkle"
+                  : "bg-transparent text-neo-cream border border-neo-cream hover:bg-neo-cream hover:text-neo-periwinkle"
               }`}
             >
               🎥 VIDEO
@@ -117,7 +115,7 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
         )}
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="p-6 space-y-4">
         {/* Contenido basado en tabs o tipo disponible */}
         {needsTabs ? (
           // Modo con tabs
@@ -126,8 +124,8 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
               <div className="space-y-4">
                 {/* Descripción */}
                 {hasDescription && (
-                  <div className="bg-white border-3 border-black shadow-brutal p-4">
-                    <p className="font-bold text-base leading-relaxed">
+                  <div className="bg-neo-cream rounded-lg p-4">
+                    <p className="font-bold text-base leading-relaxed text-neo-periwinkle">
                       {contenido.descripcion}
                     </p>
                   </div>
@@ -135,14 +133,14 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
 
                 {/* Imagen */}
                 {hasImage && (
-                  <div className="bg-white border-3 border-black shadow-brutal p-2">
-                    <div className="relative overflow-hidden border-2 border-black">
+                  <div className="bg-neo-cream rounded-lg p-3">
+                    <div className="relative overflow-hidden rounded-lg">
                       <img
                         src={contenido.imagen}
                         alt={
                           hasTitle ? contenido.titulo : "Imagen del contenido"
                         }
-                        className="w-full h-auto max-h-80 object-contain bg-gray-100"
+                        className="w-full h-auto max-h-80 object-contain bg-gray-100 rounded-lg"
                         onError={() => setImageError(true)}
                       />
                     </div>
@@ -152,24 +150,24 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
             )}
 
             {activeTab === "video" && hasVideo && (
-              <div className="bg-black border-3 border-black shadow-brutal">
+              <div className="bg-neo-periwinkle rounded-lg overflow-hidden">
                 {embedUrl ? (
                   <div className="relative aspect-video">
                     <iframe
                       src={embedUrl}
                       title={hasTitle ? contenido.titulo : "Video"}
-                      className="w-full h-full border-none"
+                      className="w-full h-full border-none rounded-lg"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
                   </div>
                 ) : (
-                  <div className="p-4 text-center">
+                  <div className="p-6 text-center">
                     <a
                       href={contenido.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-neo-red text-white px-6 py-3 font-brutal border-3 border-white shadow-brutal hover:shadow-brutal-lg transition-all duration-100 inline-block hover:translate-x-1"
+                      className="bg-neo-coral text-neo-cream px-6 py-3 font-brutal rounded-lg hover:bg-neo-lime transition-all duration-200 inline-block hover:scale-105"
                     >
                       🔗 ABRIR ENLACE
                     </a>
@@ -183,8 +181,8 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
           <div className="space-y-4">
             {/* Descripción */}
             {hasDescription && (
-              <div className="bg-white border-3 border-black shadow-brutal p-4">
-                <p className="font-bold text-base leading-relaxed">
+              <div className="bg-neo-cream rounded-lg p-4">
+                <p className="font-bold text-base leading-relaxed text-neo-periwinkle">
                   {contenido.descripcion}
                 </p>
               </div>
@@ -192,12 +190,12 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
 
             {/* Solo imagen */}
             {hasImage && !hasVideo && (
-              <div className="bg-white border-3 border-black shadow-brutal p-2">
-                <div className="relative overflow-hidden border-2 border-black">
+              <div className="bg-neo-cream rounded-lg p-3">
+                <div className="relative overflow-hidden rounded-lg">
                   <img
                     src={contenido.imagen}
                     alt={hasTitle ? contenido.titulo : "Imagen del contenido"}
-                    className="w-full h-auto max-h-80 object-contain bg-gray-100"
+                    className="w-full h-auto max-h-80 object-contain bg-gray-100 rounded-lg"
                     onError={() => setImageError(true)}
                   />
                 </div>
@@ -206,24 +204,24 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
 
             {/* Solo video */}
             {hasVideo && !hasImage && (
-              <div className="bg-black border-3 border-black shadow-brutal">
+              <div className="bg-neo-periwinkle rounded-lg overflow-hidden">
                 {embedUrl ? (
                   <div className="relative aspect-video">
                     <iframe
                       src={embedUrl}
                       title={hasTitle ? contenido.titulo : "Video"}
-                      className="w-full h-full border-none"
+                      className="w-full h-full border-none rounded-lg"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
                   </div>
                 ) : (
-                  <div className="p-4 text-center">
+                  <div className="p-6 text-center">
                     <a
                       href={contenido.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-neo-red text-white px-6 py-3 font-brutal border-3 border-white shadow-brutal hover:shadow-brutal-lg transition-all duration-100 inline-block hover:translate-x-1"
+                      className="bg-neo-coral text-neo-cream px-6 py-3 font-brutal rounded-lg hover:bg-neo-lime transition-all duration-200 inline-block hover:scale-105"
                     >
                       🔗 ABRIR ENLACE
                     </a>
@@ -235,8 +233,8 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
         )}
 
         {/* Footer con acciones */}
-        <div className="flex justify-between items-center pt-4 border-t-3 border-black">
-          <div className="text-sm font-bold">
+        <div className="flex justify-between items-center pt-4 border-t border-neo-periwinkle/20">
+          <div className="bg-neo-periwinkle text-neo-cream px-3 py-1 rounded-full font-bold text-sm">
             #{contenido.orden || index + 1}
           </div>
 
@@ -244,12 +242,12 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
           {(hasImage || hasVideo) && (
             <div className="flex gap-2">
               {hasImage && !needsTabs && (
-                <span className="text-xs font-bold px-2 py-1 bg-black text-white">
+                <span className="text-sm font-bold px-2 py-1 bg-neo-yellow text-neo-periwinkle rounded-full">
                   📷
                 </span>
               )}
               {hasVideo && !needsTabs && (
-                <span className="text-xs font-bold px-2 py-1 bg-black text-white">
+                <span className="text-sm font-bold px-2 py-1 bg-neo-coral text-neo-cream rounded-full">
                   🎥
                 </span>
               )}
@@ -261,10 +259,10 @@ const ContenidoCard: React.FC<ContenidoCardProps> = ({ contenido, index }) => {
       {/* Estado vacío */}
       {!hasDescription && !hasImage && !hasVideo && (
         <div className="p-8 text-center">
-          <div className="bg-white border-3 border-black shadow-brutal p-6">
-            <span className="font-brutal text-lg">⚠️ CONTENIDO VACÍO</span>
+          <div className="bg-neo-cream rounded-lg p-6">
+            <span className="font-brutal text-lg text-neo-periwinkle">⚠️ CONTENIDO VACÍO</span>
             <br />
-            <span className="text-sm font-bold">
+            <span className="text-sm font-bold text-neo-periwinkle">
               Este elemento no tiene contenido asignado
             </span>
           </div>
