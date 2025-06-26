@@ -68,7 +68,7 @@ const CrearEvaluacionModal = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-neo-cream border-5 border-black shadow-brutal-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-neo-periwinkle border-5 border-black shadow-brutal-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-neo-indigo border-b-5 border-black p-6">
           <div className="flex justify-between items-center">
@@ -76,7 +76,7 @@ const CrearEvaluacionModal = ({
               <h2 className="font-brutal text-2xl text-white mb-1">
                 CREAR EVALUACIÓN
               </h2>
-              <p className="font-bold text-black">
+              <p className="font-bold text-white">
                 Para módulo: {moduloTitulo}
               </p>
             </div>
@@ -102,7 +102,7 @@ const CrearEvaluacionModal = ({
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Información de la evaluación */}
-              <div className="bg-neo-yellow border-4 border-black shadow-brutal p-6">
+              <div className="bg-neo-coral shadow-brutal p-6">
                 <h3 className="font-brutal text-xl mb-4">
                   📋 INFORMACIÓN BÁSICA
                 </h3>
@@ -118,7 +118,7 @@ const CrearEvaluacionModal = ({
                     value={formData.titulo_evaluacion}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-3 border-3 border-black font-bold focus:shadow-brutal transition-shadow duration-100"
+                    className="w-full p-3 rounded-lg font-bold bg-neo-lavender text-neo-cream placeholder:text-neo-cream/60 focus:ring-2 focus:ring-neo-lime transition-shadow duration-100 border border-neo-cream/30"
                     placeholder="Ej: Evaluación de Algoritmos de Ordenamiento"
                   />
                 </div>
@@ -134,14 +134,15 @@ const CrearEvaluacionModal = ({
                     onChange={handleInputChange}
                     required
                     rows={4}
-                    className="w-full p-3 border-3 border-black font-bold resize-none focus:shadow-brutal transition-shadow duration-100"
+                    className="w-full p-3 rounded-lg font-bold bg-neo-lavender text-neo-cream placeholder:text-neo-cream/60 focus:ring-2 focus:ring-neo-lime transition-shadow duration-100 border border-neo-cream/30"
+
                     placeholder="Describe el objetivo de esta evaluación y qué temas abarca..."
                   />
                 </div>
               </div>
 
               {/* Información adicional */}
-              <div className="bg-neo-mint border-4 border-black shadow-brutal p-6">
+              <div className="bg-neo-coral shadow-brutal p-6">
                 <h3 className="font-brutal text-xl mb-4">
                   ℹ️ INFORMACIÓN IMPORTANTE
                 </h3>
@@ -170,26 +171,26 @@ const CrearEvaluacionModal = ({
               </div>
 
               {/* Flujo de trabajo */}
-              <div className="bg-neo-coral border-4 border-black shadow-brutal p-6">
+              <div className="bg-neo-coral shadow-brutal p-6">
                 <h3 className="font-brutal text-xl mb-4">
                   🚀 ¿QUÉ SIGUE DESPUÉS?
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-white border-3 border-black shadow-brutal p-4 text-center">
+                  <div className="bg-neo-sage shadow-brutal p-4 text-center">
                     <div className="font-brutal text-2xl mb-2">1️⃣</div>
                     <div className="font-bold text-sm">CREAR EVALUACIÓN</div>
                     <div className="text-xs mt-1">
                       Establece título y descripción
                     </div>
                   </div>
-                  <div className="bg-white border-3 border-black shadow-brutal p-4 text-center">
+                  <div className="bg-neo-sage shadow-brutal p-4 text-center">
                     <div className="font-brutal text-2xl mb-2">2️⃣</div>
                     <div className="font-bold text-sm">AGREGAR PROBLEMAS</div>
                     <div className="text-xs mt-1">
                       Define casos de prueba y ejemplos
                     </div>
                   </div>
-                  <div className="bg-white border-3 border-black shadow-brutal p-4 text-center">
+                  <div className="bg-neo-sage shadow-brutal p-4 text-center">
                     <div className="font-brutal text-2xl mb-2">3️⃣</div>
                     <div className="font-bold text-sm">
                       ESTUDIANTES RESUELVEN

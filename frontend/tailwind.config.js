@@ -8,13 +8,13 @@ export default {
           mint:      "#E2E8F0", // gris claro, fondo secundario
           sage:      "#94A3B8", // gris azulado claro, detalles
           cream:     "#FFFFFF", // blanco, textos o fondos
-          peach:     "#46838C", // azul verdoso, botones de acción
+          peach:     "#46838C", // azul verdoso, botones de acción //botones verdes claro
           lavender:  "#334155", // gris azulado, tarjetas, headers
-          periwinkle:"#1E293B", // azul muy oscuro, headers/nav
-          aqua:      "#0F172A", // azul oscuro, fondo principal
+          periwinkle:"#1E293B", // azul muy oscuro, headers/nav //!ventanas  oscuras
+          aqua:      "#0F172A", // azul oscuro, fondo principal //fondo oscurooooo
           lime:      "#46838C", // botones de acción, alternativo
           yellow:    "#E2E8F0", // fondo alternativo
-          coral:     "#334155", // tarjetas, paneles
+          coral:     "#334155", // tarjetas, paneles //ventanas o cuadros internos
           pink:      "#0F172A", // fondo principal alternativo
           purple:    "#1E293B", // headers/nav alternativo
           sky:       "#E2E8F0", // fondo claro alternativo
