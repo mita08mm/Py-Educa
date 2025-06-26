@@ -219,7 +219,7 @@ const ModuloDetallePage = () => {
       )}
 
       {/* Sección de Evaluaciones */}
-      <div className="bg-neo-periwinkle rounded-xl p-8 mb-8">
+      <div className="bg-neo-coral rounded-xl p-8 mb-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="font-brutal text-3xl text-neo-cream">
             🧪 EVALUACIONES DEL MÓDULO ({evaluaciones.length})
