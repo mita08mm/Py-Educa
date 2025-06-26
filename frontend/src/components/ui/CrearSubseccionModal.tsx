@@ -164,6 +164,36 @@ const CrearSubseccionModal = ({
                 </div>
               </div>
 
+              {/* Flujo de trabajo */}
+              <div className="bg-neo-coral rounded-lg shadow-brutal p-6">
+                <h3 className="font-brutal text-xl mb-4">
+                  🚀 ¿QUÉ SIGUE DESPUÉS?
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-neo-sage rounded-lg shadow-brutal p-4 text-center">
+                    <div className="font-brutal text-2xl mb-2">1️⃣</div>
+                    <div className="font-bold text-sm">CREAR TEMA</div>
+                    <div className="text-xs mt-1">
+                      Establece título y descripción
+                    </div>
+                  </div>
+                  <div className="bg-neo-sage rounded-lg shadow-brutal p-4 text-center">
+                    <div className="font-brutal text-2xl mb-2">2️⃣</div>
+                    <div className="font-bold text-sm">AGREGAR CONTENIDO</div>
+                    <div className="text-xs mt-1">
+                      Define lecciones para este tema
+                    </div>
+                  </div>
+                  <div className="bg-neo-sage rounded-lg shadow-brutal p-4 text-center">
+                    <div className="font-brutal text-2xl mb-2">3️⃣</div>
+                    <div className="font-bold text-sm">
+                      ESTUDIANTES APRENDEN
+                    </div>
+                    <div className="text-xs mt-1">Acceden al contenido</div>
+                  </div>
+                </div>
+              </div>
+
               {/* Error */}
               {error && (
                 <div className="bg-neo-red border-4 border-black shadow-brutal p-4">
