@@ -68,11 +68,11 @@ const CrearCursoPage = () => {
   return (
     <div>
       {/* Título */}
-      <div className="bg-neo-magenta border-5 border-black shadow-brutal-xl p-8 mb-8">
+      <div className="bg-neo-indigo rounded-lg border-5 border-black shadow-brutal-xl p-8 mb-8">
         <h1 className="font-brutal text-4xl text-white mb-2">
           CREAR NUEVO CURSO
         </h1>
-        <p className="text-xl font-bold text-black">
+        <p className="text-xl font-bold text-white">
           Completa la información para crear tu curso
         </p>
       </div>
@@ -80,7 +80,7 @@ const CrearCursoPage = () => {
       {/* Formulario */}
       <form onSubmit={handleSubmit} className="max-w-4xl space-y-8">
         {/* Título del curso */}
-        <div className="bg-neo-yellow border-4 border-black shadow-brutal-lg p-6">
+        <div className="bg-neo-lavender rounded-lg shadow-brutal-lg p-6">
           <label className="block font-brutal text-xl mb-4">
             📚 TÍTULO DEL CURSO
           </label>
@@ -90,13 +90,13 @@ const CrearCursoPage = () => {
             value={formData.titulo_curso}
             onChange={handleInputChange}
             required
-            className="w-full p-4 border-3 border-black font-bold text-lg focus:shadow-brutal-lg transition-shadow duration-100"
+            className="w-full p-3 rounded-lg font-bold bg-neo-lavender text-neo-cream placeholder:text-neo-cream/60 focus:ring-2 focus:ring-neo-lime transition-shadow duration-100 border border-neo-cream/30"
             placeholder="Escribe el título del curso..."
           />
         </div>
 
         {/* Descripción */}
-        <div className="bg-neo-mint border-4 border-black shadow-brutal-lg p-6">
+        <div className="bg-neo-lavender rounded-lg shadow-brutal-lg p-6">
           <label className="block font-brutal text-xl mb-4">
             📝 DESCRIPCIÓN
           </label>
@@ -106,13 +106,14 @@ const CrearCursoPage = () => {
             onChange={handleInputChange}
             required
             rows={4}
-            className="w-full p-4 border-3 border-black font-bold text-lg resize-none focus:shadow-brutal-lg transition-shadow duration-100"
+            className="w-full p-3 rounded-lg font-bold bg-neo-lavender text-neo-cream placeholder:text-neo-cream/60 focus:ring-2 focus:ring-neo-lime transition-shadow duration-100 border border-neo-cream/30"
+
             placeholder="Describe de qué trata el curso..."
           />
         </div>
 
         {/* Imagen */}
-        <div className="bg-neo-coral border-4 border-black shadow-brutal-lg p-6">
+        <div className="bg-neo-lavender rounded-lg shadow-brutal-lg p-6">
           <label className="block font-brutal text-xl mb-4">
             🖼️ IMAGEN DEL CURSO
           </label>
@@ -121,7 +122,7 @@ const CrearCursoPage = () => {
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            className="w-full p-4 border-3 border-black bg-white font-bold text-lg  file:bg-neo-orange file:px-4 file:py-2 file:font-brutal file:border-3 file:border-black file:shadow-brutal file:mr-4"
+            className="w-full bg-neo-lavender font-bold text-lg  file:bg-neo-orange file:px-4 file:py-2 file:font-brutal file:border-3 file:border-black file:shadow-brutal file:mr-4"
           />
 
           {/* Preview de la imagen */}
@@ -151,7 +152,7 @@ const CrearCursoPage = () => {
           <button
             type="button"
             onClick={() => navigate("/cursos")}
-            className="bg-neo-sage border-4 border-black shadow-brutal-lg px-8 py-4 font-brutal text-xl hover:shadow-brutal-xl transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+            className="bg-neo-sage rounded-lg  shadow-brutal-lg px-8 py-4 font-brutal text-xl hover:shadow-brutal-xl transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
           >
             ← CANCELAR
           </button>
@@ -159,7 +160,7 @@ const CrearCursoPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`border-4 border-black shadow-brutal-lg px-8 py-4 font-brutal text-xl transition-all duration-100 hover:shadow-brutal-xl hover:translate-x-1 hover:translate-y-1 ${
+            className={`rounded-lg shadow-brutal-lg px-8 py-4 font-brutal text-xl transition-all duration-100 hover:shadow-brutal-xl hover:translate-x-1 hover:translate-y-1 ${
               loading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-neo-lime hover:bg-neo-green"

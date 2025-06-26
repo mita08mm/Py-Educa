@@ -9,7 +9,7 @@ export default {
           sage:      "#94A3B8", // gris azulado claro, detalles
           cream:     "#FFFFFF", // blanco, textos o fondos
           peach:     "#46838C", // azul verdoso, botones de acción //botones verdes claro
-          lavender:  "#334155", // gris azulado, tarjetas, headers
+          lavender:  "#334155", // gris azulado, tarjetas, headers //gris para botones de cancelar
           periwinkle:"#1E293B", // azul muy oscuro, headers/nav //!ventanas  oscuras
           aqua:      "#0F172A", // azul oscuro, fondo principal //fondo oscurooooo
           lime:      "#46838C", // botones de acción, alternativo
