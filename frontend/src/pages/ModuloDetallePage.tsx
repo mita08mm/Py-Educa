@@ -229,7 +229,7 @@ const ModuloDetallePage = () => {
         {/* Grid de evaluaciones */}
         {loadingEvaluaciones ? (
           <div className="text-center py-8">
-            <div className="bg-neo-yellow rounded-lg p-4 inline-block">
+            <div className="bg-neo-periwinkle rounded-lg p-4 inline-block">
               <span className="font-brutal text-lg text-neo-cream">
                 CARGANDO EVALUACIONES...
               </span>

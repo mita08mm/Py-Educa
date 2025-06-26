@@ -42,7 +42,7 @@ const EvaluacionDetallePage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-96">
-        <div className="bg-neo-yellow border-4 border-black shadow-brutal p-8 animate-pulse">
+        <div className="bg-neo-periwinkle border-4 border-black shadow-brutal p-8 animate-pulse">
           <span className="font-brutal text-2xl">CARGANDO EVALUACIÓN...</span>
         </div>
       </div>

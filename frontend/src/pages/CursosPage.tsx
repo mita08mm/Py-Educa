@@ -9,8 +9,8 @@ const CursosPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-96">
-        <div className="bg-neo-yellow border-4 border-black shadow-brutal p-8">
-          <span className="font-brutal text-2xl">CARGANDO CURSOS...</span>
+        <div className="bg-neo-periwinkle rounded-lg shadow-brutal p-8">
+          <span className="font-brutal text-white text-2xl">CARGANDO CURSOS...</span>
         </div>
       </div>
     );
