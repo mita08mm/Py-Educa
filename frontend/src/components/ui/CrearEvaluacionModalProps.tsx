@@ -68,9 +68,9 @@ const CrearEvaluacionModal = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-neo-periwinkle border-5 border-black shadow-brutal-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-neo-periwinkle rounded-lg shadow-brutal-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-neo-indigo border-b-5 border-black p-6">
+        <div className="bg-neo-lavender border-b-5 border-black p-6">
           <div className="flex justify-between items-center">
             <div>
               <h2 className="font-brutal text-2xl text-white mb-1">
@@ -102,7 +102,7 @@ const CrearEvaluacionModal = ({
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Información de la evaluación */}
-              <div className="bg-neo-coral shadow-brutal p-6">
+              <div className="bg-neo-coral rounded-lg shadow-brutal p-6">
                 <h3 className="font-brutal text-xl mb-4">
                   📋 INFORMACIÓN BÁSICA
                 </h3>
@@ -142,7 +142,7 @@ const CrearEvaluacionModal = ({
               </div>
 
               {/* Información adicional */}
-              <div className="bg-neo-coral shadow-brutal p-6">
+              <div className="bg-neo-coral rounded-lg shadow-brutal p-6">
                 <h3 className="font-brutal text-xl mb-4">
                   ℹ️ INFORMACIÓN IMPORTANTE
                 </h3>
@@ -171,26 +171,26 @@ const CrearEvaluacionModal = ({
               </div>
 
               {/* Flujo de trabajo */}
-              <div className="bg-neo-coral shadow-brutal p-6">
+              <div className="bg-neo-coral rounded-lg shadow-brutal p-6">
                 <h3 className="font-brutal text-xl mb-4">
                   🚀 ¿QUÉ SIGUE DESPUÉS?
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-neo-sage shadow-brutal p-4 text-center">
+                  <div className="bg-neo-sage rounded-lg shadow-brutal p-4 text-center">
                     <div className="font-brutal text-2xl mb-2">1️⃣</div>
                     <div className="font-bold text-sm">CREAR EVALUACIÓN</div>
                     <div className="text-xs mt-1">
                       Establece título y descripción
                     </div>
                   </div>
-                  <div className="bg-neo-sage shadow-brutal p-4 text-center">
+                  <div className="bg-neo-sage rounded-lg shadow-brutal p-4 text-center">
                     <div className="font-brutal text-2xl mb-2">2️⃣</div>
                     <div className="font-bold text-sm">AGREGAR PROBLEMAS</div>
                     <div className="text-xs mt-1">
                       Define casos de prueba y ejemplos
                     </div>
                   </div>
-                  <div className="bg-neo-sage shadow-brutal p-4 text-center">
+                  <div className="bg-neo-sage rounded-lg shadow-brutal p-4 text-center">
                     <div className="font-brutal text-2xl mb-2">3️⃣</div>
                     <div className="font-bold text-sm">
                       ESTUDIANTES RESUELVEN
@@ -214,7 +214,7 @@ const CrearEvaluacionModal = ({
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="bg-neo-sage border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
+                  className="bg-neo-sage rounded-lg border-3 border-black shadow-brutal px-6 py-3 font-brutal hover:shadow-brutal-lg transition-shadow duration-100"
                 >
                   CANCELAR
                 </button>
@@ -222,7 +222,7 @@ const CrearEvaluacionModal = ({
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`border-3 border-black shadow-brutal px-6 py-3 font-brutal transition-shadow duration-100 hover:shadow-brutal-lg ${
+                  className={`rounded-lg shadow-brutal px-6 py-3 font-brutal transition-shadow duration-100 hover:shadow-brutal-lg ${
                     loading
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-neo-lime hover:bg-neo-green"
