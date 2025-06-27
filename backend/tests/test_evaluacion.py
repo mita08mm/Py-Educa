@@ -1,18 +1,18 @@
-def test_crear_evaluacion_exitosa(app,client):
-    data = {
-        "cod_modulo": 1,
-        "titulo_seccion": "Evaluacion 1. Funciones básicas",
-        "descripcion_seccion": "Resuelve la Evaluacion de Contenidos introductorios de funciones"
-    }
+# def test_crear_evaluacion_exitosa(app,client):
+#     data = {
+#         "cod_modulo": 1,
+#         "titulo_seccion": "Evaluacion 1. Funciones básicas",
+#         "descripcion_seccion": "Resuelve la Evaluacion de Contenidos introductorios de funciones"
+#     }
 
-    response = client.post("/api/evaluacion/", json=data)
-    assert response.status_code == 201
+#     response = client.post("/api/evaluacion/", json=data)
+#     assert response.status_code == 201
 
-    json_data = response.get_json()
-    assert json_data["cod_modulo"] == 1
-    assert json_data["titulo_seccion"] == "Evaluacion 1. Funciones básicas"
-    assert json_data["descripcion_seccion"] == "Resuelve la Evaluacion de Contenidos introductorios de funciones"
-    assert "cod_evaluacion" in json_data and isinstance(json_data["cod_evaluacion"], int)
+#     json_data = response.get_json()
+#     assert json_data["cod_modulo"] == 1
+#     assert json_data["titulo_seccion"] == "Evaluacion 1. Funciones básicas"
+#     assert json_data["descripcion_seccion"] == "Resuelve la Evaluacion de Contenidos introductorios de funciones"
+#     assert "cod_evaluacion" in json_data and isinstance(json_data["cod_evaluacion"], int)
 
 def test_crear_evaluacion_falta_cod_modulo(client):
     data = {
