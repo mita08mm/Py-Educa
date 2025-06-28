@@ -10,7 +10,8 @@ def execute_code():
     
     Request body:
     {
-        "code": "código Python a ejecutar"
+        "code": "código Python a ejecutar",
+        "input": "datos de entrada (opcional)"
     }
     
     Returns:
@@ -28,12 +29,14 @@ def execute_code():
             return jsonify({'error': 'No se proporcionó código para ejecutar'}), 400
 
         code = data['code']
+        input_data = data.get('input', '')  # Input opcional
+        
         if not isinstance(code, str) or not code.strip():
             return jsonify({'error': 'El código debe ser una cadena no vacía'}), 400
 
         # Crear una nueva instancia del servicio para cada solicitud
         code_service = CodeExecutionService()
-        result = code_service.execute_code(code)
+        result = code_service.execute_code(code, input_data)
         
         return jsonify(result)
     except Exception as e:

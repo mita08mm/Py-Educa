@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useModo } from "../context/ModoContext";
 import { useModuloDetalle } from "../hooks/useModuloDetalle";
 import { useEvaluaciones } from "../hooks/useEvaluaciones";
 import SeccionAccordion from "../components/ui/SeccionAccordion";
@@ -10,6 +11,7 @@ import CrearEvaluacionModal from "../components/ui/CrearEvaluacionModalProps";
 const ModuloDetallePage = () => {
   const { moduloId } = useParams<{ moduloId: string }>();
   const navigate = useNavigate();
+  const { isModoProfesor } = useModo();
   const moduloIdNum = moduloId ? parseInt(moduloId) : 0;
 
   const { modulo, secciones, loading, error } = useModuloDetalle(moduloIdNum);
@@ -139,20 +141,24 @@ const ModuloDetallePage = () => {
                 </div>
                 <div className="font-bold">EVALUACIONES</div>
               </div>
-              <button
-                onClick={() => setIsSeccionModalOpen(true)}
-                className="bg-neo-peach rounded-lg p-4 text-center hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
-              >
-                <div className="font-brutal text-2xl mb-1">+</div>
-                <div className="font-bold">CREAR SECCIÓN</div>
-              </button>
-              <button
-                onClick={() => setIsEvaluacionModalOpen(true)}
-                className="bg-neo-peach rounded-lg p-4 text-center hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
-              >
-                <div className="font-brutal text-2xl mb-1">+</div>
-                <div className="font-bold">CREAR EVALUACIÓN</div>
-              </button>
+              {isModoProfesor && (
+                <button
+                  onClick={() => setIsSeccionModalOpen(true)}
+                  className="bg-neo-peach rounded-lg p-4 text-center hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
+                >
+                  <div className="font-brutal text-2xl mb-1">+</div>
+                  <div className="font-bold">CREAR SECCIÓN</div>
+                </button>
+              )}
+              {isModoProfesor && (
+                <button
+                  onClick={() => setIsEvaluacionModalOpen(true)}
+                  className="bg-neo-peach rounded-lg p-4 text-center hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
+                >
+                  <div className="font-brutal text-2xl mb-1">+</div>
+                  <div className="font-bold">CREAR EVALUACIÓN</div>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -209,12 +215,14 @@ const ModuloDetallePage = () => {
             </span>
           </div>
           <br />
-          <button
-            onClick={() => setIsSeccionModalOpen(true)}
-            className="bg-neo-lime rounded-lg px-12 py-4 font-brutal text-lg hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
-          >
-            + CREAR LA PRIMERA SECCIÓN
-          </button>
+          {isModoProfesor && (
+            <button
+              onClick={() => setIsSeccionModalOpen(true)}
+              className="bg-neo-lime rounded-lg px-12 py-4 font-brutal text-lg hover:shadow-brutal-lg transition-all duration-100 hover:translate-x-1 hover:translate-y-1"
+            >
+              + CREAR LA PRIMERA SECCIÓN
+            </button>
+          )}
         </div>
       )}
 
@@ -257,12 +265,14 @@ const ModuloDetallePage = () => {
               </span>
             </div>
             <br />
-            <button
-              onClick={() => setIsEvaluacionModalOpen(true)}
-              className="bg-neo-lime rounded-lg px-6 py-3 font-brutal text-neo-cream mt-4 transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg hover:bg-neo-green"
-            >
-              🧪 CREAR LA PRIMERA EVALUACIÓN
-            </button>
+            {isModoProfesor && (
+              <button
+                onClick={() => setIsEvaluacionModalOpen(true)}
+                className="bg-neo-lime rounded-lg px-6 py-3 font-brutal text-neo-cream mt-4 transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg hover:bg-neo-green"
+              >
+                🧪 CREAR LA PRIMERA EVALUACIÓN
+              </button>
+            )}
           </div>
         )}
       </div>

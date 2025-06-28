@@ -49,7 +49,6 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
-
   code-sandbox:
     build: ./code-sandbox
     ports:
@@ -60,6 +59,7 @@ services:
       - ./code-sandbox:/app
     networks:
       - app-network
+  
     # Add security options
 #    cap_drop:
 #      - ALL

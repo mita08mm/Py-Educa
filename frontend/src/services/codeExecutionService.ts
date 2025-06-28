@@ -10,8 +10,11 @@ const api = axios.create({
 });
 
 export const codeExecutionService = {
-  execute: async (code: string) => {
-    const response = await api.post("/code/execute", { code });
+  execute: async (code: string, input?: string) => {
+    const response = await api.post("/code/execute", { 
+      code,
+      input: input || ""
+    });
     return response.data;
   },
 }; 

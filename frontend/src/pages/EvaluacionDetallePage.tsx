@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useModo } from "../context/ModoContext";
 import { useEvaluaciones } from "../hooks/useEvaluaciones";
 import ProblemaCard from "../components/ui/ProblemaCard";
 import CrearProblemaModal from "../components/ui/CrearProblemaModal";
@@ -7,6 +8,7 @@ import CrearProblemaModal from "../components/ui/CrearProblemaModal";
 const EvaluacionDetallePage = () => {
   const { evaluacionId } = useParams<{ evaluacionId: string }>();
   const navigate = useNavigate();
+  const { isModoProfesor } = useModo();
   const evaluacionIdNum = evaluacionId ? parseInt(evaluacionId) : 0;
 
   const [moduloIdNum, setModuloIdNum] = useState<number>(0);
@@ -137,13 +139,15 @@ const EvaluacionDetallePage = () => {
                 </div>
                 <div className="font-bold">MÚLTIPLE</div>
               </div>
-              <button
-                onClick={() => setIsProblemaModalOpen(true)}
-                className="bg-neo-peach rounded-lg p-4 text-center hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
-              >
-                <div className="font-brutal text-2xl mb-1">+</div>
-                <div className="font-bold">AGREGAR PROBLEMA</div>
-              </button>
+              {isModoProfesor && (
+                <button
+                  onClick={() => setIsProblemaModalOpen(true)}
+                  className="bg-neo-peach rounded-lg p-4 text-center hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
+                >
+                  <div className="font-brutal text-2xl mb-1">+</div>
+                  <div className="font-bold">AGREGAR PROBLEMA</div>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -155,15 +159,6 @@ const EvaluacionDetallePage = () => {
           <h2 className="font-brutal text-2xl text-neo-cream">
             📝 PROBLEMAS DE EVALUACIÓN
           </h2>
-        </div>
-
-        <div className="flex space-x-3 flex-wrap gap-2">
-          <button
-            onClick={() => setIsProblemaModalOpen(true)}
-            className="bg-neo-lime rounded-lg px-4 py-2 font-brutal text-neo-cream transition-all duration-100 hover:scale-105 hover:-translate-y-1 hover:shadow-lg"
-          >
-            + AGREGAR PROBLEMA
-          </button>
         </div>
       </div>
 
@@ -190,12 +185,14 @@ const EvaluacionDetallePage = () => {
             </span>
           </div>
           <br />
-          <button
-            onClick={() => setIsProblemaModalOpen(true)}
-            className="bg-neo-lime rounded-lg px-12 py-4 font-brutal text-lg hover:scale-105 transition-all duration-100"
-          >
-            + CREAR EL PRIMER PROBLEMA
-          </button>
+          {isModoProfesor && (
+            <button
+              onClick={() => setIsProblemaModalOpen(true)}
+              className="bg-neo-lime rounded-lg px-12 py-4 font-brutal text-lg hover:scale-105 transition-all duration-100"
+            >
+              + CREAR EL PRIMER PROBLEMA
+            </button>
+          )}
         </div>
       )}
 

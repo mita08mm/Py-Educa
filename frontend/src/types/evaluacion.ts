@@ -15,7 +15,7 @@ export interface Problema {
   output: string;
   input_ejemplo: string;
   output_ejemplo: string;
-  codigo: string;
+  editor: string;
 }
 export interface CreateEvaluacionData {
   cod_modulo: number;

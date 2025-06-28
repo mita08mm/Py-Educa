@@ -1,10 +1,12 @@
 import { useCursos } from "../hooks/useCursos";
 import CursoCard from "../components/ui/CursoCard";
 import { useNavigate } from "react-router-dom";
+import { useModo } from "../context/ModoContext";
 
 const CursosPage = () => {
   const navigate = useNavigate();
   const { cursos, loading, error } = useCursos();
+  const { isModoProfesor } = useModo();
 
   if (loading) {
     return (
@@ -34,17 +36,24 @@ const CursosPage = () => {
       <div className="bg-neo-periwinkle rounded-xl shadow-brutal-xl p-8 mb-8">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="font-brutal text-4xl text-neo-cream mb-2">MIS CURSOS</h1>
+            <h1 className="font-brutal text-4xl text-neo-cream mb-2">
+              {isModoProfesor ? 'MIS CURSOS' : 'CURSOS DISPONIBLES'}
+            </h1>
             <p className="text-xl font-bold text-neo-mint">
-              Explora todos los cursos disponibles
+              {isModoProfesor 
+                ? 'Explora todos los cursos disponibles'
+                : 'Explora y estudia los cursos disponibles'
+              }
             </p>
           </div>
-          <button
-            onClick={() => navigate("/crear-curso")}
-            className="bg-neo-peach rounded-lg shadow-brutal-lg px-6 py-4 font-brutal text-xl text-neo-cream hover:bg-neo-lime hover:text-neo-cream hover:shadow-brutal-xl transition-all duration-200 transform hover:scale-105 hover:-translate-y-1 hover:translate-x-1"
-          >
-            + CREAR CURSO
-          </button>
+          {isModoProfesor && (
+            <button
+              onClick={() => navigate("/crear-curso")}
+              className="bg-neo-peach rounded-lg shadow-brutal-lg px-6 py-4 font-brutal text-xl text-neo-cream hover:bg-neo-lime hover:text-neo-cream hover:shadow-brutal-xl transition-all duration-200 transform hover:scale-105 hover:-translate-y-1 hover:translate-x-1"
+            >
+              + CREAR CURSO
+            </button>
+          )}
         </div>
       </div>
 
@@ -60,7 +69,10 @@ const CursosPage = () => {
         <div className="text-center mt-12">
           <div className="bg-neo-warning border-4 border-black shadow-brutal p-8 inline-block">
             <span className="font-brutal text-2xl text-neo-aqua">
-              NO HAY CURSOS DISPONIBLES
+              {isModoProfesor 
+                ? 'NO HAY CURSOS DISPONIBLES'
+                : 'NO HAY CURSOS PARA ESTUDIAR'
+              }
             </span>
           </div>
         </div>

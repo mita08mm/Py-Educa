@@ -4,6 +4,7 @@ import resource
 import tempfile
 import os
 import signal
+import subprocess
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -17,34 +18,43 @@ def set_limits():
     # File size limit (1MB)
     resource.setrlimit(resource.RLIMIT_FSIZE, (1024 * 1024, 1024 * 1024))
 
-def execute_code(code):
+def execute_code(code, input_data=''):
     # Create a temporary file
     with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
         f.write(code)
         temp_file = f.name
 
     try:
-        # Set up output capture
-        import io
-        from contextlib import redirect_stdout, redirect_stderr
-        stdout = io.StringIO()
-        stderr = io.StringIO()
-
-        exec_globals = {}
+        # Execute the code with subprocess to handle input
+        process = subprocess.Popen(
+            [sys.executable, temp_file],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            preexec_fn=set_limits
+        )
         
-        # Execute the code with limits
-        with redirect_stdout(stdout), redirect_stderr(stderr):
-            set_limits()
-            exec(open(temp_file).read(), exec_globals)
-
+        # Send input and get output
+        stdout, stderr = process.communicate(input=input_data, timeout=10)
+        
         return {
             'status': {'id': 3, 'description': 'Accepted'},
-            'stdout': stdout.getvalue(),
-            'stderr': stderr.getvalue(),
+            'stdout': stdout,
+            'stderr': stderr,
             'memory': '0',  # You can implement memory tracking if needed
             'time': '0'     # You can implement time tracking if needed
         }
 
+    except subprocess.TimeoutExpired:
+        process.kill()
+        return {
+            'status': {'id': 4, 'description': 'Time Limit Exceeded'},
+            'stdout': '',
+            'stderr': 'Time limit exceeded (10 seconds)',
+            'memory': '0',
+            'time': '0'
+        }
     except Exception as e:
         return {
             'status': {'id': 4, 'description': 'Error'},
@@ -63,7 +73,10 @@ def handle_execute():
     if not data or 'code' not in data:
         return jsonify({'error': 'No code provided'}), 400
 
-    result = execute_code(data['code'])
+    code = data['code']
+    input_data = data.get('input', '')
+    
+    result = execute_code(code, input_data)
     return jsonify(result)
 
 if __name__ == '__main__':

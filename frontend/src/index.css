@@ -1,3 +1,62 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Override global de Prism.js para operadores */
+.token.operator,
+.token.punctuation,
+.token.operator + .token.punctuation,
+.token.punctuation + .token.operator {
+  color: #e5e7eb !important;
+  background: transparent !important;
+}
+
+/* Específicamente para el operador de asignación */
+.token.operator[data-operator="="],
+.token.operator:contains("="),
+.token.operator {
+  color: #e5e7eb !important;
+  background: transparent !important;
+}
+
+/* Override para cualquier estilo que pueda estar interfiriendo */
+.token.keyword {
+  color: #fbbf24 !important;
+  background: transparent !important;
+}
+
+.token.string {
+  color: #34d399 !important;
+  background: transparent !important;
+}
+
+.token.comment {
+  color: #6b7280 !important;
+  background: transparent !important;
+}
+
+.token.number {
+  color: #f87171 !important;
+  background: transparent !important;
+}
+
+.token.function {
+  color: #60a5fa !important;
+  background: transparent !important;
+}
+
+.token.class-name {
+  color: #a78bfa !important;
+  background: transparent !important;
+}
+
+/* Forzar que todos los tokens tengan fondo transparente */
+.token {
+  background: transparent !important;
+}
+
+/* Override específico para el editor */
+.react-simple-code-editor .token.operator {
+  color: #e5e7eb !important;
+  background: transparent !important;
+}

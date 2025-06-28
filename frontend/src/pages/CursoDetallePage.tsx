@@ -3,11 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useCursoDetalle } from "../hooks/useCursoDetalle";
 import ModuloCard from "../components/ui/ModuloCard";
 import CrearModuloModal from "../components/ui/CrearModuloModal";
+import { useModo } from "../context/ModoContext";
 
 const CursoDetallePage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const cursoId = id ? parseInt(id) : 0;
+  const { isModoProfesor } = useModo();
 
   const { curso, modulos, loading, error } = useCursoDetalle(cursoId);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -102,13 +104,15 @@ const CursoDetallePage = () => {
                 <div className="font-brutal text-2xl mb-1">0%</div>
                 <div className="font-bold">PROGRESO</div>
               </div>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="bg-neo-peach rounded-lg p-4 text-center hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
-              >
-                <div className="font-brutal text-2xl mb-1">+</div>
-                <div className="font-bold">CREAR MÓDULO</div>
-              </button>
+              {isModoProfesor && (
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="bg-neo-peach rounded-lg p-4 text-center hover:bg-neo-lime hover:text-neo-cream transition-all duration-100 hover:scale-105"
+                >
+                  <div className="font-brutal text-2xl mb-1">+</div>
+                  <div className="font-bold">CREAR MÓDULO</div>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -134,7 +138,10 @@ const CursoDetallePage = () => {
         <div className="text-center">
           <div className="bg-neo-warning rounded-lg p-8 inline-block">
             <span className="font-brutal text-2xl text-neo-aqua">
-              NO HAY MÓDULOS DISPONIBLES
+              {isModoProfesor 
+                ? 'NO HAY MÓDULOS DISPONIBLES'
+                : 'NO HAY MÓDULOS PARA ESTUDIAR'
+              }
             </span>
             <br />
           </div>
@@ -151,14 +158,16 @@ const CursoDetallePage = () => {
         </button>
       </div>
 
-      {/* Modal para crear módulo */}
-      <CrearModuloModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        cursoId={cursoId}
-        cursoTitulo={curso.titulo_curso}
-        onModuloCreated={handleModuloCreated}
-      />
+      {/* Modal para crear módulo (solo en modo profesor) */}
+      {isModoProfesor && (
+        <CrearModuloModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          cursoId={cursoId}
+          cursoTitulo={curso.titulo_curso}
+          onModuloCreated={handleModuloCreated}
+        />
+      )}
     </div>
   );
 };
