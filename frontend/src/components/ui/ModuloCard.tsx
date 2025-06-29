@@ -9,17 +9,6 @@ interface ModuloCardProps {
 const ModuloCard = ({ modulo, index }: ModuloCardProps) => {
   const navigate = useNavigate();
 
-  const cardColors = [
-    "bg-neo-mint",
-    "bg-neo-sage",
-    "bg-neo-lavender",
-    "bg-neo-coral",
-    "bg-neo-yellow",
-    "bg-neo-aqua",
-  ];
-
-  const bgColor = cardColors[index % cardColors.length];
-
   const handleEntrarModulo = () => {
     navigate(`/modulo/${modulo.cod_modulo}`);
   };

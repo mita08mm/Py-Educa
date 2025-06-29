@@ -13,10 +13,8 @@ const CursoDetallePage = () => {
 
   const { curso, modulos, loading, error } = useCursoDetalle(cursoId);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleModuloCreated = () => {
-    setRefreshKey((prev) => prev + 1);
     window.location.reload();
   };
 

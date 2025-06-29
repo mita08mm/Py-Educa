@@ -135,7 +135,7 @@ const EvaluacionDetallePage = () => {
               </div>
               <div className="bg-neo-coral rounded-lg p-4 text-center">
                 <div className="font-brutal text-2xl mb-1">
-                  {evaluacion.problemas?.filter(p => p.tipo_problema === 'multiple_choice').length || 0}
+                  {evaluacion.problemas?.filter(p => p.titulo_problema === 'multiple_choice').length || 0}
                 </div>
                 <div className="font-bold">MÚLTIPLE</div>
               </div>

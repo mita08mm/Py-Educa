@@ -26,29 +26,29 @@ services:
           cpus: '0.25'
           memory: 256M
 
-  frontend:
-    build: ./frontend
-    ports:
-      - "5173:5173"
-    environment:
-      - VITE_API_BASE_URL=http://localhost:5000/api
-      - NODE_ENV=development
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-      - /app/.vite 
-    depends_on:
-      - backend
-    networks:
-      - app-network
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
+#  frontend:
+#    build: ./frontend
+#    ports:
+#      - "5173:5173"
+#    environment:
+#      - VITE_API_BASE_URL=http://localhost:5000/api
+#      - NODE_ENV=development
+#    volumes:
+#      - ./frontend:/app
+#      - /app/node_modules
+#      - /app/.vite 
+#    depends_on:
+#      - backend
+#    networks:
+#      - app-network
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.5'
+#          memory: 512M
+#        reservations:
+#          cpus: '0.25'
+#          memory: 256M
   code-sandbox:
     build: ./code-sandbox
     ports:

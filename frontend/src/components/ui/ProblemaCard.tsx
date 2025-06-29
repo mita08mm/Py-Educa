@@ -13,22 +13,6 @@ const ProblemaCard = ({ problema, index }: ProblemaCardProps) => {
   const [currentView, setCurrentView] = useState<'editor' | 'description'>('editor');
   const [currentCode, setCurrentCode] = useState(problema.editor || "");
 
-  const cardColors = [
-    "bg-neo-cyan",
-    "bg-neo-lime", 
-    "bg-neo-coral",
-    "bg-neo-orange",
-    "bg-neo-mint",
-    "bg-neo-peach",
-  ];
-  
-  const iconColors = [
-    "bg-neo-coral",
-  ];
-
-  const bgColor = cardColors[index % cardColors.length];
-  const iconColor = iconColors[index % iconColors.length];
-
   const handleEditar = () => {
     setCurrentCode(problema.editor || "");
     setCurrentView('editor');
